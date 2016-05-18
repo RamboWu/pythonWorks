@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #hello.py
-import sys, getopt, codecs, os, commands
+import sys, getopt, codecs, os, subprocess
 
 bus_relations = []
 #bus_file有默认参数
@@ -42,8 +42,7 @@ def sortTmp():
     tags = os.path.split(tmp_file_name)
     command_line = 'java -jar FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
     print('Excute Command: ' + command_line)
-    (status, output) = commands.getstatusoutput(command_line)
-    print(output)
+    status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
@@ -85,7 +84,7 @@ def init():
 def generateBusRelations():
     a = 'O'
     while (not(a in ('Y','y','N','n'))):
-        a=raw_input("是否要进行生成BusRelations?Y/N ")
+        a='y'#raw_input("是否要进行生成BusRelations?Y/N ")
 
     if a in ('N','n'):
         return
@@ -93,7 +92,7 @@ def generateBusRelations():
     print('#TODO 产生BusRelations')
 
 if __name__=="__main__":
-    
+
 #初始化
     init()
 #解析命令行，来获取相应参数，具体见--help
