@@ -84,12 +84,18 @@ def init():
 def generateBusRelations():
     a = 'O'
     while (not(a in ('Y','y','N','n'))):
-        a='y'#raw_input("是否要进行生成BusRelations?Y/N ")
+        a=input("是否要进行生成BusRelations?Y/N ")
 
     if a in ('N','n'):
         return
 
     print('#TODO 产生BusRelations')
+'''
+    status = subprocess.call("./", shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
+'''
 
 if __name__=="__main__":
 
