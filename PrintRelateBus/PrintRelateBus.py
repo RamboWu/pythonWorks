@@ -83,18 +83,24 @@ def init():
         os.makedirs('temp')
 
 def generateBusRelations():
-    print('haha')
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=raw_input("是否要进行生成BusRelations?Y/N ")
+
+    if a in ('N','n'):
+        return
+
+    print('#TODO 产生BusRelations')
 
 if __name__=="__main__":
-
+    
 #初始化
     init()
 #解析命令行，来获取相应参数，具体见--help
     input_file, output_file = parseParams()
 
-    a=raw_input("What's your name ? ")
-    print(a)
-
+#看看是否有必要产生BusRelations文件
+    generateBusRelations()
 #从bus_file里获取公交车辆关系
     getBusRelations()
 #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
