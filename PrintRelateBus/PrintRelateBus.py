@@ -131,7 +131,6 @@ def generateCompareSample():
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
-
 #根据BusRelations来取出待排序的gps点，然后排序
 def generateSortedSample(input_file, output_file):
     a = 'O'
