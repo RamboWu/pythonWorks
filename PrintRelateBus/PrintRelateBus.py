@@ -110,6 +110,14 @@ def generateBusRelations(input_file):
         sys.exit(-1)
 #生成offline_result和 离线程序的result
 def generateCompareSample():
+
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=input("是否要生成对比Sample文件?Y/N ")
+
+    if a in ('N','n'):
+        return
+
     command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name
     print('Excute Command: ' + command_line)
     status = subprocess.call(command_line, shell=True)
@@ -133,11 +141,11 @@ def generateSortedSample(input_file, output_file):
     if a in ('N','n'):
         return
 
-#从bus_file里获取公交车辆关系
+    #从bus_file里获取公交车辆关系
     getBusRelations()
-#把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
+    #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
     printRelateBus(input_file, output_file)
-#排序tmp文件
+    #排序tmp文件
     sortTmp()
 
 if __name__=="__main__":
