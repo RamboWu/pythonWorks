@@ -110,6 +110,14 @@ def generateBusRelations(input_file):
         sys.exit(-1)
 #生成offline_result和 离线程序的result
 def generateCompareSample():
+
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=input("是否要生成对比Sample文件?Y/N ")
+
+    if a in ('N','n'):
+        return
+
     command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name
     print('Excute Command: ' + command_line)
     status = subprocess.call(command_line, shell=True)
@@ -124,20 +132,31 @@ def generateCompareSample():
         print("Error: Program End.")
         sys.exit(-1)
 
+#根据BusRelations来取出待排序的gps点，然后排序
+def generateSortedSample(input_file, output_file):
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=input("是否要生成排好序的Sample文件?Y/N ")
+
+    if a in ('N','n'):
+        return
+
+    #从bus_file里获取公交车辆关系
+    getBusRelations()
+    #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
+    printRelateBus(input_file, output_file)
+    #排序tmp文件
+    sortTmp()
+
 if __name__=="__main__":
 
 #初始化
     init()
 #解析命令行，来获取相应参数，具体见--help
     input_file, output_file = parseParams()
-
 #看看是否有必要产生BusRelations文件
     generateBusRelations(input_file)
-#从bus_file里获取公交车辆关系
-    getBusRelations()
-#把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
-    printRelateBus(input_file, output_file)
-#排序tmp文件
-    sortTmp()
+#看看是否有必要生成排序好的Sample
+    generateSortedSample(input_file, output_file)
 #产生对拍文件
     generateCompareSample()
