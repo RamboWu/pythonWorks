@@ -117,7 +117,7 @@ def generateBusRelations(input_file):
         return
 
     command_line = 'BusMatching.exe --offline --baseData ' + base_data_file_name + ' --inputFile ' + input_file
-    print('Excute Command: ' + command_line)
+    print('生成BusRelations: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
@@ -129,14 +129,14 @@ def generateCompareSample():
         return
 
     command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name + ' --outputfile ' + offline_result_name
-    print('Excute Command: ' + command_line)
+    print('生成offline_result.csv: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
 
     command_line = 'BusMatchingResultGenerator.exe -m=0 -lon=10 -lat=11 -l=' + base_data_file_name + ' -i=' + sort_file_name + ' -b=' + bus_file_name+ ' -o=' + real_offline_result_name
-    print('Excute Command: ' + command_line)
+    print('生成judgement_result.csv: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
