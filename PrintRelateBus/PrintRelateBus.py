@@ -118,7 +118,7 @@ def generateCompareSample():
     if a in ('N','n'):
         return
 
-    command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name
+    command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name + ' --outputfile ' + offline_result_name
     print('Excute Command: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
@@ -131,7 +131,6 @@ def generateCompareSample():
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
-
 #根据BusRelations来取出待排序的gps点，然后排序
 def generateSortedSample(input_file, output_file):
     a = 'O'
@@ -147,6 +146,33 @@ def generateSortedSample(input_file, output_file):
     printRelateBus(input_file, output_file)
     #排序tmp文件
     sortTmp()
+#根据对比Sample来统计准确率
+def CountAccuracy():
+    print('开始统计:')
+    offline_file = codecs.open(offline_result_name, 'r', 'utf-8')
+    judgement_file = codecs.open(real_offline_result_name, 'r', 'utf-8')
+
+    off_line = offline_file.readline()
+    judge_line = judgement_file.readline()
+
+    total_correct = 0
+    total_correct_right = 0
+
+    while off_line and judge_line:
+        off_line_tags = off_line.split(',')
+        judge_tags = judge_line.split(',')
+        if (int(off_line_tags[0]) == 2):
+            total_correct += 1
+            if (int(judge_tags[0]) == 1):
+                total_correct_right += 1
+
+        off_line = offline_file.readline()
+        judge_line = judgement_file.readline()
+
+    print('修正个数:', total_correct, '正确数', total_correct_right)
+    if (total_correct == 0):
+        total_correct = 1
+    print('正确率:', float(total_correct_right) / float(total_correct))
 
 if __name__=="__main__":
 
@@ -160,3 +186,5 @@ if __name__=="__main__":
     generateSortedSample(input_file, output_file)
 #产生对拍文件
     generateCompareSample()
+#统计正确率
+    CountAccuracy()
