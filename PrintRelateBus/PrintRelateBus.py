@@ -118,7 +118,7 @@ def generateCompareSample():
     if a in ('N','n'):
         return
 
-    command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name
+    command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name + ' --outputfile ' + offline_result_name
     print('Excute Command: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
