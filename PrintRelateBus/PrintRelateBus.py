@@ -5,10 +5,17 @@
 import sys, getopt, codecs, os, subprocess
 
 bus_relations = []
+
+
+base_data_file_name = os.path.abspath('input/s_json.csv')
 #bus_file有默认参数
 bus_file_name = os.path.abspath('compare/bus_relations.csv')
+#排序结果文件
 tmp_file_name = os.path.abspath('temp/print_relate_bus_middle.tmp')
 sort_file_name = os.path.abspath('temp/print_relate_bus_middle.tmp.sort')
+#最终准备对拍的两个结果
+real_offline_result_name = os.path.abspath('compare/real_offline_result.csv')
+offline_result_name = os.path.abspath('compare/offline_result.csv')
 
 #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
 def printRelateBus(src_file_name, dest_file_name):
@@ -51,7 +58,8 @@ def usage():
     print('Help!! Please put in "-b busfile_name -i inputfile_name -o output_file_name"!')
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
-    opts, args = getopt.getopt(sys.argv[1:], "hb:i:o:", ["busfile=","input=","output="])
+    global base_data_file_name
+    opts, args = getopt.getopt(sys.argv[1:], "hb:i:o:", ["busfile=","input=","output=","basedata="])
 
     input_file = ""
     output_file = "output"
@@ -64,6 +72,8 @@ def parseParams():
             output_file = value
         elif op in ("-b","--busfile"):
             bus_file_name = value
+        elif op == "--basedata":
+            base_data_file_name = os.path.abspath(value)
         elif op == "-h":
             usage()
             sys.exit()
@@ -73,7 +83,7 @@ def parseParams():
         sys.exit()
 
     print("CommandParam:")
-    print("busfile", bus_file, "input", input_file, "output", output_file)
+    print("busfile", bus_file, "input", input_file, "output", output_file, "base_data_file_name:", base_data_file_name)
 
     return input_file, output_file
 #初始化
@@ -81,7 +91,10 @@ def init():
     if (not os.path.exists('temp')):
         os.makedirs('temp')
 
-def generateBusRelations():
+    if (not os.path.exists('compare')):
+        os.makedirs('compare')
+#产生公交关系
+def generateBusRelations(input_file):
     a = 'O'
     while (not(a in ('Y','y','N','n'))):
         a=input("是否要进行生成BusRelations?Y/N ")
@@ -89,13 +102,27 @@ def generateBusRelations():
     if a in ('N','n'):
         return
 
-    print('#TODO 产生BusRelations')
-'''
-    status = subprocess.call("./", shell=True)
+    command_line = 'BusMatching.exe --offline --baseData ' + base_data_file_name + ' --inputFile ' + input_file
+    print('Excute Command: ' + command_line)
+    status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
-'''
+#生成offline_result和 离线程序的result
+def generateCompareSample():
+    command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name
+    print('Excute Command: ' + command_line)
+    status = subprocess.call(command_line, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
+
+    command_line = 'BusMatchingResultGenerator.exe -m=0 -lon=10 -lat=11 -l=' + base_data_file_name + ' -i=' + sort_file_name + ' -b=' + bus_file_name+ ' -o=' + real_offline_result_name
+    print('Excute Command: ' + command_line)
+    status = subprocess.call(command_line, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
 
 if __name__=="__main__":
 
@@ -105,10 +132,12 @@ if __name__=="__main__":
     input_file, output_file = parseParams()
 
 #看看是否有必要产生BusRelations文件
-    generateBusRelations()
+    generateBusRelations(input_file)
 #从bus_file里获取公交车辆关系
     getBusRelations()
 #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
     printRelateBus(input_file, output_file)
 #排序tmp文件
     sortTmp()
+#产生对拍文件
+    generateCompareSample()
