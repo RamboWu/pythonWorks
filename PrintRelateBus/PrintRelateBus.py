@@ -6,6 +6,8 @@ import sys, getopt, codecs, os, subprocess
 
 bus_relations = []
 
+#是否一条龙
+one_dragon_service = False
 
 base_data_file_name = os.path.abspath('input/s_json.csv')
 #bus_file有默认参数
@@ -16,6 +18,18 @@ sort_file_name = os.path.abspath('temp/print_relate_bus_middle.tmp.sort')
 #最终准备对拍的两个结果
 real_offline_result_name = os.path.abspath('compare/real_offline_result.csv')
 offline_result_name = os.path.abspath('compare/offline_result.csv')
+
+def IfContinueOn(tip):
+    if one_dragon_service:
+        return True
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=input(tip +"?Y/N ")
+
+    if a in ('N','n'):
+        return False
+    else:
+        return True
 
 #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
 def printRelateBus(src_file_name, dest_file_name):
@@ -55,11 +69,12 @@ def sortTmp():
         sys.exit(-1)
 
 def usage():
-    print('Help!! Please put in "-b busfile_name -i inputfile_name -o output_file_name"!')
+    print('Help!! Please put in "-b busfile_name -i inputfile_name -o output_file_name --dragon"!')
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global base_data_file_name
-    opts, args = getopt.getopt(sys.argv[1:], "hb:i:o:", ["busfile=","input=","output=","basedata="])
+    global one_dragon_service
+    opts, args = getopt.getopt(sys.argv[1:], "hb:i:o:", ["busfile=","input=","output=","basedata=","dragon"])
 
     input_file = ""
     output_file = "output"
@@ -74,6 +89,8 @@ def parseParams():
             bus_file_name = value
         elif op == "--basedata":
             base_data_file_name = os.path.abspath(value)
+        elif op == "--dragon":
+            one_dragon_service = True
         elif op == "-h":
             usage()
             sys.exit()
@@ -83,7 +100,7 @@ def parseParams():
         sys.exit()
 
     print("CommandParam:")
-    print("busfile", bus_file, "input", input_file, "output", output_file, "base_data_file_name:", base_data_file_name)
+    print("busfile", bus_file, "input", input_file, "output", output_file, "base_data_file_name:", base_data_file_name, "one_dragon_service", one_dragon_service)
 
     return input_file, output_file
 #初始化
@@ -95,11 +112,8 @@ def init():
         os.makedirs('compare')
 #产生公交关系
 def generateBusRelations(input_file):
-    a = 'O'
-    while (not(a in ('Y','y','N','n'))):
-        a=input("是否要进行生成BusRelations?Y/N ")
 
-    if a in ('N','n'):
+    if not IfContinueOn('是否要进行生成BusRelations'):
         return
 
     command_line = 'BusMatching.exe --offline --baseData ' + base_data_file_name + ' --inputFile ' + input_file
@@ -111,11 +125,7 @@ def generateBusRelations(input_file):
 #生成offline_result和 离线程序的result
 def generateCompareSample():
 
-    a = 'O'
-    while (not(a in ('Y','y','N','n'))):
-        a=input("是否要生成对比Sample文件?Y/N ")
-
-    if a in ('N','n'):
+    if not IfContinueOn('是否要生成对比Sample文件'):
         return
 
     command_line = 'BusMatching.exe --offline --output --baseData ' + base_data_file_name + ' --inputFile ' + sort_file_name + ' --outputfile ' + offline_result_name
@@ -133,13 +143,9 @@ def generateCompareSample():
         sys.exit(-1)
 #根据BusRelations来取出待排序的gps点，然后排序
 def generateSortedSample(input_file, output_file):
-    a = 'O'
-    while (not(a in ('Y','y','N','n'))):
-        a=input("是否要生成排好序的Sample文件?Y/N ")
 
-    if a in ('N','n'):
+    if not IfContinueOn('是否要生成排好序的Sample文件'):
         return
-
     #从bus_file里获取公交车辆关系
     getBusRelations()
     #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
