@@ -34,12 +34,17 @@ class BusStat:
             TotalCorrectRight += 1
             self.correct_right += 1
 
-    def correctRate():
-        return float(self.correct_right) / float(self.correct)
+    def correctRate(self):
+        if self.correct != 0:
+            return float(self.correct_right) / float(self.correct)
+        else:
+            return 0
 
     def report(self):
-        print(self.bus_id, ' 修正个数:', self.correct, '正确数:', self.correct_right, '准确率:', correctRate())
+        print(self.bus_id, ' 修正个数:', self.correct, '正确数:', self.correct_right, '准确率:', self.correctRate())
 
+
+BusMap = dict()
 
 def ReportTotalStat():
     global TotalCorrect
@@ -48,11 +53,17 @@ def ReportTotalStat():
         TotalCorrect = 1
     print('修正个数:', TotalCorrect, '正确数:', TotalCorrectRight, '准确率:', float(TotalCorrectRight) / float(TotalCorrect))
 
+    for key in BusMap.keys():
+        BusMap[key].report()
+
 def Judge(off_line, judge_line):
     off_line_tags = off_line.split(',')
     judge_tags = judge_line.split(',')
-    #TODO map起来
-    bus_stat = BusStat(off_line_tags[3])
+    if off_line_tags[3] in BusMap.keys():
+        bus_stat = BusMap.get(off_line_tags[3])
+    else:
+        bus_stat = BusStat(off_line_tags[3])
+        BusMap[off_line_tags[3]] = bus_stat
 
     if (int(off_line_tags[0]) == 2):
         bus_stat.addStat(int(judge_tags[0]) == 1)
