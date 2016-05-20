@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #hello.py
-import sys, getopt, codecs, os, subprocess
+import sys, getopt, codecs, os, subprocess, BusStat
 
 bus_relations = []
 
@@ -39,7 +39,7 @@ def printRelateBus(src_file_name, dest_file_name):
     line = src_file.readline()
     while line:
         tags = line.split(',')
-        if int(tags[3]) in bus_relations:
+        if tags[3] in bus_relations:
             dest_file.write(line)
         line = src_file.readline()
 
@@ -52,7 +52,7 @@ def getBusRelations():
 
     while line:
         tags = line.split(',')
-        bus_relations.append(int(tags[0]))
+        bus_relations.append(tags[0])
         line = bus_file.readline()
 
     bus_file.close()
@@ -152,33 +152,6 @@ def generateSortedSample(input_file, output_file):
     printRelateBus(input_file, output_file)
     #排序tmp文件
     sortTmp()
-#根据对比Sample来统计准确率
-def CountAccuracy():
-    print('开始统计:')
-    offline_file = codecs.open(offline_result_name, 'r', 'utf-8')
-    judgement_file = codecs.open(real_offline_result_name, 'r', 'utf-8')
-
-    off_line = offline_file.readline()
-    judge_line = judgement_file.readline()
-
-    total_correct = 0
-    total_correct_right = 0
-
-    while off_line and judge_line:
-        off_line_tags = off_line.split(',')
-        judge_tags = judge_line.split(',')
-        if (int(off_line_tags[0]) == 2):
-            total_correct += 1
-            if (int(judge_tags[0]) == 1):
-                total_correct_right += 1
-
-        off_line = offline_file.readline()
-        judge_line = judgement_file.readline()
-
-    print('修正个数:', total_correct, '正确数', total_correct_right)
-    if (total_correct == 0):
-        total_correct = 1
-    print('正确率:', float(total_correct_right) / float(total_correct))
 
 if __name__=="__main__":
 
@@ -193,4 +166,4 @@ if __name__=="__main__":
 #产生对拍文件
     generateCompareSample()
 #统计正确率
-    CountAccuracy()
+    BusStat.CountAccuracy(offline_result_name, real_offline_result_name)
