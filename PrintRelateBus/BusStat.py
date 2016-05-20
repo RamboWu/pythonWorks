@@ -24,7 +24,7 @@ class BusStat:
         self.correct = 0
         self.correct_right = 0
 
-    def addStat(if_correct):
+    def addStat(self, if_correct):
         global TotalCorrect
         global TotalCorrectRight
         TotalCorrect += 1
@@ -65,8 +65,11 @@ def Judge(off_line, judge_line):
         bus_stat = BusStat(off_line_tags[3])
         BusMap[off_line_tags[3]] = bus_stat
 
-    if (int(off_line_tags[0]) == 2):
-        bus_stat.addStat(int(judge_tags[0]) == 1)
+    if int(off_line_tags[0]) == 2:
+        if int(judge_tags[0]) == 1:
+            bus_stat.addStat(True)
+        else:
+            bus_stat.addStat(False)
 
 def CountAccuracy(offline_result_name, real_offline_result_name):
     print('开始统计:')
