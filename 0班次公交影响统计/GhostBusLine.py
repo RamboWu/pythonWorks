@@ -3,14 +3,47 @@
 
 import sys, getopt, codecs, os
 
-ghost_buses = []
 
+ghost_buses = dict()
+
+
+def staticFile(filename):
+    global ghost_buses
+
+    print("start to static file[" + filename + "]" )
+    input_file = codecs.open(filename, 'r', 'utf-8')
+    line = input_file.readline()
+
+    while line:
+        tags = line.split(',')
+        if tags[4] in ghost_buses.keys():
+            ghost_buses[tags[4]] += 1
+
+        line = input_file.readline()
+
+    input_file.close()
 
 #统计
 def static(data_dir):
+    global ghost_buses
 
     files = get_right_files(data_dir)
     print(files)
+
+    for f in files:
+        staticFile(f)
+
+    output()
+
+def output():
+    global ghost_buses
+
+    ghost_buses = sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True)
+    print(ghost_buses)
+    dest_file = codecs.open('output', 'w', 'utf-8')
+
+
+    dest_file.write(ghost_buses.__str__())
 
 # End of datatab_convert().
 
@@ -25,8 +58,9 @@ def get_right_files(dir):
 # End of get_files().
 
 def dosatisfy(filename):
-    ext = os.path.splitext(filename)[1].lower()
-    if '.csv' != ext:
+    tags = filename.split('.')
+    ext = tags[1].lower()
+    if 'log' != ext:
         return False
     return True
 
@@ -41,7 +75,8 @@ def getGhostBuses(ghost_file_name):
 
     while line:
         tags = line.split(',')
-        ghost_buses.append(tags[0])
+        if not tags[0] in ghost_buses.keys():
+            ghost_buses[tags[0]] = 0
         line = ghost_file.readline()
 
     ghost_file.close()
