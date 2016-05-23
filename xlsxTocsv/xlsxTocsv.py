@@ -25,12 +25,13 @@ import sys
 import shutil
 
 def xlsx2csv(filename):
-    # try:
+    #try:
         xlsx_file_reader = load_workbook(filename = filename, data_only = True)
         for sheet in xlsx_file_reader.get_sheet_names():
             # 仅第1个sheet输出到一个csv文件中，文件名后缀替换为.csv
             csv_filename = os.path.splitext(filename)[0] + '.csv'
             csv_file = open(csv_filename, 'w', encoding='utf8', newline='')
+
             csv_file_writer = csv.writer(csv_file)
             sheet_ranges = xlsx_file_reader[sheet]
             for row in sheet_ranges.rows:
@@ -43,42 +44,16 @@ def xlsx2csv(filename):
             break  # 仅输出第1个sheet
         # End of for sheet.
     # End of try.
-    # except Exception as e:
-    #    print(e)
+    #except Exception as e:
+        #print(e)
 # End of xlsx2csv().
 
-def datatab_convert(game_dir):
-    '''从 game\Design\配置表\ 输出到
-      game\Program\server\six\datatab\
-      game\Program\client\Assets\Config\
-    '''
-    design_dir = os.path.join(game_dir, 'Design/配置表/')
-    server_dir = os.path.join(game_dir, 'Program/server/six/datatab/')
-    client_dir = os.path.join(game_dir, 'Program/client/Assets/Config/')
+def datatab_convert(data_dir):
 
-    # 删除旧文件。
-    print("Delete " + server_dir)
-    try:
-        shutil.rmtree(server_dir)
-    except:
-        pass
-    print("Delete " + client_dir)
-    try:
-        shutil.rmtree(client_dir)
-    except:
-        pass
-
-    # 生成server文件
-    print("Creating " + server_dir)
-    shutil.copytree(design_dir, server_dir)
-    files = get_files(server_dir)
+    files = get_files(data_dir)
+    print(files)
     convert_files(files)
 
-    # 复制client文件
-    print("Copy " + client_dir)
-    shutil.copytree(server_dir, client_dir)
-    shutil.rmtree(os.path.join(client_dir, 'server/'))
-    print("Done. Total files: %d" % len(files))
 # End of datatab_convert().
 
 def get_files(dir):
@@ -101,7 +76,7 @@ def convert_files(files):
             continue
         print(f + " -> csv")
         xlsx2csv(f)
-        os.remove(f)
+        #os.remove(f)
 # End of convert_files().
 
 if __name__ == '__main__':
