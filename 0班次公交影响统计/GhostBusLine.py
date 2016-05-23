@@ -5,12 +5,12 @@ import sys, getopt, codecs, os
 
 
 ghost_buses = dict()
-
+dest_file = 0
 
 def staticFile(filename):
     global ghost_buses
 
-    print("start to static file[" + filename + "]" )
+    output("start to static file[" + filename + "]" )
     input_file = codecs.open(filename, 'r', 'utf-8')
     line = input_file.readline()
 
@@ -31,18 +31,19 @@ def static(data_dir):
     print(files)
 
     for f in files:
+        for one_key in ghost_buses.keys():
+            ghost_buses[one_key] = 0
         staticFile(f)
-        output()
+        output(sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True))
 
 
-def output():
-    global ghost_buses
+def output(result):
+    global dest_file
 
-    result = sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True)
     print(result)
-    dest_file = codecs.open('output', 'w', 'utf-8')
-    dest_file.write(result.__str__())
-    dest_file.close()
+    dest_file.write(result.__str__() + '\n')
+    #dest_file.writerow(result.__str__())
+
 
 # End of datatab_convert().
 
@@ -106,9 +107,12 @@ def parseParams():
     return ghost_file, input_dir
 
 if __name__ == '__main__':
+    global dest_file
 
     ghost_file, input_dir = parseParams()
 
     getGhostBuses(ghost_file)
 
+    dest_file = codecs.open('output', 'w', 'utf-8')
     static(input_dir)
+    dest_file.close()
