@@ -32,18 +32,17 @@ def static(data_dir):
 
     for f in files:
         staticFile(f)
+        output()
 
-    output()
 
 def output():
     global ghost_buses
 
-    ghost_buses = sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True)
-    print(ghost_buses)
+    result = sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True)
+    print(result)
     dest_file = codecs.open('output', 'w', 'utf-8')
-
-
     dest_file.write(ghost_buses.__str__())
+    dest_file.close()
 
 # End of datatab_convert().
 
