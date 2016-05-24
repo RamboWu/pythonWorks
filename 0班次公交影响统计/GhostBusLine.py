@@ -16,7 +16,7 @@ def staticFile(filename):
 
     while line:
         tags = line.split(',')
-        if tags[4] in ghost_buses.keys():
+        if (tags[4] in ghost_buses.keys()) and (int(tags[0]) == 1):
             ghost_buses[tags[4]] += 1
 
         line = input_file.readline()
@@ -107,7 +107,7 @@ def parseParams():
     return ghost_file, input_dir
 
 if __name__ == '__main__':
-    global dest_file
+    #global dest_file
 
     ghost_file, input_dir = parseParams()
 
