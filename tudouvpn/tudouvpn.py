@@ -18,7 +18,7 @@ class TudouVpnAutoLoginService:
             os.makedirs('tmp')
 
         self.initLog()
-
+        self.run_flag = True
 
     def initLog(self):
 
@@ -44,16 +44,20 @@ class TudouVpnAutoLoginService:
 
 
     def run(self):
+        self.logger.info('TudouVpnAutoLoginService run!')
         old_time = time.time()
         self.AutoSignIn()
 
-        while True:
+        while self.run_flag:
             new_time = time.time()
             if (int(new_time - old_time) > 10):
                 self.AutoSignIn()
                 old_time = time.time()
             time.sleep(5)
 
+    def stop(self):
+        self.logger.info('TudouVpnAutoLoginService stop!')
+        self.run_flag = False
 
     def AutoSignIn(self):
         self.logger.info('Start to AutoSignIn')
