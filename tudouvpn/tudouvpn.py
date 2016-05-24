@@ -7,7 +7,7 @@ import time
 from daemon import Daemon
 import logging
 import datetime
-
+import ssl
 
 
 class TudouVpnAutoLoginService:
@@ -72,9 +72,9 @@ class TudouVpnAutoLoginService:
         url = urllib.request.Request('https://www.tudouvpn.com/login.php', details)
         url.add_header("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.29 Safari/525.13")
 
+        ssl._create_default_https_context = ssl._create_unverified_context
         res = urllib.request.urlopen(url)
-        #print(res.status, res.reason, res.read().decode('utf8', 'ignore'))
-        #print(res.getheaders())
+
         self.logger.info('status:' + str(res.status) + 'reason:' + res.reason)
         self.logger.debug(res.read().decode('utf8', 'ignore'))
         self.logger.info(cookie)
