@@ -23,7 +23,7 @@ class TudouVpnAutoLoginService:
     def initLog(self):
 
         self.logger = logging.getLogger('Tudou')
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.INFO)
 
         # 定义一个Handler打印INFO及以上级别的日志到sys.stdout
         console_handler = logging.StreamHandler(sys.stdout)
