@@ -46,6 +46,15 @@ def init():
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     filename='tmp/test.log',
                     filemode='w')
+    # 定义一个Handler打印INFO及以上级别的日志到sys.stderr
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    # 设置日志打印格式
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+    # 将定义好的console日志handler添加到root logger
+    logging.getLogger('').addHandler(console)
+
     logging.info('logging init finish!')
 
 if __name__ == "__main__":
@@ -55,10 +64,13 @@ if __name__ == "__main__":
     daemon = MyDaemon('/tmp/daemon-example.pid')
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
+            logging.info('daemon start!')
             daemon.start()
         elif 'stop' == sys.argv[1]:
+            logging.info('daemon stop!')
             daemon.stop()
         elif 'restart' == sys.argv[1]:
+            logging.info('daemon restart!')
             daemon.restart()
         else:
             print("Unknown command")
