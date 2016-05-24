@@ -53,10 +53,10 @@ class TudouVpnAutoLoginService:
 
         while self.run_flag:
             new_time = time.time()
-            if (int(new_time - old_time) > 10):
+            if (int(new_time - old_time) > 7*60*60):
                 self.AutoSignIn()
                 old_time = time.time()
-            time.sleep(5)
+            time.sleep(10)
 
     def stop(self):
         self.logger.info('TudouVpnAutoLoginService stop!')
