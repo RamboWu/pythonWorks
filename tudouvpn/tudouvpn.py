@@ -6,8 +6,10 @@ import http.cookiejar
 import time
 from daemon import Daemon
 import logging
+import datetime
 
 def AutoSignIn():
+    logging.info('Start to AutoSignIn')
 
     cookie = http.cookiejar.CookieJar()
     cjhdr  = urllib.request.HTTPCookieProcessor(cookie)
@@ -20,21 +22,27 @@ def AutoSignIn():
     url.add_header("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.29 Safari/525.13")
 
     res = urllib.request.urlopen(url)
-    print(res.status, res.reason, res.read().decode('utf8', 'ignore'))
-    print(res.getheaders())
-
-    print(cookie)
+    #print(res.status, res.reason, res.read().decode('utf8', 'ignore'))
+    #print(res.getheaders())
+    logging.info('status:' + str(res.status) + 'reason:' + res.reason)
+    logging.debug(res.read().decode('utf8', 'ignore'))
+    logging.info(cookie)
 
     data = urllib.request.urlopen('https://www.tudouvpn.com/daily.php').read().decode('utf8', 'ignore')
-    print(data)
+    logging.info(data)
 
     return
 
 class MyDaemon(Daemon):
     def run(self):
-        #AutoSignIn()
+        old_time = time.time()
+        AutoSignIn()
         while True:
-            time.sleep(1)
+            new_time = time.time()
+            if (int(new_time - old_time) > 10):
+                AutoSignIn()
+                old_time = time.time()
+            time.sleep(5)
 
 #初始化
 def init():
@@ -46,8 +54,8 @@ def init():
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     filename='tmp/test.log',
                     filemode='w')
-    # 定义一个Handler打印INFO及以上级别的日志到sys.stderr
-    console = logging.StreamHandler()
+    # 定义一个Handler打印INFO及以上级别的日志到sys.stdout
+    console = logging.StreamHandler(sys.stdout)
     console.setLevel(logging.INFO)
     # 设置日志打印格式
     formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
