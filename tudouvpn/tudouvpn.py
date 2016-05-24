@@ -54,8 +54,8 @@ def init():
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     filename='tmp/test.log',
                     filemode='w')
-    # 定义一个Handler打印INFO及以上级别的日志到sys.stderr
-    console = logging.StreamHandler()
+    # 定义一个Handler打印INFO及以上级别的日志到sys.stdout
+    console = logging.StreamHandler(sys.stdout)
     console.setLevel(logging.INFO)
     # 设置日志打印格式
     formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
