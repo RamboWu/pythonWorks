@@ -4,6 +4,18 @@
 import sys, getopt, codecs, os
 
 
+class Buses:
+    def __init__(self):
+        self.buses = dict()
+        self.total_count = 0
+
+    def addBusCount(self, bus_id):
+        self.total_count += 1
+        if (bus_id in self.buses.keys()):
+            self.buses[bus_id] += 1
+        else:
+            self.buses[bus_id] = 0
+
 ghost_buses = dict()
 dest_file = 0
 
@@ -17,7 +29,7 @@ def staticFile(filename):
     while line:
         tags = line.split(',')
         if (tags[4] in ghost_buses.keys()) and (int(tags[0]) == 1):
-            ghost_buses[tags[4]] += 1
+            ghost_buses[tags[4]].addBusCount(tags[3])
 
         line = input_file.readline()
 
@@ -32,10 +44,17 @@ def static(data_dir):
 
     for f in files:
         for one_key in ghost_buses.keys():
-            ghost_buses[one_key] = 0
+            ghost_buses[one_key] = Buses()
         staticFile(f)
-        output(sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True))
+        report()
+        #output(sorted(ghost_buses.items(), key=lambda d:d[1], reverse = True))
 
+def report():
+    for key in ghost_buses.keys():
+        one_ghost = ghost_buses[key]
+        if (one_ghost.total_count > 0):
+            output('LineID:' + key + ', Count:' + str(one_ghost.total_count))
+            output(sorted(one_ghost.buses.items(), key=lambda d:d[1], reverse = True))
 
 def output(result):
     global dest_file
@@ -76,7 +95,7 @@ def getGhostBuses(ghost_file_name):
     while line:
         tags = line.split(',')
         if not tags[0] in ghost_buses.keys():
-            ghost_buses[tags[0]] = 0
+            ghost_buses[tags[0]] = Buses()
         line = ghost_file.readline()
 
     ghost_file.close()
