@@ -5,6 +5,7 @@ import sys, getopt, codecs, os, http.client, urllib.request, urllib.parse
 import http.cookiejar
 import time
 from daemon import Daemon
+import logging
 
 def AutoSignIn():
 
@@ -35,7 +36,22 @@ class MyDaemon(Daemon):
         while True:
             time.sleep(1)
 
+#初始化
+def init():
+    if (not os.path.exists('tmp')):
+        os.makedirs('tmp')
+
+    logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='tmp/test.log',
+                    filemode='w')
+    logging.info('logging init finish!')
+
 if __name__ == "__main__":
+
+    init()
+
     daemon = MyDaemon('/tmp/daemon-example.pid')
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
