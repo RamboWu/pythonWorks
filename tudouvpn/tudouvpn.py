@@ -8,6 +8,7 @@ from daemon import Daemon
 import logging
 import datetime
 import ssl
+import inspect
 
 
 class TudouVpnAutoLoginService:
@@ -29,7 +30,9 @@ class TudouVpnAutoLoginService:
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         # 定义一个FileHandler
-        file_handler = logging.FileHandler('tmp/test.log')
+        this_file = inspect.getfile(inspect.currentframe())
+        dirpath = os.path.abspath(os.path.dirname(this_file))
+        file_handler = logging.FileHandler(os.path.join(dirpath,'tmp/test.log'))
 
         # 设置日志打印格式
         formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')

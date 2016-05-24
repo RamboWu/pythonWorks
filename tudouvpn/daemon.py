@@ -1,6 +1,7 @@
 """Generic linux daemon base class for python 3.x."""
 
 import sys, os, time, atexit, signal
+import inspect
 
 class Daemon:
 	"""A generic daemon class.
@@ -9,8 +10,10 @@ class Daemon:
 
 	def __init__(self, pidfile, stderr='tmp/deamon_err.log', stdout='tmp/deamon_out.log', stdin='/dev/null'):
 		self.stdin = stdin
-		self.stdout = os.path.abspath(stdout)
-		self.stderr = os.path.abspath(stderr)
+		this_file = inspect.getfile(inspect.currentframe())
+		dirpath = os.path.abspath(os.path.dirname(this_file))
+		self.stdout = os.path.join(dirpath, stdout)
+		self.stderr = os.path.join(dirpath, stderr)
 		self.pidfile = pidfile
 
 	def daemonize(self):
