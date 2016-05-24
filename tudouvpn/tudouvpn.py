@@ -9,6 +9,7 @@ import logging
 import datetime
 
 def AutoSignIn():
+    logging.info('Start to AutoSignIn')
 
     cookie = http.cookiejar.CookieJar()
     cjhdr  = urllib.request.HTTPCookieProcessor(cookie)
@@ -34,10 +35,14 @@ def AutoSignIn():
 
 class MyDaemon(Daemon):
     def run(self):
-        logging.info('Deamon start to run:')
+        old_time = time.time()
         AutoSignIn()
-        #while True:
-            #time.sleep(1)
+        while True:
+            new_time = time.time()
+            if (int(new_time - old_time) > 10):
+                AutoSignIn()
+                old_time = time.time()
+            time.sleep(5)
 
 #初始化
 def init():

@@ -7,7 +7,11 @@ class Daemon:
 
 	Usage: subclass the daemon class and override the run() method."""
 
-	def __init__(self, pidfile): self.pidfile = pidfile
+	def __init__(self, pidfile, stderr='tmp/deamon_err.log', stdout='tmp/deamon_out.log', stdin='/dev/null'):
+		self.stdin = stdin
+		self.stdout = os.path.abspath(stdout)
+		self.stderr = os.path.abspath(stderr)
+		self.pidfile = pidfile
 
 	def daemonize(self):
 		"""Deamonize class. UNIX double fork mechanism."""
@@ -40,9 +44,9 @@ class Daemon:
 		# redirect standard file descriptors
 		sys.stdout.flush()
 		sys.stderr.flush()
-		si = open(os.devnull, 'r')
-		so = open(os.devnull, 'a+')
-		se = open(os.devnull, 'a+')
+		si = open(self.stdin, 'r')
+		so = open(self.stdout, 'a+')
+		se = open(self.stderr, 'a+')
 
 		os.dup2(si.fileno(), sys.stdin.fileno())
 		os.dup2(so.fileno(), sys.stdout.fileno())
