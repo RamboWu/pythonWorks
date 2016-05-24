@@ -23,7 +23,7 @@ def AutoSignIn():
     res = urllib.request.urlopen(url)
     #print(res.status, res.reason, res.read().decode('utf8', 'ignore'))
     #print(res.getheaders())
-    logging.info('status', res.status, 'reason', res.reason)
+    logging.info('status:' + str(res.status) + 'reason:' + res.reason)
     logging.debug(res.read().decode('utf8', 'ignore'))
     logging.info(cookie)
 
@@ -36,8 +36,8 @@ class MyDaemon(Daemon):
     def run(self):
         logging.info('Deamon start to run:')
         AutoSignIn()
-        while True:
-            time.sleep(1)
+        #while True:
+            #time.sleep(1)
 
 #初始化
 def init():
