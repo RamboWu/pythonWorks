@@ -75,7 +75,6 @@ class Daemon:
 			sys.stderr.write(message.format(self.pidfile))
 			sys.exit(1)
 
-		sys.stderr.write('hahaha')
 		# Start the daemon
 		self.daemonize()
 		self.run()
