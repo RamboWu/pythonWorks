@@ -7,6 +7,8 @@ import os
 import logging
 import inspect
 
+from tudouvpn import *
+
 class PythonService(win32serviceutil.ServiceFramework):
 
     _svc_name_ = "TudouVpnLoginService"
@@ -37,6 +39,7 @@ class PythonService(win32serviceutil.ServiceFramework):
         return logger
 
     def SvcDoRun(self):
+        self.logger.info("service is run....")
         self.server.run()
         '''
         import time
