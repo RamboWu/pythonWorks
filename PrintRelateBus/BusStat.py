@@ -66,10 +66,13 @@ def Judge(off_line, judge_line):
         BusMap[off_line_tags[3]] = bus_stat
 
     if int(off_line_tags[0]) == 2:
-        if int(judge_tags[0]) == 1:
-            bus_stat.addStat(True)
-        else:
+        #如果老大的标记是0，表示这个gps点是错误的
+        if int(judge_tags[0]) == 0:
             bus_stat.addStat(False)
+        elif off_line_tags[4] != judge_tags[2]:
+            bus_stat.addStat(False)
+        else:
+            bus_stat.addStat(True)
 
 def CountAccuracy(offline_result_name, real_offline_result_name):
     print('开始统计:')
