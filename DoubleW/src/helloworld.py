@@ -5,5 +5,10 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello World!'
 
+@app.route('/user/<username>')
+def test(username):
+    return 'Welcome %s!' % username
+
 if __name__ == '__main__':
-    app.run()
+
+    app.run(debug=True)
