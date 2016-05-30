@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #BusStat.py
-import codecs
+import codecs, subprocess, sys
 '''
 Created on 2016-05-20
 
