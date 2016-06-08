@@ -105,7 +105,7 @@ if __name__=="__main__":
 #产生对拍文件
     old_file_cmp, new_file_cmp = generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, basedata)
 #统计正确率
-    old_test = Kernal.OneFileTest("input/offline_result.csv", "input/real_offline_result.csv")
+    old_test = BusStat.OneFileTest(old_file_sorted, new_file_sorted)
     old_test.CountAccuracy()
-    new_test = Kernal.OneFileTest(new_file_sorted, new_file_cmp)
+    new_test = BusStat.OneFileTest(new_file_sorted, new_file_cmp)
     new_test.CountAccuracy()

@@ -57,27 +57,21 @@ class OneFileTest:
     def ReportTotalStat(self):
         if (self.total_correct == 0):
             self.total_correct = 1
-        print('修正个数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
+        print(self.sample_file, " ReportTotalStat. ")
+        print('识别总数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
 
     def Judge(self, sample_line, cmp_line):
         sample_line_tags = sample_line.split(',')
         cmp_line_tags = cmp_line.split(',')
 
-        if int(off_line_tags[0]) == 2:
-            #如果老大的标记是0，表示这个gps点是错误的
-            if int(judge_tags[0]) == 0:
-                bus_stat.addStat(False)
-            else:
-                bus_stat.addStat(True)
-
         if int(sample_line_tags[0]) == 1:
             self.total_correct += 1
-            if int(judge_tags[0]) == 0:
+            if int(cmp_line_tags[0]) == 0:
                 self.total_correct_wrong += 1
             else:
                 self.total_correct_right += 1
 
-        if int(sample_line_tags[0]) != 1 and int(judge_tags[0]) != 0:
+        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) != 0:
             self.total_correct_mis += 1
 
     def CountAccuracy(self):
@@ -89,8 +83,8 @@ class OneFileTest:
         cmp_line = cmp_file.readline()
 
         while sample_line and cmp_line:
-            Judge(sample_line, cmp_line)
+            self.Judge(sample_line, cmp_line)
             sample_line = sample_file.readline()
             cmp_line = cmp_file.readline()
 
-        ReportTotalStat()
+        self.ReportTotalStat()
