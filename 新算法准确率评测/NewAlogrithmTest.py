@@ -55,7 +55,7 @@ def parseParams():
     print("old_file=", old_file, "new_file=", new_file, "bus_relation_file=", bus_relation_file, "basedata=", basedata, "one_dragon_service", one_dragon_service)
 
     return old_file, new_file, bus_relation_file, basedata
-
+   
 #初始化
 def init():
     if (not os.path.exists('temp')):
