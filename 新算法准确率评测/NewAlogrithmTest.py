@@ -73,7 +73,7 @@ def generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, b
     if not IfContinueOn('是否要生成对比Sample文件'):
         return old_file_cmp, new_file_cmp
 
-    Kernal.generateRealOffLineResult(basedata=basedata, input_file=old_file_sorted, bus_rel=bus_relation_file, output=old_file_compare)
+    Kernal.generateRealOffLineResult(basedata=basedata, input_file=old_file_sorted, bus_rel=bus_relation_file, output=old_file_cmp)
     Kernal.generateRealOffLineResult(basedata=basedata, input_file=new_file_sorted, bus_rel=bus_relation_file, output=new_file_cmp)
 
     return old_file_cmp, new_file_cmp
@@ -105,7 +105,7 @@ if __name__=="__main__":
 #产生对拍文件
     old_file_cmp, new_file_cmp = generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, basedata)
 #统计正确率
-    old_test = BusStat.OneFileTest(old_file_sorted, new_file_sorted)
+    old_test = BusStat.OneFileTest(old_file_sorted, old_file_cmp)
     old_test.CountAccuracy()
     new_test = BusStat.OneFileTest(new_file_sorted, new_file_cmp)
     new_test.CountAccuracy()
