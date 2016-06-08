@@ -8,10 +8,6 @@ Created on 2016-05-20
 
 @author: RamboWu
 '''
-#总的矫正数量
-TotalCorrect = 0
-#总的对的数量
-TotalCorrectRight = 0
 
 class BusStat:
     '''
@@ -43,48 +39,52 @@ class BusStat:
     def report(self):
         print(self.bus_id, ' 修正个数:', self.correct, '正确数:', self.correct_right, '准确率:', self.correctRate())
 
+class OneFileTest:
 
-BusMap = dict()
+    def __init__(self, sample_file, cmp_file):
+        #总共判出多少个点
+        self.total_correct = 0
+        #总共判对多少个点
+        self.total_correct_right = 0
+        #总共判错多少个
+        self.total_correct_wrong = 0
+        #少判出多少个
+        self.total_correct_mis = 0
 
-def ReportTotalStat():
-    global TotalCorrect
-    global TotalCorrectRight
-    if (TotalCorrect == 0):
-        TotalCorrect = 1
-    print('修正个数:', TotalCorrect, '正确数:', TotalCorrectRight, '准确率:', float(TotalCorrectRight) / float(TotalCorrect))
+        self.sample_file = sample_file
+        self.cmp_file = cmp_file
 
-    for key in BusMap.keys():
-        BusMap[key].report()
+    def ReportTotalStat(self):
+        if (self.total_correct == 0):
+            self.total_correct = 1
+        print(self.sample_file, " ReportTotalStat. ")
+        print('识别总数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
 
-def Judge(off_line, judge_line):
-    off_line_tags = off_line.split(',')
-    judge_tags = judge_line.split(',')
-    if off_line_tags[3] in BusMap.keys():
-        bus_stat = BusMap.get(off_line_tags[3])
-    else:
-        bus_stat = BusStat(off_line_tags[3])
-        BusMap[off_line_tags[3]] = bus_stat
+    def Judge(self, sample_line, cmp_line):
+        sample_line_tags = sample_line.split(',')
+        cmp_line_tags = cmp_line.split(',')
 
-    if int(off_line_tags[0]) == 2:
-        #如果老大的标记是0，表示这个gps点是错误的
-        if int(judge_tags[0]) == 0:
-            bus_stat.addStat(False)
-        elif off_line_tags[4] != judge_tags[2]:
-            bus_stat.addStat(False)
-        else:
-            bus_stat.addStat(True)
+        if int(sample_line_tags[0]) == 1:
+            self.total_correct += 1
+            if int(cmp_line_tags[0]) == 0:
+                self.total_correct_wrong += 1
+            else:
+                self.total_correct_right += 1
 
-def CountAccuracy(offline_result_name, real_offline_result_name):
-    print('开始统计:')
-    offline_file = codecs.open(offline_result_name, 'r', 'utf-8')
-    judgement_file = codecs.open(real_offline_result_name, 'r', 'utf-8')
+        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) != 0:
+            self.total_correct_mis += 1
 
-    off_line = offline_file.readline()
-    judge_line = judgement_file.readline()
+    def CountAccuracy(self):
+        print('开始统计:')
+        sample_file = codecs.open(self.sample_file, 'r', 'utf-8')
+        cmp_file = codecs.open(self.cmp_file, 'r', 'utf-8')
 
-    while off_line and judge_line:
-        Judge(off_line, judge_line)
-        off_line = offline_file.readline()
-        judge_line = judgement_file.readline()
+        sample_line = sample_file.readline()
+        cmp_line = cmp_file.readline()
 
-    ReportTotalStat()
+        while sample_line and cmp_line:
+            self.Judge(sample_line, cmp_line)
+            sample_line = sample_file.readline()
+            cmp_line = cmp_file.readline()
+
+        self.ReportTotalStat()

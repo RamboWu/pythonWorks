@@ -67,12 +67,13 @@ def init():
 #生成offline_result和 离线程序的result
 def generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, basedata):
 
-    if not IfContinueOn('是否要生成对比Sample文件'):
-        return
-
     old_file_cmp = old_file_sorted+".cmp"
     new_file_cmp = new_file_sorted+".cmp"
-    Kernal.generateRealOffLineResult(basedata=basedata, input_file=old_file_sorted, bus_rel=bus_relation_file, output=old_file_compare)
+
+    if not IfContinueOn('是否要生成对比Sample文件'):
+        return old_file_cmp, new_file_cmp
+
+    Kernal.generateRealOffLineResult(basedata=basedata, input_file=old_file_sorted, bus_rel=bus_relation_file, output=old_file_cmp)
     Kernal.generateRealOffLineResult(basedata=basedata, input_file=new_file_sorted, bus_rel=bus_relation_file, output=new_file_cmp)
 
     return old_file_cmp, new_file_cmp
@@ -80,14 +81,15 @@ def generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, b
 #根据BusRelations来取出待排序的gps点，然后排序
 def generateSortedSample(old_file, new_file):
 
+    old_file_sorted = old_file + ".sort"
+    new_file_sorted = new_file + ".sort"
+
     if not IfContinueOn('是否要生成排好序的Sample文件'):
-        return
+        return old_file_sorted, new_file_sorted
+
     #排序tmp文件
     Kernal.sortFile(old_file)
     Kernal.sortFile(new_file)
-
-    old_file_sorted = old_file + ".sort"
-    new_file_sorted = new_file + ".sort"
 
     return old_file_sorted, new_file_sorted
 
@@ -103,5 +105,7 @@ if __name__=="__main__":
 #产生对拍文件
     old_file_cmp, new_file_cmp = generateCompareSample(old_file_sorted, new_file_sorted, bus_relation_file, basedata)
 #统计正确率
-    BusStat.CountAccuracy(old_file_sorted, old_file_cmp)
-    BusStat.CountAccuracy(new_file_sorted, new_file_cmp)
+    old_test = BusStat.OneFileTest(old_file_sorted, old_file_cmp)
+    old_test.CountAccuracy()
+    new_test = BusStat.OneFileTest(new_file_sorted, new_file_cmp)
+    new_test.CountAccuracy()
