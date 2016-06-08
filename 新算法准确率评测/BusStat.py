@@ -55,11 +55,9 @@ class OneFileTest:
         self.cmp_file = cmp_file
 
     def ReportTotalStat(self):
-        global TotalCorrect
-        global TotalCorrectRight
-        if (TotalCorrect == 0):
-            TotalCorrect = 1
-        print('修正个数:', TotalCorrect, '正确数:', TotalCorrectRight, '准确率:', float(TotalCorrectRight) / float(TotalCorrect))
+        if (self.total_correct == 0):
+            self.total_correct = 1
+        print('修正个数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
 
     def Judge(self, sample_line, cmp_line):
         sample_line_tags = sample_line.split(',')
@@ -79,7 +77,7 @@ class OneFileTest:
             else:
                 self.total_correct_right += 1
 
-        if int(sample_line_tags[0]) != 1 and int(judge_tags[0]) != 0
+        if int(sample_line_tags[0]) != 1 and int(judge_tags[0]) != 0:
             self.total_correct_mis += 1
 
     def CountAccuracy(self):
