@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #BusStat.py
-import codecs, subprocess, sys
+import codecs
 '''
 Created on 2016-05-20
 
@@ -52,16 +52,6 @@ def printRelateBus(src_file_name, dest_file_name, bus_relations):
     src_file.close();
     dest_file.close();
 
-#排序tmp文件
-def sortTmp(tmp_file_name):
-    tags = os.path.split(tmp_file_name)
-    command_line = 'java -jar FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
-    print('Excute Command: ' + command_line)
-    status = subprocess.call(command_line, shell=True)
-    if (status != 0):
-        print("Error: Program End.")
-        sys.exit(-1)
-
 #根据BusRelations来取出待排序的gps点，然后排序
 def generateSortedSample(input_file, output_file, bus_relation_file):
 
@@ -70,4 +60,4 @@ def generateSortedSample(input_file, output_file, bus_relation_file):
     #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
     printRelateBus(input_file, output_file, bus_relations)
     #排序tmp文件
-    sortTmp(output_file)
+    sortTmp()
