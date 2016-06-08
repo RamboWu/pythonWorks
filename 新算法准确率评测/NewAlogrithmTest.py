@@ -31,78 +31,42 @@ def IfContinueOn(tip):
     else:
         return True
 
-#把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
-def printRelateBus(src_file_name, dest_file_name):
-    src_file = codecs.open(src_file_name, 'r', 'utf-8')
-    dest_file = codecs.open(tmp_file_name, 'w', 'utf-8')
-
-    line = src_file.readline()
-    while line:
-        tags = line.split(',')
-        if tags[3] in bus_relations:
-            dest_file.write(line)
-        line = src_file.readline()
-
-    src_file.close();
-    dest_file.close();
-#从bus_file里获取公交车辆关系
-def getBusRelations():
-    bus_file = codecs.open(bus_file_name, 'r', 'utf-8')
-    line = bus_file.readline()
-
-    while line:
-        tags = line.split(',')
-        bus_relations.append(tags[0])
-        line = bus_file.readline()
-
-    bus_file.close()
-    print("BusRelations:")
-    print(bus_relations)
-#排序tmp文件
-def sortTmp():
-    tags = os.path.split(tmp_file_name)
-    command_line = 'java -jar FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
-    print('Excute Command: ' + command_line)
-    status = subprocess.call(command_line, shell=True)
-    if (status != 0):
-        print("Error: Program End.")
-        sys.exit(-1)
-
 def usage():
     print('Help!! Please put in "-b busfile_name -i inputfile_name -o output_file_name --dragon"!')
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
-    global base_data_file_name
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hb:i:o:", ["busfile=","input=","output=","basedata=","dragon"])
+    opts, args = getopt.getopt(sys.argv[1:], "h", ["old_file=","new_file=","bus_relation_file=","basedata=","dragon"])
 
-    input_file = ""
-    output_file = "output"
-    bus_file = ""
+    old_file = ""
+    new_file = ""
+    bus_relation_file = ""
+    basedata = ""
 
     for op, value in opts:
-        if op in ("-i","--input"):
-            input_file = value
-        elif op in ("-o","--output"):
-            output_file = value
-        elif op in ("-b","--busfile"):
-            bus_file_name = value
+        if op in ("--old_file"):
+            old_file = value
+        elif op in ("--new_file"):
+            new_file = value
+        elif op in ("--bus_relation_file"):
+            bus_relation_file = value
         elif op == "--basedata":
-            base_data_file_name = os.path.abspath(value)
+            basedata = value
         elif op == "--dragon":
             one_dragon_service = True
         elif op == "-h":
             usage()
             sys.exit()
 
-    if (input_file == ""):
+    if (old_file == ""):
         usage()
         sys.exit()
 
     print("CommandParam:")
-    print("busfile", bus_file, "input", input_file, "output", output_file, "base_data_file_name:", base_data_file_name, "one_dragon_service", one_dragon_service)
+    print("old_file", old_file, "new_file", new_file, "bus_relation_file", bus_relation_file, "basedata:", basedata, "one_dragon_service", one_dragon_service)
 
-    return input_file, output_file
+    return old_file, new_file, bus_relation_file, basedata
+
 #初始化
 def init():
     if (not os.path.exists('temp')):
@@ -110,18 +74,7 @@ def init():
 
     if (not os.path.exists('compare')):
         os.makedirs('compare')
-#产生公交关系
-def generateBusRelations(input_file):
 
-    if not IfContinueOn('是否要进行生成BusRelations'):
-        return
-
-    command_line = 'BusMatching.exe --offline --baseData ' + base_data_file_name + ' --inputFile ' + input_file
-    print('生成BusRelations: ' + command_line)
-    status = subprocess.call(command_line, shell=True)
-    if (status != 0):
-        print("Error: Program End.")
-        sys.exit(-1)
 #生成offline_result和 离线程序的result
 def generateCompareSample():
 
@@ -141,28 +94,24 @@ def generateCompareSample():
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
+        
 #根据BusRelations来取出待排序的gps点，然后排序
-def generateSortedSample(input_file, output_file):
+def generateSortedSample(old_file, new_file):
 
     if not IfContinueOn('是否要生成排好序的Sample文件'):
         return
-    #从bus_file里获取公交车辆关系
-    getBusRelations()
-    #把input_file里相关的公交车辆GPS数据打印到tmp文件里，等待排序
-    printRelateBus(input_file, output_file)
     #排序tmp文件
-    sortTmp()
+    sortFile(old_file)
+    sortFile(new_file)
 
 if __name__=="__main__":
 
 #初始化
     init()
 #解析命令行，来获取相应参数，具体见--help
-    input_file, output_file = parseParams()
-#看看是否有必要产生BusRelations文件
-    generateBusRelations(input_file)
+    old_file, new_file, bus_relation_file, basedata = parseParams()
 #看看是否有必要生成排序好的Sample
-    generateSortedSample(input_file, output_file)
+    generateSortedSample(old_file, new_file)
 #产生对拍文件
     generateCompareSample()
 #统计正确率

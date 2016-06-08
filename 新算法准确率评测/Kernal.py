@@ -61,3 +61,13 @@ def generateSortedSample(input_file, output_file, bus_relation_file):
     printRelateBus(input_file, output_file, bus_relations)
     #排序tmp文件
     sortTmp()
+
+#排序文件
+def sortFile(file_name):
+    tags = os.path.split(file_name)
+    command_line = 'java -jar FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
+    print('Excute Command: ' + command_line)
+    status = subprocess.call(command_line, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
