@@ -90,7 +90,7 @@ class OneFileTest:
             self.total_offline_assist_count += 1
             if int(sample_line_tags[0]) == 0:
                 self.total_offline_assist_count_not_in_use += 1
-            if (int(cmp_line_tags[0]) != 0) and sample_line_tags[17] == judge_tags[2]:
+            if (int(cmp_line_tags[0]) != 0) and sample_line_tags[17] == cmp_line_tags[2]:
                 self.total_offline_assist_correct += 1
 
     def CountAccuracy(self):
