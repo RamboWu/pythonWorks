@@ -50,18 +50,29 @@ class OneFileTest:
         self.total_correct_wrong = 0
         #少判出多少个
         self.total_correct_mis = 0
+        #准报站算法总共提供的意见数
+        self.total_offline_assist_count = 0
+        #没有使用准报站算法gps点数
+        self.total_offline_assist_count_not_in_use = 0
+        #准报站算法提供的意见准确率
+        self.total_offline_assist_correct = 0
 
         self.sample_file = sample_file
         self.cmp_file = cmp_file
+
 
     def ReportTotalStat(self):
         if (self.total_correct == 0):
             self.total_correct = 1
         print(self.sample_file, " ReportTotalStat. ")
         print('识别总数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
+        if (self.total_offline_assist_count == 0):
+            self.total_offline_assist_count = 1
+        print('准报站算法总gps点数:', self.total_offline_assist_count, '没有使用的个数:', self.total_offline_assist_count_not_in_use, '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_count))
 
     def Judge(self, sample_line, cmp_line):
         sample_line_tags = sample_line.split(',')
+        count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
 
         if int(sample_line_tags[0]) == 1:
@@ -73,6 +84,14 @@ class OneFileTest:
 
         if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) != 0:
             self.total_correct_mis += 1
+
+        #统计准报站算法的使用率和准确率
+        if count > 17 and sample_line_tags[17] != '-':
+            self.total_offline_assist_count += 1
+            if int(sample_line_tags[0]) == 0:
+                self.total_offline_assist_count_not_in_use += 1
+            if (int(cmp_line_tags[0]) != 0) and sample_line_tags[17] == judge_tags[2]:
+                self.total_offline_assist_correct += 1
 
     def CountAccuracy(self):
         print('开始统计:')
