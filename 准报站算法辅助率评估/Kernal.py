@@ -8,6 +8,15 @@ Created on 2016-05-20
 
 @author: RamboWu
 '''
+def IfContinueOn(tip):
+    a = 'O'
+    while (not(a in ('Y','y','N','n'))):
+        a=input(tip +"?Y/N ")
+
+    if a in ('N','n'):
+        return False
+    else:
+        return True
 
 #产生公交关系
 def generateBusRelations(base_data_file, input_file, bus_relation_file):
@@ -63,7 +72,12 @@ def generateSortedSample(input_file, output_file, bus_relation_file):
     sortTmp()
 
 #排序文件
-def sortFile(file_name):
+def sortFile(file_name, force = False):
+    file_sorted = file_name + ".sort"
+
+    if not force and not IfContinueOn('是否要排序:'+file_name):
+        return file_sorted
+
     tags = os.path.split(file_name)
     command_line = 'java -jar FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
     print('Excute Command: ' + command_line)
@@ -72,7 +86,13 @@ def sortFile(file_name):
         print("Error: Program End.")
         sys.exit(-1)
 
-def generateRealOffLineResult(basedata, input_file, bus_rel, output):
+    return file_sorted
+
+def generateRealOffLineResult(basedata, input_file, bus_rel, output, force = False):
+
+    if not force and not IfContinueOn('是否要生成对比Sample文件:' + input_file):
+        return
+
     command_line = 'BusMatchingResultGenerator.exe -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
     print('生成judgement_result.csv: ' + command_line)
     status = subprocess.call(command_line, shell=True)
