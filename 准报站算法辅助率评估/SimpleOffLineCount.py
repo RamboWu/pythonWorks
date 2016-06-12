@@ -43,20 +43,28 @@ def simpleCount(input_file):
     #没有使用准报站算法gps点数
     total_offline_assist_count_not_in_use = 0
 
+    total_laoda_count = 0
+
     print('开始统计:')
     sample_file = codecs.open(input_file, 'r', 'utf-8')
     sample_line = sample_file.readline()
 
     while sample_line:
+        sample_line=sample_line.strip()
+        #sample_line = '1,1,1,11340,606,606,1,15,1,5711.68,117.136207,39.183793,606,2016-06-09 07:59:59,2016-06-09 08:00:00,276.98,88.11,0,122,-'
+        print(total_lines, sample_line)
         total_lines += 1
         sample_line_tags = sample_line.split(',')
         count = sample_line.count(',') + 1
 
         #统计准报站算法的使用率和准确率
-        if count > 17 and sample_line_tags[17] != '-':
+        if count > 18 and sample_line_tags[18] != '-':
             total_offline_assist_count += 1
             if int(sample_line_tags[0]) == 0:
                 total_offline_assist_count_not_in_use += 1
+
+        if count > 19 and sample_line_tags[19] != '-':
+            total_laoda_count += 1
 
         sample_line = sample_file.readline()
 
@@ -64,6 +72,7 @@ def simpleCount(input_file):
         total_offline_assist_count = 1
     print('准报站算法总gps点数:', total_offline_assist_count, '没有使用的个数:', total_offline_assist_count_not_in_use)
     print('总gps数:' + str(total_lines) + ' 没有使用的比例为:' + str(round(float(total_offline_assist_count_not_in_use) / float(total_lines),4)) )
+    print('老大个数:' + str(total_laoda_count))
 
 if __name__=="__main__":
 
