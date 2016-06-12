@@ -52,7 +52,7 @@ def simpleCount(input_file):
     while sample_line:
         sample_line=sample_line.strip()
         #sample_line = '1,1,1,11340,606,606,1,15,1,5711.68,117.136207,39.183793,606,2016-06-09 07:59:59,2016-06-09 08:00:00,276.98,88.11,0,122,-'
-        print(total_lines, sample_line)
+        #print(total_lines, sample_line)
         total_lines += 1
         sample_line_tags = sample_line.split(',')
         count = sample_line.count(',') + 1
