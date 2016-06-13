@@ -68,9 +68,13 @@ class OneFileTest:
         print('识别总数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
         if (self.total_offline_assist_count == 0):
             self.total_offline_assist_count = 1
-        print('准报站算法总gps点数:', self.total_offline_assist_count, '没有使用的个数:', self.total_offline_assist_count_not_in_use, '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_count))
+        print(\
+        '准报站算法总gps点数:', self.total_offline_assist_count, \
+        '没有使用的个数:', self.total_offline_assist_count_not_in_use, \
+        '准确的个数:', self.total_offline_assist_correct, \
+        '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_count))
 
-    def Judge(self, sample_line, cmp_line):
+    def Judge(self, sample_line, cmp_line,lineno):
         sample_line_tags = sample_line.split(',')
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
@@ -86,12 +90,17 @@ class OneFileTest:
             self.total_correct_mis += 1
 
         #统计准报站算法的使用率和准确率
-        if count > 17 and sample_line_tags[17] != '-':
+        if count > 18 and sample_line_tags[18] != '-':
             self.total_offline_assist_count += 1
             if int(sample_line_tags[0]) == 0:
                 self.total_offline_assist_count_not_in_use += 1
-            if (int(cmp_line_tags[0]) != 0) and sample_line_tags[17] == cmp_line_tags[2]:
-                self.total_offline_assist_correct += 1
+            if (int(cmp_line_tags[0]) != 0):
+
+                if sample_line_tags[18] == cmp_line_tags[2]:
+                    self.total_offline_assist_correct += 1
+                else:
+                    #print("lineNo:"+str(lineno), sample_line, cmp_line)
+
 
     def CountAccuracy(self):
         print('开始统计:')
@@ -101,8 +110,10 @@ class OneFileTest:
         sample_line = sample_file.readline()
         cmp_line = cmp_file.readline()
 
+        lineno = 0
         while sample_line and cmp_line:
-            self.Judge(sample_line, cmp_line)
+            lineno+=1
+            self.Judge(sample_line, cmp_line,lineno)
             sample_line = sample_file.readline()
             cmp_line = cmp_file.readline()
 
