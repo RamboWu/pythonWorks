@@ -55,6 +55,7 @@ class OneFileTest:
         #没有使用准报站算法gps点数
         self.total_offline_assist_count_not_in_use = 0
         #准报站算法提供的意见准确率
+        self.total_offline_assist_can_cmp = 0
         self.total_offline_assist_correct = 0
 
         self.sample_file = sample_file
@@ -71,8 +72,9 @@ class OneFileTest:
         print(\
         '准报站算法总gps点数:', self.total_offline_assist_count, \
         '没有使用的个数:', self.total_offline_assist_count_not_in_use, \
+        '可以cmp的总个数:', self.total_offline_assist_can_cmp, \
         '准确的个数:', self.total_offline_assist_correct, \
-        '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_count))
+        '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_can_cmp))
 
     def Judge(self, sample_line, cmp_line,lineno):
         sample_line = sample_line.strip()
@@ -96,15 +98,16 @@ class OneFileTest:
             self.total_offline_assist_count += 1
             if int(sample_line_tags[0]) == 0:
                 self.total_offline_assist_count_not_in_use += 1
-            if (int(cmp_line_tags[0]) != 0):
 
-                if sample_line_tags[index] == cmp_line_tags[4]:
-                    self.total_offline_assist_correct += 1
-                else:
-                    #print(sample_line_tags[19])
-                    #print(cmp_line_tags[4])
-                    print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
-                    #sys.exit(0)
+        if count > index and sample_line_tags[index] != '-' and int(cmp_line_tags[0]) == 1:
+            self.total_offline_assist_can_cmp += 1
+            if sample_line_tags[index] == cmp_line_tags[4]:
+                self.total_offline_assist_correct += 1
+            else:
+                #print(sample_line_tags[19])
+                #print(cmp_line_tags[4])
+                print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
+                #sys.exit(0)
 
 
     def CountAccuracy(self):
