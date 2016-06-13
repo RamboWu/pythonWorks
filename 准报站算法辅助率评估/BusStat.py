@@ -99,6 +99,7 @@ class OneFileTest:
                 if sample_line_tags[18] == cmp_line_tags[2]:
                     self.total_offline_assist_correct += 1
                 else:
+                    pass
                     #print("lineNo:"+str(lineno), sample_line, cmp_line)
 
 
