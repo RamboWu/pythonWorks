@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #BusStat.py
-import codecs
+import codecs, sys
 '''
 Created on 2016-05-20
 
@@ -75,6 +75,7 @@ class OneFileTest:
         '准确率:', float(self.total_offline_assist_correct)/float(self.total_offline_assist_count))
 
     def Judge(self, sample_line, cmp_line,lineno):
+        sample_line = sample_line.strip()
         sample_line_tags = sample_line.split(',')
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
@@ -90,17 +91,20 @@ class OneFileTest:
             self.total_correct_mis += 1
 
         #统计准报站算法的使用率和准确率
-        if count > 18 and sample_line_tags[18] != '-':
+        index = 18
+        if count > index and sample_line_tags[index] != '-':
             self.total_offline_assist_count += 1
             if int(sample_line_tags[0]) == 0:
                 self.total_offline_assist_count_not_in_use += 1
             if (int(cmp_line_tags[0]) != 0):
 
-                if sample_line_tags[18] == cmp_line_tags[2]:
+                if sample_line_tags[index] == cmp_line_tags[4]:
                     self.total_offline_assist_correct += 1
                 else:
-                    pass
-                    #print("lineNo:"+str(lineno), sample_line, cmp_line)
+                    #print(sample_line_tags[19])
+                    #print(cmp_line_tags[4])
+                    print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
+                    #sys.exit(0)
 
 
     def CountAccuracy(self):
@@ -118,4 +122,5 @@ class OneFileTest:
             sample_line = sample_file.readline()
             cmp_line = cmp_file.readline()
 
+        print('总行数:', lineno)
         self.ReportTotalStat()
