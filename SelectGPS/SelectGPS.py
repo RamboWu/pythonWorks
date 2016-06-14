@@ -10,16 +10,17 @@ sys.path.append("..")
 from Util import *
 
 def usage():
-    print('Help!! Please put in "-i input/matching.log.2015-04-16 -d 7 --buses=bus.csv"!')
+    print('Help!! Please put in "-c TianJin -i input/matching.log.2015-04-16 -d 7 --buses=bus.csv"!')
 
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hi:d:", ["buses="])
+    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses="])
 
     input_file = ""
     days = 1
     buses = ""
+    city = ""
 
     for op, value in opts:
         if op in ("-i"):
@@ -28,18 +29,20 @@ def parseParams():
             days = int(value)
         elif op in ("--buses"):
             buses = value
+        elif op in ("-c"):
+            city = value
         elif op == "-h":
             usage()
             sys.exit()
 
-    if (input_file == ""):
+    if (input_file == "" or city == "" or buses == ""):
         usage()
         sys.exit()
 
     print("CommandParam:")
-    print("input_file=", input_file, "days=", days, "buses=", buses)
+    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses)
 
-    return input_file, days, buses
+    return city, input_file, days, buses
 
 def selectGPSFromFile(input_file, buses, output_file):
     print(input_file, buses, output_file)
@@ -57,7 +60,7 @@ def selectGPSFromFile(input_file, buses, output_file):
 
     SelectGPSKernal.selectGPS(input_file_name=input_file, lines=buses, output_file_name=output_file)
 
-def selectGPS(input_file, days, buses):
+def selectGPS(input_file, days, buses, output_dir):
     length = len(input_file)
     date = input_file[length-10:length]
     if not DateHelp.is_valid_date(date):
@@ -68,21 +71,14 @@ def selectGPS(input_file, days, buses):
     while (i>0):
         yes_file = input_file.replace(input_file[length-10:length], yesterday)
         tags = os.path.split(yes_file)
-        if (not os.path.exists('output/' + yesterday)):
-            os.makedirs('output/' + yesterday)
-        output_file = 'output/' + yesterday + '/' + tags[1]
+        FileHelper.makeDir(output_dir + yesterday)
+        output_file = output_dir + yesterday + '/' + tags[1]
         selectGPSFromFile(yes_file, buses, output_file)
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
 
-#初始化
-def init():
-    if (not os.path.exists('output')):
-        os.makedirs('output')
-
 if __name__=="__main__":
 
-    init()
-#解析命令行，来获取相应参数，具体见--help
-    input_file, days, buses = parseParams()
-    selectGPS(input_file, days , buses)
+    #解析命令行，来获取相应参数，具体见--help
+    city, input_file, days, buses = parseParams()
+    selectGPS(input_file, days, buses, 'output/'+city+'/')
