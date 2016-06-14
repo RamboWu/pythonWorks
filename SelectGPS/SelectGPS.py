@@ -15,12 +15,13 @@ def usage():
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses="])
+    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses=","runoffline"])
 
     input_file = ""
     days = 1
     buses = ""
     city = ""
+    runoffline = False
 
     for op, value in opts:
         if op in ("-i"):
@@ -31,18 +32,20 @@ def parseParams():
             buses = value
         elif op in ("-c"):
             city = value
+        elif op in ("--runoffline"):
+            runoffline = True
         elif op == "-h":
             usage()
             sys.exit()
 
-    if (input_file == "" or city == "" or buses == ""):
+    if (input_file == "" or city == ""):
         usage()
         sys.exit()
 
     print("CommandParam:")
-    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses)
+    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses, "runoffline", runoffline)
 
-    return city, input_file, days, buses
+    return city, input_file, days, buses, runoffline
 
 def selectGPSFromFile(input_file, buses, output_file):
     print(input_file, buses, output_file)
@@ -84,8 +87,36 @@ def selectGPS(input_file, days, buses, output_dir):
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
 
+def RunOffLineForFile(input_file):
+    print('RunOffLineForFile: ' + input_file)
+    tags = os.path.split(input_file)
+    basedata = tags[0] + '/s_json.csv'
+    bus_rel = tags[0] + '/bus_rel.csv'
+    output = tags[0] + '/answer.csv'
+    FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file, bus_rel=bus_rel, output=output)
+
+def RunOffLine(input_file, days, output_dir):
+    length = len(input_file)
+    date = input_file[length-10:length]
+    if not DateHelp.is_valid_date(date):
+        print(input_file + ' doesn\'t has a valid date')
+
+    i = days;
+    yesterday = date
+    while (i>0):
+        yes_file = input_file.replace(input_file[length-10:length], yesterday)
+        tags = os.path.split(yes_file)
+        FileHelper.makeDir(output_dir + yesterday)
+        output_file = output_dir + yesterday + '/' + tags[1]
+        RunOffLineForFile(output_file)
+        yesterday = DateHelp.get_yestoday(yesterday)
+        i -= 1
+
 if __name__=="__main__":
 
     #解析命令行，来获取相应参数，具体见--help
-    city, input_file, days, buses = parseParams()
-    selectGPS(input_file, days, buses, 'output/'+city+'/')
+    city, input_file, days, buses, runoffline = parseParams()
+    if not runoffline:
+        selectGPS(input_file, days, buses, 'output/'+city+'/')
+    else:
+        RunOffLine(input_file, days, 'output/'+city+'/')

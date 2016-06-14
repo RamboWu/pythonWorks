@@ -10,7 +10,7 @@ def makeDir(dir_name):
 def sortFile(file_name):
 
     makeDir('temp')
-    
+
     tags = os.path.split(__file__)
     now_dir = tags[0]+'/'
 
@@ -25,3 +25,15 @@ def sortFile(file_name):
         sys.exit(-1)
 
     return file_sorted
+
+def generateRealOffLineResult(basedata, input_file, bus_rel, output):
+
+    tags = os.path.split(__file__)
+    now_dir = tags[0]+'/'
+
+    command_line = now_dir + 'BusMatchingResultGenerator.exe -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
+    print('生成judgement_result.csv: ' + command_line)
+    status = subprocess.call(command_line, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
