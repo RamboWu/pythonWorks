@@ -41,8 +41,8 @@ def parseParams():
 
     return input_file, days, buses
 
-def selectGPSFromFile(input_file, buses):
-    print(input_file, buses)
+def selectGPSFromFile(input_file, buses, output_file):
+    print(input_file, buses, output_file)
     bus_file = codecs.open(buses, 'r', 'utf-8')
     bus_line = bus_file.readline()
     buses = []
@@ -53,6 +53,9 @@ def selectGPSFromFile(input_file, buses):
         bus_line = bus_file.readline()
 
     print(buses)
+    bus_file.close()
+
+    SelectGPSKernal.selectGPS(input_file_name=input_file, lines=buses, output_file_name=output_file)
 
 def selectGPS(input_file, days, buses):
     length = len(input_file)
@@ -60,12 +63,17 @@ def selectGPS(input_file, days, buses):
     if not DateHelp.is_valid_date(date):
         print(input_file + ' doesn\'t has a valid date')
 
-    selectGPSFromFile(input_file, buses)
+    i = days;
     yesterday = date
-    for i in range(days-1):
-        yesterday = DateHelp.get_yestoday(yesterday)
+    while (i>0):
         yes_file = input_file.replace(input_file[length-10:length], yesterday)
-        selectGPSFromFile(yes_file, buses)
+        tags = os.path.split(yes_file)
+        if (not os.path.exists('output/' + yesterday)):
+            os.makedirs('output/' + yesterday)
+        output_file = 'output/' + yesterday + '/' + tags[1]
+        selectGPSFromFile(yes_file, buses, output_file)
+        yesterday = DateHelp.get_yestoday(yesterday)
+        i -= 1
 
 #初始化
 def init():
