@@ -12,7 +12,7 @@ def selectGPS(input_file_name, buses = [], lines = [], output_file_name = 'outpu
 		input_file = codecs.open(input_file_name, 'r', 'utf-8')
 	except:
 		print (input_file_name + 'doesn\'t exit!')
-		return
+		return False
 
 	output_file = codecs.open(output_file_name, 'w', 'utf-8')
 	input_line = input_file.readline()
@@ -28,3 +28,4 @@ def selectGPS(input_file_name, buses = [], lines = [], output_file_name = 'outpu
 
 	input_file.close();
 	output_file.close();
+	return True

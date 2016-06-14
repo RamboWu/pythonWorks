@@ -58,7 +58,14 @@ def selectGPSFromFile(input_file, buses, output_file):
     print(buses)
     bus_file.close()
 
-    SelectGPSKernal.selectGPS(input_file_name=input_file, lines=buses, output_file_name=output_file)
+    return SelectGPSKernal.selectGPS(input_file_name=input_file, lines=buses, output_file_name=output_file)
+
+def selectGPSFromFileAndSort(input_file, buses, output_file):
+
+    if selectGPSFromFile(input_file, buses, output_file):
+        sorted_file = FileHelper.sortFile(output_file)
+        os.remove(output_file)
+        os.rename(sorted_file,output_file)
 
 def selectGPS(input_file, days, buses, output_dir):
     length = len(input_file)
@@ -73,7 +80,7 @@ def selectGPS(input_file, days, buses, output_dir):
         tags = os.path.split(yes_file)
         FileHelper.makeDir(output_dir + yesterday)
         output_file = output_dir + yesterday + '/' + tags[1]
-        selectGPSFromFile(yes_file, buses, output_file)
+        selectGPSFromFileAndSort(yes_file, buses, output_file)
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
 
