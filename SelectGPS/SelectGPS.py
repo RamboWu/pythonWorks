@@ -7,7 +7,7 @@ import re
 import datetime
 import time
 sys.path.append("..")
-import Util.DateHelp
+from Util import *
 
 def usage():
     print('Help!! Please put in "-i input/matching.log.2015-04-16 -d 7 --buses=bus.csv"!')
@@ -52,7 +52,7 @@ if __name__=="__main__":
     date = '2015-12-16'
     print(time.strptime(date, "%Y-%m-%d"))
 
-    print( Util.DateHelp.get_yestoday('2015-04-07'))
+    print( DateHelp.get_yestoday('2015-04-07'))
 #解析命令行，来获取相应参数，具体见--help
     #input_file, days, buses = parseParams()
     selectGPS('input/matching.log.2015-04-16', 7 , 'input/matching.log.2015-04-16')
