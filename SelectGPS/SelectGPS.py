@@ -41,18 +41,30 @@ def parseParams():
 
     return input_file, days, buses
 
+def selectGPSFromFile(input_file, buses):
+    print(input_file, buses)
+
 def selectGPS(input_file, days, buses):
-    #string =
-    index = input_file.find('matching.log')
-    #print(index + )
+    length = len(input_file)
+    date = input_file[length-10:length]
+    if not DateHelp.is_valid_date(date):
+        print(input_file + ' doesn\'t has a valid date')
+
+    selectGPSFromFile(input_file, buses)
+    yesterday = date
+    for i in range(days-1):
+        yesterday = DateHelp.get_yestoday(yesterday)
+        yes_file = input_file.replace(input_file[length-10:length], yesterday)
+        selectGPSFromFile(yes_file, buses)
+
+#初始化
+def init():
+    if (not os.path.exists('output')):
+        os.makedirs('output')
 
 if __name__=="__main__":
 
-
-    date = '2015-12-16'
-    print(time.strptime(date, "%Y-%m-%d"))
-
-    print( DateHelp.get_yestoday('2015-04-07'))
+    init()
 #解析命令行，来获取相应参数，具体见--help
     #input_file, days, buses = parseParams()
     selectGPS('input/matching.log.2015-04-16', 7 , 'input/matching.log.2015-04-16')
