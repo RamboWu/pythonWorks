@@ -1,2 +1,2 @@
 
-__all__ = ["DateHelp","SelectGPSKernal","FileHelper"]
+__all__ = ["DateHelp","SelectGPSKernal","FileHelper","CommandManager","Command"]
