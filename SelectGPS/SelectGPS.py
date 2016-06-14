@@ -43,6 +43,16 @@ def parseParams():
 
 def selectGPSFromFile(input_file, buses):
     print(input_file, buses)
+    bus_file = codecs.open(buses, 'r', 'utf-8')
+    bus_line = bus_file.readline()
+    buses = []
+    while bus_line:
+        bus_line = bus_line.strip()
+        if (bus_line != ''):
+            buses.append(bus_line)
+        bus_line = bus_file.readline()
+
+    print(buses)
 
 def selectGPS(input_file, days, buses):
     length = len(input_file)
@@ -66,5 +76,5 @@ if __name__=="__main__":
 
     init()
 #解析命令行，来获取相应参数，具体见--help
-    #input_file, days, buses = parseParams()
-    selectGPS('input/matching.log.2015-04-16', 7 , 'input/matching.log.2015-04-16')
+    input_file, days, buses = parseParams()
+    selectGPS(input_file, days , buses)
