@@ -6,29 +6,28 @@ import sys, getopt, codecs, os, subprocess
 import re
 import datetime
 import time
+sys.path.append("..")
+import Util.DateHelp
 
 def usage():
-    print('Help!! Please put in "-p matching.log.2016-06-11 -f file -d dir --buses=bus.csv"!')
+    print('Help!! Please put in "-i input/matching.log.2015-04-16 -d 7 --buses=bus.csv"!')
 
-'''
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hi:", ["input_file=","bus_relation_file=","basedata=","dragon"])
+    opts, args = getopt.getopt(sys.argv[1:], "hi:d:", ["buses="])
 
     input_file = ""
-    bus_relation_file = ""
-    basedata = ""
+    days = 1
+    buses = ""
 
     for op, value in opts:
-        if op in ("-i","--input_file"):
+        if op in ("-i"):
             input_file = value
-        elif op in ("--bus_relation_file"):
-            bus_relation_file = value
-        elif op == "--basedata":
-            basedata = value
-        elif op == "--dragon":
-            one_dragon_service = True
+        elif op in ("-d"):
+            days = int(value)
+        elif op in ("--buses"):
+            buses = value
         elif op == "-h":
             usage()
             sys.exit()
@@ -38,23 +37,22 @@ def parseParams():
         sys.exit()
 
     print("CommandParam:")
-    print("input_file=", input_file, "bus_relation_file=", bus_relation_file, "basedata=", basedata, "one_dragon_service", one_dragon_service)
+    print("input_file=", input_file, "days=", days, "buses=", buses)
 
-    return input_file, bus_relation_file, basedata
-'''
+    return input_file, days, buses
 
-
-def get_yestoday(mytime):
-	myday = datetime.datetime( int(mytime[0:4]),int(mytime[5:7]),int(mytime[8:10]) )
-	#now = datetime.datetime.now()
-	delta = datetime.timedelta(days=-1)
-	my_yestoday = myday + delta
-	my_yes_time = my_yestoday.strftime('%Y-%m-%d')
-	return my_yes_time
+def selectGPS(input_file, days, buses):
+    #string =
+    index = input_file.find('matching.log')
+    #print(index + )
 
 if __name__=="__main__":
 
+
     date = '2015-12-16'
-    print( get_yestoday('2015-04-07'))
+    print(time.strptime(date, "%Y-%m-%d"))
+
+    print( Util.DateHelp.get_yestoday('2015-04-07'))
 #解析命令行，来获取相应参数，具体见--help
-    #input_file, bus_relation_file, basedata = parseParams()
+    #input_file, days, buses = parseParams()
+    selectGPS('input/matching.log.2015-04-16', 7 , 'input/matching.log.2015-04-16')
