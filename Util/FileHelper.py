@@ -28,6 +28,16 @@ def sortFile(file_name):
 
 def generateRealOffLineResult(basedata, input_file, bus_rel, output):
 
+    if not os.path.exists(basedata):
+        print(basedata + ' not exist!')
+        return False
+    if not os.path.exists(input_file):
+        print(input_file + 'not exist!')
+        return False
+    if not os.path.exists(bus_rel):
+        print(bus_rel + ' not exist!')
+        return False
+
     tags = os.path.split(__file__)
     now_dir = tags[0]+'/'
 
@@ -37,3 +47,5 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
+
+    return True
