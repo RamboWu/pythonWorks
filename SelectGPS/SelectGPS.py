@@ -15,13 +15,14 @@ def usage():
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses=","runoffline"])
+    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses=","runoffline","init"])
 
     input_file = ""
     days = 1
     buses = ""
     city = ""
     runoffline = False
+    init = False
 
     for op, value in opts:
         if op in ("-i"):
@@ -34,6 +35,8 @@ def parseParams():
             city = value
         elif op in ("--runoffline"):
             runoffline = True
+        elif op in ("--init"):
+            init = True
         elif op == "-h":
             usage()
             sys.exit()
@@ -43,9 +46,9 @@ def parseParams():
         sys.exit()
 
     print("CommandParam:")
-    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses, "runoffline", runoffline)
+    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses, "runoffline", runoffline, "init", init)
 
-    return city, input_file, days, buses, runoffline
+    return city, input_file, days, buses, runoffline, init
 
 def selectGPSFromFile(input_file, buses, output_file):
     print(input_file, buses, output_file)
@@ -112,10 +115,17 @@ def RunOffLine(input_file, days, output_dir):
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
 
+def init(input_file, days, output_dir):
+
 if __name__=="__main__":
 
     #解析命令行，来获取相应参数，具体见--help
-    city, input_file, days, buses, runoffline = parseParams()
+    city, input_file, days, buses, runoffline, init = parseParams()
+
+    if init:
+        init(input_file, days, 'output/'+city+'/')
+        return
+        
     if not runoffline:
         selectGPS(input_file, days, buses, 'output/'+city+'/')
     else:
