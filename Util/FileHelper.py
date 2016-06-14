@@ -1,6 +1,6 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
-import os, subprocess, sys
+import os, subprocess, sys, codecs
 
 def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
@@ -49,3 +49,28 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
         sys.exit(-1)
 
     return True
+
+#从bus_file里获取公交车辆关系
+def getBusRelations(bus_relation_file):
+
+    if not os.path.exists(bus_relation_file):
+        print(bus_relation_file + ' not exists')
+        return False, []
+
+    bus_file = codecs.open(bus_relation_file, 'r', 'utf-8')
+    line = bus_file.readline()
+
+    bus_relations = dict()
+
+    while line:
+        line = line.strip()
+        tags = line.split(',')
+        bus_relations[tags[1]] = tags[0]
+        #bus_relations.append((tags[0],tags[1]))
+        line = bus_file.readline()
+
+    bus_file.close()
+    print("BusRelations:")
+    print(bus_relations)
+
+    return True, bus_relations

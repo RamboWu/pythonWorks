@@ -48,20 +48,26 @@ def parseParams():
     return city, input_file, days, buses, init
 
 def selectGPSFromFile(input_file, buses, output_file):
-    print(input_file, buses, output_file)
+    print('selectGPSFromFile', input_file, buses, output_file)
+    tags = os.path.split(output_file)
+    bus_rel = tags[0] + '/bus_rel.csv'
+    res, bus_relations = FileHelper.getBusRelations(bus_rel)
+    if not res:
+        return False
+
     bus_file = codecs.open(buses, 'r', 'utf-8')
     bus_line = bus_file.readline()
     buses = []
     while bus_line:
         bus_line = bus_line.strip()
-        if (bus_line != ''):
-            buses.append(bus_line)
+        if (bus_line != '') and bus_line in bus_relations.keys():
+            buses.append(bus_relations[bus_line])
         bus_line = bus_file.readline()
 
-    print(buses)
+    print('buses', buses)
     bus_file.close()
 
-    return SelectGPSKernal.selectGPS(input_file_name=input_file, lines=buses, output_file_name=output_file)
+    return SelectGPSKernal.selectGPS(input_file_name=input_file, buses=buses, output_file_name=output_file)
 
 def selectGPSFromFileAndSort(input_file, buses, output_file):
 
@@ -72,6 +78,7 @@ def selectGPSFromFileAndSort(input_file, buses, output_file):
         RunOffLineForFile(output_file)
 
 def selectGPS(input_file, days, buses, output_dir):
+    print('SelectGPS')
     length = len(input_file)
     date = input_file[length-10:length]
     if not DateHelp.is_valid_date(date):
