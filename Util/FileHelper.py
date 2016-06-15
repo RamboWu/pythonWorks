@@ -12,12 +12,12 @@ def sortFile(file_name):
     makeDir('temp')
 
     tags = os.path.split(__file__)
-    now_dir = tags[0]+'/'
+    filesort = os.path.join(tags[0],'FileSort.jar')
 
     file_sorted = file_name + ".sort"
 
     tags = os.path.split(file_name)
-    command_line = 'java -jar ' + now_dir + 'FileSort.jar 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
+    command_line = 'java -jar ' + filesort + ' 2 ' + tags[0] + '/ ' + tags[1] + ' 3'
     print('Excute Command: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
@@ -39,9 +39,9 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
         return False
 
     tags = os.path.split(__file__)
-    now_dir = tags[0]+'\\'
+    excute_file = os.path.join(tags[0],'BusMatchingResultGenerator.exe')
 
-    command_line = now_dir + 'BusMatchingResultGenerator.exe -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
+    command_line = excute_file + ' -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
     print('生成judgement_result.csv: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
