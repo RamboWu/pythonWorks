@@ -11,7 +11,7 @@ one_dragon_service = False
 
 base_data_file_name = os.path.abspath('input/s_json.csv')
 #bus_file有默认参数
-bus_file_name = os.path.abspath('compare/bus_relations.csv')
+bus_file_name = os.path.abspath('compare/bus_rel.csv')
 #排序结果文件
 tmp_file_name = os.path.abspath('temp/print_relate_bus_middle.tmp')
 sort_file_name = os.path.abspath('temp/print_relate_bus_middle.tmp.sort')
