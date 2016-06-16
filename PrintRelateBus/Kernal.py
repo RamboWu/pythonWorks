@@ -32,8 +32,8 @@ def getBusRelations(bus_relation_file):
         line = bus_file.readline()
 
     bus_file.close()
-    print("BusRelations:")
-    print(bus_relations)
+    #print("BusRelations:")
+    #print(bus_relations)
 
     return bus_relations
 
