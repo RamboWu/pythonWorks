@@ -89,7 +89,7 @@ class OneFileTest:
             else:
                 self.total_correct_right += 1
 
-        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) != 0:
+        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
             self.total_correct_mis += 1
 
         #统计准报站算法的使用率和准确率
