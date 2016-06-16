@@ -14,6 +14,8 @@ TotalCorrect = 0
 TotalCanCmp = 0
 #总的对的数量
 TotalCorrectRight = 0
+#总的里程对的
+TotalMileageCorrect = 0
 
 class BusStat:
     '''
@@ -47,11 +49,15 @@ def ReportTotalStat():
     global TotalCorrect
     global TotalCorrectRight
     global TotalCanCmp
+    global TotalMileageCorrect
 
     if (TotalCanCmp == 0):
         TotalCanCmp = 1
     print('修正个数:', TotalCorrect)
     print('可以比较的总数:', TotalCanCmp, '正确数:', TotalCorrectRight, '准确率:', float(TotalCorrectRight) / float(TotalCanCmp))
+    if (TotalCorrectRight == 0):
+        TotalCorrectRight = 1
+    print('可以比较里程的总数:', TotalCorrectRight, '准确数:', TotalMileageCorrect, '准确率:', float(TotalMileageCorrect) / float(TotalCorrectRight))
 
     for key in BusMap.keys():
         BusMap[key].report()
@@ -60,6 +66,7 @@ def Judge(off_line, judge_line):
     global TotalCorrect
     global TotalCorrectRight
     global TotalCanCmp
+    global TotalMileageCorrect
 
     off_line_tags = off_line.split(',')
     judge_tags = judge_line.split(',')
@@ -77,6 +84,9 @@ def Judge(off_line, judge_line):
             if off_line_tags[4] == judge_tags[4]:
                 TotalCorrectRight += 1
                 bus_stat.addStat(True)
+
+                if abs(float(off_line_tags[9])-float(judge_tags[8])) < 50:
+                    TotalMileageCorrect += 1
             else:
                 bus_stat.addStat(False)
 
