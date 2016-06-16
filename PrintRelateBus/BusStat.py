@@ -59,8 +59,8 @@ def ReportTotalStat():
         TotalCorrectRight = 1
     print('可以比较里程的总数:', TotalCorrectRight, '准确数:', TotalMileageCorrect, '准确率:', float(TotalMileageCorrect) / float(TotalCorrectRight))
 
-    for key in BusMap.keys():
-        BusMap[key].report()
+    #for key in BusMap.keys():
+    #    BusMap[key].report()
 
 def Judge(off_line, judge_line):
     global TotalCorrect
