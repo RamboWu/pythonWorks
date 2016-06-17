@@ -6,6 +6,7 @@ import codecs, sys
 import logging
 import inspect
 import os
+import time
 '''
 Created on 2016-05-20
 
@@ -21,7 +22,9 @@ console_handler.setLevel(logging.INFO)
 # 定义一个FileHandler
 this_file = inspect.getfile(inspect.currentframe())
 dirpath = os.path.abspath(os.path.dirname(this_file))
-file_handler = logging.FileHandler(os.path.join(dirpath,'test.log'))
+ISOTIMEFORMAT = '%Y-%m-%d%X'
+log_file = time.strftime( ISOTIMEFORMAT, time.localtime() ) + '.log'
+file_handler = logging.FileHandler(os.path.join(dirpath,log_file))
 
 # 设置日志打印格式
 formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
@@ -32,7 +35,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-logger.info('BusState Log init finish!')
+
+logger.info('BusState Log init finish! time:%s', time.strftime( ISOTIMEFORMAT, time.localtime() ))
 
 class BusStat:
     '''
