@@ -102,6 +102,8 @@ class OneFileTest:
 
 
     def ReportTotalStat(self):
+        if (self.total == 0):
+            self.total = 1
         if (self.total_correct == 0):
             self.total_correct = 1
         if (self.total_correct_can_cmp == 0):
@@ -114,6 +116,7 @@ class OneFileTest:
         logger.info('准确数:%s', self.total_correct_right)
         logger.info('miss数:%s', self.total_correct_mis)
         logger.info('准确率:%s', float(self.total_correct_right) / float(self.total_correct_can_cmp))
+        logger.info('占所有点准确率:%s', float(self.total_correct_right) / float(self.total))
 
         if (self.total_offline_assist_count == 0):
             self.total_offline_assist_count = 1
