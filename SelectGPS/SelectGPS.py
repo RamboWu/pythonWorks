@@ -105,7 +105,7 @@ def selectGPS(input_file, days, buses, output_dir, base_data_dir):
         tags = os.path.split(yes_file)
         FileHelper.makeDir(output_dir + yesterday)
         CopyBaseDataToOutputDir(output_dir, yesterday, base_data_dir)
-        output_file = output_dir + yesterday + '/' + tags[1]
+        output_file = output_dir + yesterday + '/sample.log'
         selectGPSFromFileAndSort(yes_file, buses, output_file)
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
