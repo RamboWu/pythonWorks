@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #hello.py
-import sys, getopt, codecs, os, subprocess
+import sys, getopt, codecs, os, subprocess, shutil
 import re
 import datetime
 import time
@@ -10,18 +10,19 @@ sys.path.append("..")
 from Util import *
 
 def usage():
-    print('Help!! Please put in "-c TianJin -i input/matching.log.2015-04-16 -d 7 --buses=bus.csv"!')
+    print('Help!! Please put in "-c TianJin -i input/matching.log.2015-04-16 -d 7 --buses=bus.csv --basedatadir=D:\AlgorithmReport\Citys\TianJin"!')
 
 #解析命令行，来获取相应参数，具体见--help
 def parseParams():
     global one_dragon_service
-    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:", ["buses=","init"])
+    opts, args = getopt.getopt(sys.argv[1:], "hi:d:c:g:", ["buses=","init","basedatadir="])
 
     input_file = ""
     days = 1
     buses = ""
     city = ""
     init = False
+    base_data_dir = ""
 
     for op, value in opts:
         if op in ("-i"):
@@ -34,6 +35,8 @@ def parseParams():
             city = value
         elif op in ("--init"):
             init = True
+        elif op in ("-g","--basedatadir"):
+            base_data_dir = value
         elif op == "-h":
             usage()
             sys.exit()
@@ -43,9 +46,9 @@ def parseParams():
         sys.exit()
 
     print("CommandParam:")
-    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses, "init", init)
+    print("city", city , "input_file=", input_file, "days=", days, "buses=", buses, "init", init, "base_data_dir", base_data_dir)
 
-    return city, input_file, days, buses, init
+    return city, input_file, days, buses, init, base_data_dir
 
 def selectGPSFromFile(input_file, buses, output_file):
     print('selectGPSFromFile', input_file, buses, output_file)
@@ -77,7 +80,18 @@ def selectGPSFromFileAndSort(input_file, buses, output_file):
         os.rename(sorted_file,output_file)
         RunOffLineForFile(output_file)
 
-def selectGPS(input_file, days, buses, output_dir):
+def CopyBaseDataToOutputDir(output_dir, date, base_data_dir):
+    base_data_dir_s = os.path.join(base_data_dir, date)
+    s_json_file = os.path.join(base_data_dir_s, 's_json.csv')
+    bus_rel_file = os.path.join(base_data_dir_s, 'single.csv')
+    output_dir_s = os.path.join(output_dir, date)
+    s_json_dest = os.path.join(output_dir_s, 's_json.csv')
+    bus_rel_dest = os.path.join(output_dir_s, 'bus_rel.csv')
+    #print(base_data_dir_s, s_json_file, output_dir_s, s_json_dest)
+    shutil.copy(s_json_file, s_json_dest)
+    shutil.copy(bus_rel_file, bus_rel_dest)
+
+def selectGPS(input_file, days, buses, output_dir, base_data_dir):
     print('SelectGPS')
     length = len(input_file)
     date = input_file[length-10:length]
@@ -90,6 +104,7 @@ def selectGPS(input_file, days, buses, output_dir):
         yes_file = input_file.replace(input_file[length-10:length], yesterday)
         tags = os.path.split(yes_file)
         FileHelper.makeDir(output_dir + yesterday)
+        CopyBaseDataToOutputDir(output_dir, yesterday, base_data_dir)
         output_file = output_dir + yesterday + '/' + tags[1]
         selectGPSFromFileAndSort(yes_file, buses, output_file)
         yesterday = DateHelp.get_yestoday(yesterday)
@@ -118,13 +133,14 @@ def init(input_file, days, output_dir):
         yesterday = DateHelp.get_yestoday(yesterday)
         i -= 1
 
+#D:\AlgorithmReport\Citys\TianJin
 if __name__=="__main__":
 
     #解析命令行，来获取相应参数，具体见--help
-    city, input_file, days, buses, initflag = parseParams()
+    city, input_file, days, buses, initflag, base_data_dir = parseParams()
 
     if initflag:
         init(input_file, days, 'output/'+city+'/')
         sys.exit(0)
 
-    selectGPS(input_file, days, buses, 'output/'+city+'/')
+    selectGPS(input_file, days, buses, 'output/'+city+'/', base_data_dir)
