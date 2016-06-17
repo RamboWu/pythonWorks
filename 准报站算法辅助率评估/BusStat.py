@@ -13,6 +13,10 @@ Created on 2016-05-20
 @author: RamboWu
 '''
 
+def getTime():
+    ISOTIMEFORMAT = '%Y-%m-%d %X'
+    return time.strftime( ISOTIMEFORMAT, time.localtime() )
+
 logger = logging.getLogger('BusStat')
 logger.setLevel(logging.INFO)
 
@@ -22,12 +26,12 @@ console_handler.setLevel(logging.INFO)
 # 定义一个FileHandler
 this_file = inspect.getfile(inspect.currentframe())
 dirpath = os.path.abspath(os.path.dirname(this_file))
-ISOTIMEFORMAT = '%Y-%m-%d%X'
-log_file = time.strftime( ISOTIMEFORMAT, time.localtime() ) + '.log'
+
+log_file = getTime() + '.log'
 file_handler = logging.FileHandler(os.path.join(dirpath,log_file))
 
 # 设置日志打印格式
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter('%(asctime)s: %(levelname)-8s %(message)s')
 console_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
 
@@ -36,7 +40,9 @@ logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 
-logger.info('BusState Log init finish! time:%s', time.strftime( ISOTIMEFORMAT, time.localtime() ))
+logger.info('BusState Log init finish!')
+
+
 
 class BusStat:
     '''

@@ -55,6 +55,8 @@ def test():
 
 if __name__=="__main__":
 
+    #test()
+
 #初始化
     init()
 #解析命令行，来获取相应参数，具体见--help
