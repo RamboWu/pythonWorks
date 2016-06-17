@@ -14,7 +14,7 @@ Created on 2016-05-20
 '''
 
 def getTime():
-    ISOTIMEFORMAT = '%Y-%m-%d %X'
+    ISOTIMEFORMAT = '%Y-%m-%d-%H-%M'
     return time.strftime( ISOTIMEFORMAT, time.localtime() )
 
 logger = logging.getLogger('BusStat')
@@ -27,8 +27,10 @@ console_handler.setLevel(logging.INFO)
 this_file = inspect.getfile(inspect.currentframe())
 dirpath = os.path.abspath(os.path.dirname(this_file))
 
-log_file = getTime() + '.log'
-file_handler = logging.FileHandler(os.path.join(dirpath,log_file))
+if (not os.path.exists('log')):
+    os.makedirs('log')
+log_file = 'log/' + getTime() + '.log'
+file_handler = logging.FileHandler(log_file)
 
 # 设置日志打印格式
 formatter = logging.Formatter('%(asctime)s: %(levelname)-8s %(message)s')
@@ -102,6 +104,9 @@ class OneFileTest:
     def ReportTotalStat(self):
         if (self.total_correct == 0):
             self.total_correct = 1
+        if (self.total_correct_can_cmp == 0):
+            self.total_correct_can_cmp = 1
+
         logger.info(self.sample_file + " 概况总览: ")
         logger.info('总共%s行'%self.total)
         logger.info('识别总数:%s', self.total_correct)
