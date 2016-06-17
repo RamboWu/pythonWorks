@@ -89,7 +89,8 @@ def CopyBaseDataToOutputDir(output_dir, date, base_data_dir):
     bus_rel_dest = os.path.join(output_dir_s, 'bus_rel.csv')
     #print(base_data_dir_s, s_json_file, output_dir_s, s_json_dest)
     shutil.copy(s_json_file, s_json_dest)
-    shutil.copy(bus_rel_file, bus_rel_dest)
+    if not os.path.exists(bus_rel_dest):
+        shutil.copy(bus_rel_file, bus_rel_dest)
 
 def selectGPS(input_file, days, buses, output_dir, base_data_dir):
     print('SelectGPS')
