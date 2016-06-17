@@ -65,7 +65,10 @@ def getBusRelations(bus_relation_file):
     while line:
         line = line.strip()
         tags = line.split(',')
-        bus_relations[tags[1]] = tags[0]
+        #bus_relations[tags[1]] = tags[0]
+        if not tags[1] in bus_relations.keys():
+            bus_relations[tags[1]] = []
+        bus_relations[tags[1]].append(tags[0])
         #bus_relations.append((tags[0],tags[1]))
         line = bus_file.readline()
 

@@ -58,13 +58,16 @@ def selectGPSFromFile(input_file, buses, output_file):
     if not res:
         return False
 
+    #print(bus_relations)
+
     bus_file = codecs.open(buses, 'r', 'utf-8')
     bus_line = bus_file.readline()
     buses = []
     while bus_line:
         bus_line = bus_line.strip()
         if (bus_line != '') and bus_line in bus_relations.keys():
-            buses.append(bus_relations[bus_line])
+            buses = buses + bus_relations[bus_line]
+            #buses.append(bus_relations[bus_line])
         bus_line = bus_file.readline()
 
     print('buses', buses)
