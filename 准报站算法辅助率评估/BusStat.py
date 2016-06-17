@@ -47,7 +47,7 @@ class OneFileTest:
         #总共判对多少个点
         self.total_correct_right = 0
         #总共判错多少个
-        self.total_correct_wrong = 0
+        self.total_correct_can_cmp = 0
         #少判出多少个
         self.total_correct_mis = 0
         #准报站算法总共提供的意见数
@@ -66,9 +66,18 @@ class OneFileTest:
         if (self.total_correct == 0):
             self.total_correct = 1
         print(self.sample_file, " ReportTotalStat. ")
-        print('识别总数:', self.total_correct, '正确数:', self.total_correct_right, '错误数:',self.total_correct_wrong, 'miss数:', self.total_correct_mis, '准确率:', float(self.total_correct_right) / float(self.total_correct))
+        print(
+        '识别总数:', self.total_correct, \
+        '可以比较的总数:', self.total_correct_can_cmp, \
+        '准确数:', self.total_correct_right, \
+        'miss数:', self.total_correct_mis, \
+        '准确率:', float(self.total_correct_right) / float(self.total_correct_can_cmp))
+
         if (self.total_offline_assist_count == 0):
             self.total_offline_assist_count = 1
+        if (self.total_offline_assist_can_cmp == 0):
+            self.total_offline_assist_can_cmp = 1
+
         print(\
         '准报站算法总gps点数:', self.total_offline_assist_count, \
         '没有使用的个数:', self.total_offline_assist_count_not_in_use, \
@@ -84,10 +93,10 @@ class OneFileTest:
 
         if int(sample_line_tags[0]) == 1:
             self.total_correct += 1
-            if int(cmp_line_tags[0]) == 0:
-                self.total_correct_wrong += 1
-            else:
-                self.total_correct_right += 1
+            if int(cmp_line_tags[0]) == 1:
+                self.total_correct_can_cmp += 1
+                if sample_line_tags[4] == cmp_line_tags[4]:
+                    self.total_correct_right += 1
 
         if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
             self.total_correct_mis += 1
