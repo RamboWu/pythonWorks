@@ -50,7 +50,7 @@ def init():
         os.makedirs('compare')
 
 def test():
-    test = BusStat.OneFileTest('input/matching.log.sort-100000', 'input/matching.logsort.cmp-100000')
+    test = BusStat.OneFileTest('test/matching.log.sort-100000', 'test/matching.log.sort.cmp-100000')
     test.CountAccuracy()
 
 if __name__=="__main__":

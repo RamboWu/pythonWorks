@@ -137,14 +137,15 @@ class OneFileTest:
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
 
-        if sample_line[3] in self.BusMap.keys():
-            bus_stat = self.BusMap.get(off_line_tags[3])
+        if sample_line_tags[3] in self.BusMap.keys():
+            bus_stat = self.BusMap.get(sample_line_tags[3])
         else:
-            bus_stat = BusStat(off_line_tags[3])
-            self.BusMap[off_line_tags[3]] = bus_stat
+            print ('create Bus:', sample_line_tags[3])
+            bus_stat = BusStat(sample_line_tags[3])
+            self.BusMap[sample_line_tags[3]] = bus_stat
 
         self.total += 1
-        self.BusMap[off_line_tags[3]].total += 1
+        self.BusMap[sample_line_tags[3]].total += 1
 
         if int(sample_line_tags[0]) == 1:
             self.total_correct += 1
@@ -153,11 +154,11 @@ class OneFileTest:
                 if sample_line_tags[4] == cmp_line_tags[4]:
                     self.total_correct_right += 1
                 else:
-                    self.BusMap[off_line_tags[3]].wrong += 1
+                    self.BusMap[sample_line_tags[3]].wrong += 1
 
         if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
             self.total_correct_mis += 1
-            self.BusMap[off_line_tags[3]].miss += 1
+            self.BusMap[sample_line_tags[3]].miss += 1
 
         #统计准报站算法的使用率和准确率
         index = 18
