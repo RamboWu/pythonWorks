@@ -65,11 +65,10 @@ class BusStat:
             return 0
 
     def report(self):
-        print(self.bus_id, \
-        'Total:', self.total, \
-        'Miss:', self.miss, \
-        'Wrong:', self.wrong, \
-        '丢失率:', self.missRate())
+        logger.info(\
+            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
+            self.bus_id, self.total, self.miss, self.wrong, self.missRate())
+
 
 class OneFileTest:
 
@@ -140,7 +139,7 @@ class OneFileTest:
         if sample_line_tags[3] in self.BusMap.keys():
             bus_stat = self.BusMap.get(sample_line_tags[3])
         else:
-            print ('create Bus:', sample_line_tags[3])
+            #print ('create Bus:', sample_line_tags[3])
             bus_stat = BusStat(sample_line_tags[3])
             self.BusMap[sample_line_tags[3]] = bus_stat
 
