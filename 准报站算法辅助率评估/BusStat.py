@@ -66,8 +66,8 @@ class BusStat:
 
     def report(self):
         logger.info(\
-            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
-            self.bus_id, self.total, self.miss, self.wrong, self.missRate())
+            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%', \
+            self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100)
 
 
 class OneFileTest:
