@@ -7,6 +7,9 @@ import logging
 import inspect
 import os
 import time
+
+sys.path.append("..")
+from Util import BusPoint
 '''
 Created on 2016-05-20
 
@@ -130,19 +133,19 @@ class OneFileTest:
         for key in self.BusMap.keys():
             self.BusMap[key].report()
 
-    def JudgeOnline(self, sample_line_tags, cmp_line_tags):
-        if int(sample_line_tags[0]) == 1:
+    def JudgeOnline(self, bus_point, off_bus_point):
+        if bus_point.is_rec:
             self.total_correct += 1
-            if int(cmp_line_tags[0]) == 1:
+            if off_bus_point.is_rec:
                 self.total_correct_can_cmp += 1
-                if sample_line_tags[4] == cmp_line_tags[4]:
+                if bus_point.bus_id == off_bus_point.bus_id:
                     self.total_correct_right += 1
                 else:
-                    self.BusMap[sample_line_tags[3]].wrong += 1
+                    self.BusMap[bus_point.bus_id].wrong += 1
 
-        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
+        if not bus_point.is_rec and off_bus_point.is_rec:
             self.total_correct_mis += 1
-            self.BusMap[sample_line_tags[3]].miss += 1
+            self.BusMap[bus_point.bus_id].miss += 1
 
     def JudgeOffLineAssist(self, sample_line_tags, cmp_line_tags, count):
         #统计准报站算法的使用率和准确率
@@ -164,31 +167,34 @@ class OneFileTest:
                 pass
 
     def Judge(self, sample_line, cmp_line,lineno):
+        bus_point = BusPoint.BusPoint(sample_line)
+        off_bus_point = BusPoint.OffLineBusPoint(cmp_line)
+
         sample_line = sample_line.strip()
         sample_line_tags = sample_line.split(',')
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
 
-        if sample_line_tags[3] < cmp_line_tags[3]:
+        if bus_point.bus_id < off_bus_point.bus_id:
             return -1
-        if sample_line_tags[3] > cmp_line_tags[3]:
+        if bus_point.bus_id > off_bus_point.bus_id:
             return -2
 
-        if sample_line_tags[3] != cmp_line_tags[3] or sample_line_tags[13] != cmp_line_tags[12]:
+        if bus_point.bus_id != off_bus_point.bus_id or bus_point.gps_time != off_bus_point.gps_time:
             logger.error("lineNo:%s sample_line: %s; cmp_line: %s. ", lineno, sample_line, cmp_line)
             sys.exit(0)
 
-        if sample_line_tags[3] in self.BusMap.keys():
-            bus_stat = self.BusMap.get(sample_line_tags[3])
+        if bus_point.bus_id in self.BusMap.keys():
+            bus_stat = self.BusMap.get(bus_point.bus_id)
         else:
             #print ('create Bus:', sample_line_tags[3])
-            bus_stat = BusStat(sample_line_tags[3])
-            self.BusMap[sample_line_tags[3]] = bus_stat
+            bus_stat = BusStat(bus_point.bus_id)
+            self.BusMap[bus_point.bus_id] = bus_stat
 
         self.total += 1
-        self.BusMap[sample_line_tags[3]].total += 1
+        self.BusMap[bus_point.bus_id].total += 1
 
-        self.JudgeOnline(sample_line_tags, cmp_line_tags)
+        self.JudgeOnline(bus_point, off_bus_point)
         self.JudgeOffLineAssist(sample_line_tags, cmp_line_tags, count)
 
         return 0
