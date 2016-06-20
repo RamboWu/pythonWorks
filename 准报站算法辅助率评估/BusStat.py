@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #BusStat.py
-import codecs, sys
+import codecs, sys, getopt
 import logging
 import inspect
 import os
@@ -260,3 +260,29 @@ class OneFileTest:
 
         logger.info('总行数:%s', lineno)
         self.ReportTotalStat()
+
+def parseParams():
+    opts, args = getopt.getopt(sys.argv[1:], "hi:j:", ["input_file=","judge_file="])
+
+    input_file = ""
+    judge_file = ""
+
+    for op, value in opts:
+        if op in ('-i','--input_file'):
+            input_file = value
+        elif op == '-j':
+            judge_file = value
+
+    print("CommandParam:")
+    print("input_file=", input_file, "judge_file=", judge_file)
+
+    if (input_file == ""):
+        print('not right command line')
+        sys.exit()
+
+    return input_file, judge_file
+
+if __name__=="__main__":
+    input_file, judge_file = parseParams()
+    test = OneFileTest(input_file, judge_file)
+    test.CountAccuracy()
