@@ -147,33 +147,21 @@ class OneFileTest:
             self.total_correct_mis += 1
             self.BusMap[bus_point.bus_id].miss += 1
 
-    def JudgeOffLineAssist(self, sample_line_tags, cmp_line_tags, count):
-        #统计准报站算法的使用率和准确率
-        index = 18
-        if count > index and sample_line_tags[index] != '-':
+    def JudgeOffLineAssist(self, bus_point, off_bus_point):
+        #统计辅助使用率和准确率
+        if bus_point.assist_line_id != '-':
             self.total_offline_assist_count += 1
-            if int(sample_line_tags[0]) == 0:
+            if not bus_point.is_rec:
                 self.total_offline_assist_count_not_in_use += 1
 
-        if count > index and sample_line_tags[index] != '-' and int(cmp_line_tags[0]) == 1:
+        if bus_point.assist_line_id != '-' and bus_point.is_rec:
             self.total_offline_assist_can_cmp += 1
-            if sample_line_tags[index] == cmp_line_tags[4]:
+            if bus_point.assist_line_id == off_bus_point.line_id:
                 self.total_offline_assist_correct += 1
-            else:
-                #print(sample_line_tags[19])
-                #print(cmp_line_tags[4])
-                #print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
-                #sys.exit(0)
-                pass
 
     def Judge(self, sample_line, cmp_line,lineno):
         bus_point = BusPoint.BusPoint(sample_line)
         off_bus_point = BusPoint.OffLineBusPoint(cmp_line)
-
-        sample_line = sample_line.strip()
-        sample_line_tags = sample_line.split(',')
-        count = sample_line.count(',') + 1
-        cmp_line_tags = cmp_line.split(',')
 
         if bus_point.bus_id < off_bus_point.bus_id:
             return -1
@@ -195,7 +183,7 @@ class OneFileTest:
         self.BusMap[bus_point.bus_id].total += 1
 
         self.JudgeOnline(bus_point, off_bus_point)
-        self.JudgeOffLineAssist(sample_line_tags, cmp_line_tags, count)
+        self.JudgeOffLineAssist(bus_point, off_bus_point)
 
         return 0
 
