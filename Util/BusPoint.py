@@ -14,6 +14,8 @@ class BusPoint:
         self.assist_line_id = "-"
         self.is_rec = False
         self.line_id = ""
+        #在准报站算法中是否被识别
+        self.is_assist_real_dectected = False
         self.parse(line)
 
     def parse(self, line):
@@ -27,6 +29,7 @@ class BusPoint:
             self.assist_line_id = line_tags[18]
         self.is_rec = line_tags[0] == '1'
         self.line_id = line_tags[4]
+        self.is_assist_real_dectected = line_tags[1] == 'D'
 
 class OffLineBusPoint:
     '''

@@ -61,6 +61,10 @@ class BusStat:
         self.miss = 0
         self.wrong = 0
 
+        self.assist_real_detect_modify = 0
+        self.assist_real_dectect_hit_miss = 0
+
+
     def missRate(self):
         if self.total != 0:
             return float(self.miss) / float(self.total)
@@ -69,8 +73,12 @@ class BusStat:
 
     def report(self):
         logger.info(\
-            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%', \
-            self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100)
+            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%, 离线矫正:%s, HitMiss:%s', \
+            self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100, \
+            self.assist_real_detect_modify, self.assist_real_dectect_hit_miss)
+
+        #logger.info('Bus_id: %s 准报站算法矫正: %s 击中漏判: %s', \
+            #self.bus_id, self.assist_real_detect_modify, self.assist_real_dectect_hit_miss)
 
 
 class OneFileTest:
@@ -93,6 +101,15 @@ class OneFileTest:
         #准报站算法提供的意见准确率
         self.total_offline_assist_can_cmp = 0
         self.total_offline_assist_correct = 0
+
+        #在准报站算法里确实被识别了
+        self.total_assist_real_detect = 0
+        #矫正个数
+        self.total_assist_real_detect_modify = 0
+        #hit_miss
+        self.total_assist_real_dectect_hit_miss = 0
+        self.total_assist_real_dectect_can_cmp = 0
+        self.total_assist_real_dectect_right = 0
 
         self.sample_file = sample_file
         self.cmp_file = cmp_file
@@ -122,13 +139,23 @@ class OneFileTest:
         if (self.total_offline_assist_can_cmp == 0):
             self.total_offline_assist_can_cmp = 1
 
-        logger.info(self.sample_file + " 准报站统计: ")
+        logger.info(self.sample_file + " 辅助统计: ")
 
-        logger.info('准报站算法总gps点数:%s', self.total_offline_assist_count)
+        logger.info('总辅助gps点数:%s', self.total_offline_assist_count)
         logger.info('没有使用的个数:%s', self.total_offline_assist_count_not_in_use)
         logger.info('可以cmp的总个数:%s', self.total_offline_assist_can_cmp)
         logger.info('准确的个数:%s', self.total_offline_assist_correct)
         logger.info('准确率:%s', float(self.total_offline_assist_correct)/float(self.total_offline_assist_can_cmp))
+
+        logger.info(self.sample_file + " 准报站真实统计: ")
+        logger.info('准报站算法总识别:%s', self.total_assist_real_detect)
+        logger.info('共矫正:%s', self.total_assist_real_detect_modify)
+        logger.info('击中漏判个数:%s', self.total_assist_real_dectect_hit_miss)
+        logger.info('可以cmp的总个数:%s', self.total_assist_real_dectect_can_cmp)
+        logger.info('准确个数:%s', self.total_assist_real_dectect_right)
+        if self.total_assist_real_dectect_can_cmp == 0:
+            self.total_assist_real_dectect_can_cmp = 1
+        logger.info('准确率:%s', float(self.total_assist_real_dectect_right)/float(self.total_assist_real_dectect_can_cmp))
 
         for key in self.BusMap.keys():
             self.BusMap[key].report()
@@ -158,6 +185,22 @@ class OneFileTest:
             self.total_offline_assist_can_cmp += 1
             if bus_point.assist_line_id == off_bus_point.line_id:
                 self.total_offline_assist_correct += 1
+
+    def JudgeRealAssist(self, bus_point, off_bus_point):
+        if bus_point.is_assist_real_dectected:
+            self.total_assist_real_detect += 1
+            if not bus_point.is_rec:
+                self.total_assist_real_detect_modify += 1
+                self.BusMap[bus_point.bus_id].assist_real_detect_modify += 1
+
+                if off_bus_point.is_rec:
+                    self.total_assist_real_dectect_hit_miss += 1
+                    self.BusMap[bus_point.bus_id].assist_real_dectect_hit_miss += 1
+
+            if off_bus_point.is_rec:
+                self.total_assist_real_dectect_can_cmp += 1
+                if bus_point.line_id == off_bus_point.line_id:
+                    self.total_assist_real_dectect_right += 1
 
     def Judge(self, sample_line, cmp_line,lineno):
         bus_point = BusPoint.BusPoint(sample_line)
