@@ -203,6 +203,11 @@ class OneFileTest:
                     self.total_assist_real_dectect_right += 1
 
     def Judge(self, sample_line, cmp_line,lineno):
+        if (sample_line.strip() == ""):
+            return -1
+        if (cmp_line.strip() == ""):
+            return -2
+
         bus_point = BusPoint.BusPoint(sample_line)
         off_bus_point = BusPoint.OffLineBusPoint(cmp_line)
 
@@ -227,6 +232,7 @@ class OneFileTest:
 
         self.JudgeOnline(bus_point, off_bus_point)
         self.JudgeOffLineAssist(bus_point, off_bus_point)
+        self.JudgeRealAssist(bus_point, off_bus_point)
 
         return 0
 

@@ -18,6 +18,8 @@ class BusPoint:
         self.is_assist_real_dectected = False
         self.parse(line)
 
+        #print('是否被准报站算法识别:', self.is_assist_real_dectected)
+
     def parse(self, line):
         line = line.strip()
         line_tags = line.split(',')
