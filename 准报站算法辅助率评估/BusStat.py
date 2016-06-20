@@ -136,6 +136,10 @@ class OneFileTest:
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
 
+        if sample_line_tags[3] != cmp_line_tags[3]:
+            logger.error("lineNo:%s sample_line: %s; cmp_line: %s. ", lineno, sample_line, cmp_line)
+            sys.exit(0)
+
         if sample_line_tags[3] in self.BusMap.keys():
             bus_stat = self.BusMap.get(sample_line_tags[3])
         else:
