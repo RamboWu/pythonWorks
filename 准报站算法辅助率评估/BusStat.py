@@ -29,7 +29,7 @@ dirpath = os.path.abspath(os.path.dirname(this_file))
 
 if (not os.path.exists('log')):
     os.makedirs('log')
-log_file = 'log/' + getTime() + '.log'
+log_file = 'log/bus_stat_' + getTime() + '.log'
 file_handler = logging.FileHandler(log_file)
 
 # 设置日志打印格式
@@ -130,6 +130,39 @@ class OneFileTest:
         for key in self.BusMap.keys():
             self.BusMap[key].report()
 
+    def JudgeOnline(self, sample_line_tags, cmp_line_tags):
+        if int(sample_line_tags[0]) == 1:
+            self.total_correct += 1
+            if int(cmp_line_tags[0]) == 1:
+                self.total_correct_can_cmp += 1
+                if sample_line_tags[4] == cmp_line_tags[4]:
+                    self.total_correct_right += 1
+                else:
+                    self.BusMap[sample_line_tags[3]].wrong += 1
+
+        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
+            self.total_correct_mis += 1
+            self.BusMap[sample_line_tags[3]].miss += 1
+
+    def JudgeOffLineAssist(self, sample_line_tags, cmp_line_tags, count):
+        #统计准报站算法的使用率和准确率
+        index = 18
+        if count > index and sample_line_tags[index] != '-':
+            self.total_offline_assist_count += 1
+            if int(sample_line_tags[0]) == 0:
+                self.total_offline_assist_count_not_in_use += 1
+
+        if count > index and sample_line_tags[index] != '-' and int(cmp_line_tags[0]) == 1:
+            self.total_offline_assist_can_cmp += 1
+            if sample_line_tags[index] == cmp_line_tags[4]:
+                self.total_offline_assist_correct += 1
+            else:
+                #print(sample_line_tags[19])
+                #print(cmp_line_tags[4])
+                #print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
+                #sys.exit(0)
+                pass
+
     def Judge(self, sample_line, cmp_line,lineno):
         sample_line = sample_line.strip()
         sample_line_tags = sample_line.split(',')
@@ -155,36 +188,9 @@ class OneFileTest:
         self.total += 1
         self.BusMap[sample_line_tags[3]].total += 1
 
-        if int(sample_line_tags[0]) == 1:
-            self.total_correct += 1
-            if int(cmp_line_tags[0]) == 1:
-                self.total_correct_can_cmp += 1
-                if sample_line_tags[4] == cmp_line_tags[4]:
-                    self.total_correct_right += 1
-                else:
-                    self.BusMap[sample_line_tags[3]].wrong += 1
+        self.JudgeOnline(sample_line_tags, cmp_line_tags)
+        self.JudgeOffLineAssist(sample_line_tags, cmp_line_tags, count)
 
-        if int(sample_line_tags[0]) != 1 and int(cmp_line_tags[0]) == 1:
-            self.total_correct_mis += 1
-            self.BusMap[sample_line_tags[3]].miss += 1
-
-        #统计准报站算法的使用率和准确率
-        index = 18
-        if count > index and sample_line_tags[index] != '-':
-            self.total_offline_assist_count += 1
-            if int(sample_line_tags[0]) == 0:
-                self.total_offline_assist_count_not_in_use += 1
-
-        if count > index and sample_line_tags[index] != '-' and int(cmp_line_tags[0]) == 1:
-            self.total_offline_assist_can_cmp += 1
-            if sample_line_tags[index] == cmp_line_tags[4]:
-                self.total_offline_assist_correct += 1
-            else:
-                #print(sample_line_tags[19])
-                #print(cmp_line_tags[4])
-                #print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
-                #sys.exit(0)
-                pass
         return 0
 
     def CountAccuracy(self):
