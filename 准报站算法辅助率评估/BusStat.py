@@ -136,6 +136,11 @@ class OneFileTest:
         count = sample_line.count(',') + 1
         cmp_line_tags = cmp_line.split(',')
 
+        if sample_line_tags[3] < cmp_line_tags[3]:
+            return -1
+        if sample_line_tags[3] > cmp_line_tags[3]:
+            return -2
+
         if sample_line_tags[3] != cmp_line_tags[3] or sample_line_tags[13] != cmp_line_tags[12]:
             logger.error("lineNo:%s sample_line: %s; cmp_line: %s. ", lineno, sample_line, cmp_line)
             sys.exit(0)
@@ -180,7 +185,7 @@ class OneFileTest:
                 #print("lineNo:"+str(lineno), sample_line, ' cmp:', cmp_line)
                 #sys.exit(0)
                 pass
-
+        return 0
 
     def CountAccuracy(self):
         logger.info('开始统计:')
@@ -192,10 +197,17 @@ class OneFileTest:
 
         lineno = 0
         while sample_line and cmp_line:
-            lineno+=1
-            self.Judge(sample_line, cmp_line,lineno)
-            sample_line = sample_file.readline()
-            cmp_line = cmp_file.readline()
+
+            res = self.Judge(sample_line, cmp_line,lineno)
+            if res == 0:
+                lineno+=1
+                sample_line = sample_file.readline()
+                cmp_line = cmp_file.readline()
+            elif res == -1:
+                lineno+=1
+                sample_line = sample_file.readline()
+            elif res == -2:
+                cmp_line = cmp_file.readline()
 
         logger.info('总行数:%s', lineno)
         self.ReportTotalStat()
