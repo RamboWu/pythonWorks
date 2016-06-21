@@ -8,18 +8,27 @@ from Util.Business import BusPoint
 
 class OnlineOfflineGPSFileReader:
     def __init__(self):
-        self.count_func_set = []
+        self.__count_func_set = []
+        self.__report_func_set = []
         pass
 
     def RegisterCount(self, f):
-        self.count_func_set.append(f)
+        self.__count_func_set.append(f)
         return f
 
-    def CountEach(self, bus_point, off_bus_point):
-        for f in self.count_func_set:
+    def RegisterReport(self, f):
+        self.__report_func_set.append(f)
+        return f
+
+    def Report(self):
+        for f in self.__report_func_set:
+            f();
+
+    def __CountEach(self, bus_point, off_bus_point):
+        for f in self.__count_func_set:
             f(bus_point, off_bus_point)
 
-    def Verify(self, sample_line, cmp_line, lineno):
+    def __Verify(self, sample_line, cmp_line, lineno):
         if (sample_line.strip() == ""):
             return -1, 0, 0
         if (cmp_line.strip() == ""):
@@ -49,10 +58,10 @@ class OnlineOfflineGPSFileReader:
 
         lineno = 0
         while sample_line and cmp_line:
-            res, bus_point, off_bus_point= self.Verify(sample_line, cmp_line, lineno)
+            res, bus_point, off_bus_point= self.__Verify(sample_line, cmp_line, lineno)
             if res == 0:
                 lineno += 1
-                self.CountEach(bus_point, off_bus_point)
+                self.__CountEach(bus_point, off_bus_point)
                 sample_line = sample_file.readline()
                 cmp_line = cmp_file.readline()
             elif res == -1:

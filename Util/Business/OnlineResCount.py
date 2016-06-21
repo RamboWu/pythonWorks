@@ -2,6 +2,9 @@
 #!/usr/bin/python
 
 #OnlineResCount.py
+
+logger = 0
+
 class OnlineResCountBus:
     '''
     classdocs
@@ -21,9 +24,11 @@ class OnlineResCountBus:
             return 0
 
     def report(self):
-        logger.info(\
-            'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%', \
-            self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100)
+        global logger
+        if logger != 0:
+            logger.info(\
+                'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%', \
+                self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100)
 
 Total = 0
 TotalCorrect = 0
@@ -37,15 +42,17 @@ def percent(a, b):
         b = 1
     return "%.2f%%"%(float(a)/float(b))
 
-def ReportTotalStat(self):
-    logger.info("实时算法概况总览: ")
-    logger.info('总共%s行', Total)
-    logger.info('识别总数:%s', TotalCorrect)
-    logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
-    logger.info('准确数:%s', TotalCorrectRight)
-    logger.info('miss数:%s', TotalCorrectMis)
-    logger.info('准确率:%s', percent(TotalCorrectRight, TotalCorrectCanCmp))
-    logger.info('占所有点准确率:%s', percent(TotalCorrectRight, Total))
+def Report():
+    global logger
+    if logger != 0:
+        logger.info("实时算法概况总览: ")
+        logger.info('总共%s行', Total)
+        logger.info('识别总数:%s', TotalCorrect)
+        logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
+        logger.info('准确数:%s', TotalCorrectRight)
+        logger.info('miss数:%s', TotalCorrectMis)
+        logger.info('准确率:%s', percent(TotalCorrectRight, TotalCorrectCanCmp))
+        logger.info('占所有点准确率:%s', percent(TotalCorrectRight, Total))
 
     for key in BusMap.keys():
         BusMap[key].report()

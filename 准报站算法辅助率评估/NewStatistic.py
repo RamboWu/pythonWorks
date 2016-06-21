@@ -11,7 +11,7 @@ from Util.Tools import LogHelper
 
 logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
 logger.info('BusState Log init finish!')
-
+OnlineResCount.logger = logger
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
 
@@ -19,5 +19,10 @@ file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
 def Count(bus_point, off_bus_point):
     OnlineResCount.Count(bus_point, off_bus_point)
 
+@file_reader.RegisterReport
+def Report():
+    OnlineResCount.Report()
+
 if  __name__ ==  '__main__':
     file_reader.startCount(sample_file='test/matching.log.sort-100000',cmp_file='test/matching.log.sort.cmp-100000')
+    file_reader.Report()
