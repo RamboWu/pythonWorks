@@ -7,6 +7,11 @@ import codecs, sys, getopt
 sys.path.append("..")
 from Util.Business import OnlineOfflineGPSFileReader
 from Util.Business import OnlineResCount
+from Util.Tools import LogHelper
+
+logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
+logger.info('BusState Log init finish!')
+
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
 

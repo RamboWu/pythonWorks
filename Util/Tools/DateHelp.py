@@ -18,3 +18,7 @@ def is_valid_date(str):
 		return True
 	except:
 		return False
+
+def getTime():
+    ISOTIMEFORMAT = '%Y-%m-%d-%H-%M'
+    return time.strftime( ISOTIMEFORMAT, time.localtime() )
