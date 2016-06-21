@@ -23,6 +23,10 @@ def Count(bus_point, off_bus_point):
 def Report():
     OnlineResCount.Report()
 
+def StartStatistic(sample_file, cmp_file):
+    file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)
+    file_reader.Report()
+
 if  __name__ ==  '__main__':
     file_reader.startCount(sample_file='test/matching.log.sort-100000',cmp_file='test/matching.log.sort.cmp-100000')
     file_reader.Report()
