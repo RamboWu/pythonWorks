@@ -3,9 +3,10 @@
 
 #DoubleFileReader.py
 import codecs, sys, getopt
+sys.path.append("..")
 from Util import BusPoint
 
-class DoubleFileReader:
+class OnlineOfflineGPSFileReader:
     def __init__(self):
         self.count_func_set = []
         pass

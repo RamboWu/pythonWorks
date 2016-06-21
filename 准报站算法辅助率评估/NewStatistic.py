@@ -5,9 +5,9 @@
 import codecs, sys, getopt
 
 sys.path.append("..")
-from Util import DoubleFileReader
+from Util.Business import OnlineOfflineGPSFileReader
 
-file_reader = DoubleFileReader.DoubleFileReader()
+file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
 
 @file_reader.RegisterCount
 def CountOffline(bus_point, off_bus_point):
