@@ -1,2 +1,2 @@
 
-__all__ = ["OnlineOfflineGPSFileReader"]
+__all__ = ["OnlineOfflineGPSFileReader","BusPoint"]

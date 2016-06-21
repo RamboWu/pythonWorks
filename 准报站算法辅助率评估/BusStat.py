@@ -9,7 +9,7 @@ import os
 import time
 
 sys.path.append("..")
-from Util import BusPoint
+from Util.Business import BusPoint
 '''
 Created on 2016-05-20
 

@@ -3,8 +3,8 @@
 
 #DoubleFileReader.py
 import codecs, sys, getopt
-sys.path.append("..")
-from Util import BusPoint
+
+from Util.Business import BusPoint
 
 class OnlineOfflineGPSFileReader:
     def __init__(self):
