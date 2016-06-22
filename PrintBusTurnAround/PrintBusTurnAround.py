@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
-import codecs, sys, getopt, subprocess
+import codecs, sys, getopt, subprocess, os
 sys.path.append("..")
 from Util.CommandManager import Manager
 
@@ -79,12 +79,25 @@ def Count(line):
     if tags[0] == '1':
         BusMap[tags[1]].addNewGps(tags[2], int(tags[3]), int(tags[4]))
 
-def report():
+def getOutputFile(input_file):
+    tags = os.path.split(input_file)
+    output_file = os.path.join('output', tags[1])
+    if (not os.path.exists('output')):
+        os.makedirs('output')
+    return output_file
+
+def report(input_file):
+    dest_file_name = getOutputFile(input_file)
+    dest_file = codecs.open(dest_file_name, 'w', 'utf-8')
     for key in LineMap.keys():
-        print(LineMap[key].toString())
+        dest_file.write(LineMap[key].toString())
+    dest_file.close()
+    print('report finish! save to ' + dest_file_name)
 
 @manager.option('-i', '--input', dest='input_file')
 def run(input_file=None):
+    print('start to run')
+
     _file = codecs.open(input_file, 'r', 'utf-8')
     line = _file.readline()
 
@@ -92,7 +105,7 @@ def run(input_file=None):
         Count(line)
         line = _file.readline()
 
-    report()
+    report(input_file)
 
 @manager.command
 def test():
