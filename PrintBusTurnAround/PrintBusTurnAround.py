@@ -96,7 +96,7 @@ def run(input_file=None):
 
 @manager.command
 def test():
-    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv'
+    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv1'
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
