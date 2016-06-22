@@ -11,26 +11,36 @@ LineMap = dict()
 
 class LineStat:
     def __init__(self, line_id):
-        self._line_id = line_id
+        self.line_id = line_id
         self._zero2zero = 0
         self._zero2one = 0
         self._one2zero = 0
         self._one2one = 0
+        self.single_dir = True
 
     def TurnAround(self, pre_dir, now_dir):
         if pre_dir == 0:
             if now_dir == 0:
                 self._zero2zero += 1
             else:
+                self.single_dir = False
                 self._zero2one += 1
         else:
+            self.single_dir = False
             if now_dir == 0:
                 self._one2zero += 1
             else:
                 self._one2one += 1
 
+    def NeedOutput(self):
+        if not self.single_dir:
+            percent = float(self._zero2zero + self._one2one)/float(self._zero2zero + self._zero2one + self._one2zero + self._one2one)
+            if percent > 0.5:
+                return True
+        return False
+
     def toString(self):
-        return "%s,%s,%s,%s,%s"%(self._line_id, self._zero2zero, self._zero2one, self._one2zero, self._one2one)
+        return "%s,%s,%s,%s,%s\n"%(self.line_id, self._zero2zero, self._zero2one, self._one2zero, self._one2one)
 
 class BusStat:
     def __init__(self, bus_id):
@@ -88,10 +98,17 @@ def getOutputFile(input_file):
 
 def report(input_file):
     dest_file_name = getOutputFile(input_file)
+    tmp_file_name = dest_file_name + '.tmp'
     dest_file = codecs.open(dest_file_name, 'w', 'utf-8')
+    tmp_file = codecs.open(tmp_file_name, 'w', 'utf-8')
+
     for key in LineMap.keys():
-        dest_file.write(LineMap[key].toString())
+        if LineMap[key].NeedOutput():
+            dest_file.write('%s\n'%LineMap[key].line_id)
+        tmp_file.write(LineMap[key].toString())
+
     dest_file.close()
+    tmp_file.close()
     print('report finish! save to ' + dest_file_name)
 
 @manager.option('-i', '--input', dest='input_file')
