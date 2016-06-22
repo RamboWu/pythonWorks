@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 import argparse
 
-from Command import Option, Command
+from Util.Command import Option, Command
 
 iteritems = lambda d: iter(d.items())
 

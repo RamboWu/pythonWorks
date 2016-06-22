@@ -176,7 +176,7 @@ class Command(object):
             parent = getattr(parent,'parent',None)
 
         if help_args:
-            from CommandManager import add_help
+            from Util.CommandManager import add_help
             add_help(parser,help_args)
 
         for option in self.get_options():
