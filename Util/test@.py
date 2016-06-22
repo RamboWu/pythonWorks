@@ -1,27 +1,12 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
-def onexit(f):
-    def plusResult(i):
-        return i + 1
-    return plusResult
-
-@onexit
-def func(i):
-    return i
-
-def spamrun(fn):
-    def sayspam(a):
-        print ("spam,spam,spam", a)
-    return sayspam
-
-@spamrun
-def useful(a,b):
-    print (a**2+b**2)
+from CommandManager import Manager
 
 def  accepts (* types) :
     def  check_accepts ( f) :
         def  new_f (* args,  ** kwds) :
+            print(args, ' / ', kwds)
             for  ( a,  t)  in  zip ( args,  types) :
                 assert  isinstance ( a,  t),  \
                        "arg %r does not match %s " % ( a, t)
@@ -39,14 +24,25 @@ def  returns ( rtype) :
         return  new_f
     return  check_returns
 
-#@ accepts ( int ,  ( int , float ))
-#@ returns (( int , float ))
+@ accepts ( int ,  ( int , float ))
+@ returns (( int , float ))
 def  func ( arg1,  arg2) :
     return  arg1 *  arg2
 
-func = returns(( int , float ))(func)
+manager = Manager()
+
+@manager.command
+def test():
+    print ('hahah')
+
+@manager.option('-u', '--username', dest='username')
+def login(username=None):
+    print(username)
 
 if  __name__ ==  '__main__':
-    a =  func( 3 , 'a')
-    print(a)
+    #print(manager._commands)
+    manager.run()
+    #a =  func( arg1=float(3.1) , arg2=4)
+    #print(a)
     #useful(3,4)
+    pass

@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 import argparse
 
-from .Command import Option, Command
+from Command import Option, Command
 
 iteritems = lambda d: iter(d.items())
 
@@ -367,7 +367,7 @@ class Manager(object):
             if handle is last_func and getattr(last_func, 'capture_all_args', False):
                 args.append(remaining_args)
             try:
-                print(*args, **config)
+                #print('370', *args, **config)
                 res = handle(*args, **config)
             except TypeError as err:
                 err.args = ("{0}: {1}".format(handle,str(err)),)

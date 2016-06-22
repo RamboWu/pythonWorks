@@ -176,7 +176,7 @@ class Command(object):
             parent = getattr(parent,'parent',None)
 
         if help_args:
-            from .CommandManager import add_help
+            from CommandManager import add_help
             add_help(parser,help_args)
 
         for option in self.get_options():
@@ -206,8 +206,7 @@ class Command(object):
         Handles the command with the given app.
         Default behaviour is to call ``self.run`` within a test request context.
         """
-        with app.test_request_context():
-            return self.run(*args, **kwargs)
+        self.run(*args, **kwargs)
 
     def run(self):
         """
