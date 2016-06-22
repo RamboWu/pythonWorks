@@ -5,6 +5,7 @@ import codecs, sys, getopt, subprocess, os
 sys.path.append("..")
 from Util.CommandManager import Manager
 from Util.Business.BusPoint import WenCanOffLinePoint
+from Util.Business.BusPoint import OffLineBusPoint
 
 manager = Manager()
 BusMap = dict()
@@ -77,12 +78,12 @@ class BusStat:
             self.TurnAround(direction, station)
 
 
-def Count(line):
+def Count(line, PointClass):
     line = line.strip()
     if (line == ""):
         return
 
-    point = WenCanOffLinePoint(line)
+    point = PointClass(line)
 
     if not point.bus_id in BusMap.keys():
         BusMap[point.bus_id] = BusStat(point.bus_id)
@@ -113,21 +114,30 @@ def report(input_file):
     print('report finish! save to ' + dest_file_name)
 
 @manager.option('-i', '--input', dest='input_file')
-def run(input_file=None):
-    print('start to run')
+@manager.option('-m', '--point_mode', dest='point_mode')
+def run(input_file=None, point_mode = 0):
+    print('start to run, file=%s, mode=%s'%(input_file, point_mode))
 
     _file = codecs.open(input_file, 'r', 'utf-8')
     line = _file.readline()
 
     while line:
-        Count(line)
+        #print('xmode:%s'%(point_mode))
+        if int(point_mode) == 0:
+            Count(line, WenCanOffLinePoint)
+        else:
+            Count(line, OffLineBusPoint)
         line = _file.readline()
 
     report(input_file)
 
 @manager.command
 def test():
-    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv1'
+    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv1 -m 0'
+    print(command_line)
+    status = subprocess.call(command_line, shell=True)
+
+    command_line = 'python3 PrintBusTurnAround.py run -i test/matching.log.sort.cmp-100000 -m 1'
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 

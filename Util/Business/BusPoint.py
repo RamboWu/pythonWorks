@@ -44,6 +44,8 @@ class OffLineBusPoint:
         self.gps_time = ""
         self.is_rec = False
         self.line_id = ""
+        self.dir = 0
+        self.station = 0
         self.parse(line)
 
     def parse(self, line):
@@ -54,6 +56,8 @@ class OffLineBusPoint:
         self.gps_time = line_tags[12]
         self.is_rec = line_tags[0] == '1'
         self.line_id = line_tags[4]
+        self.dir = int(line_tags[6])
+        self.station = int(line_tags[7])
 
 class WenCanOffLinePoint:
     def __init__(self, line):
