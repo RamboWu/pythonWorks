@@ -6,6 +6,7 @@ sys.path.append("..")
 from Util.CommandManager import Manager
 from Util.Business.BusPoint import WenCanOffLinePoint
 from Util.Business.BusPoint import OffLineBusPoint
+from Util.Tools import MathHelper
 
 manager = Manager()
 BusMap = dict()
@@ -18,27 +19,23 @@ class LineStat:
         self._zero2one = 0
         self._one2zero = 0
         self._one2one = 0
-        self.single_dir = True
 
     def TurnAround(self, pre_dir, now_dir):
         if pre_dir == 0:
             if now_dir == 0:
                 self._zero2zero += 1
             else:
-                self.single_dir = False
                 self._zero2one += 1
         else:
-            self.single_dir = False
             if now_dir == 0:
                 self._one2zero += 1
             else:
                 self._one2one += 1
 
     def NeedOutput(self):
-        if not self.single_dir:
-            percent = float(self._zero2zero + self._one2one)/float(self._zero2zero + self._zero2one + self._one2zero + self._one2one)
-            if percent > 0.5:
-                return True
+        per = MathHelper.percent(self._zero2zero + self._one2one, self._zero2zero + self._zero2one + self._one2zero + self._one2one)
+        if per > 0.5:
+            return True
         return False
 
     def toString(self):
