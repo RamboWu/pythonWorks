@@ -4,6 +4,7 @@
 import codecs, sys, getopt, subprocess, os
 sys.path.append("..")
 from Util.CommandManager import Manager
+from Util.Business.BusPoint import WenCanOffLinePoint
 
 manager = Manager()
 BusMap = dict()
@@ -81,13 +82,13 @@ def Count(line):
     if (line == ""):
         return
 
-    tags = line.split(',')
+    point = WenCanOffLinePoint(line)
 
-    if not tags[1] in BusMap.keys():
-        BusMap[tags[1]] = BusStat(tags[1])
+    if not point.bus_id in BusMap.keys():
+        BusMap[point.bus_id] = BusStat(point.bus_id)
 
-    if tags[0] == '1':
-        BusMap[tags[1]].addNewGps(tags[2], int(tags[3]), int(tags[4]))
+    if point.is_rec:
+        BusMap[point.bus_id].addNewGps(point.line_id, point.dir, point.station)
 
 def getOutputFile(input_file):
     tags = os.path.split(input_file)
