@@ -53,9 +53,6 @@ class BusStat:
 
     def TurnAround(self, direction, station):
 
-        if not self._line_id in LineMap.keys():
-            LineMap[self._line_id] = LineStat(self._line_id)
-
         LineMap[self._line_id].TurnAround(self._now_dir, direction)
         self._now_dir = direction
         self._now_station = station
@@ -66,6 +63,9 @@ class BusStat:
         self._now_station = station
 
     def addNewGps(self, line_id, direction, station):
+        if not line_id in LineMap.keys():
+            LineMap[line_id] = LineStat(line_id)
+
         #如果是最开始，或者是换线路开了
         if self._now_dir == -1 or self._line_id != line_id:
             self.Forward(line_id, direction, station)
