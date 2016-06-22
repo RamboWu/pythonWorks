@@ -112,15 +112,13 @@ def report(input_file, output_dir):
     tmp_file.close()
     print('report finish! save to ' + dest_file_name)
 
-@manager.option('-i', '--input', dest='input_file')
-@manager.option('-m', '--point_mode', dest='point_mode')
-@manager.option('-o', '--output', dest='output_dir')
+@manager.option('-i', '--input', dest='input_file', required=True)
+@manager.option('-m', '--point_mode', dest='point_mode', default=0)
+@manager.option('-o', '--output', dest='output_dir', default='output/')
 def run(input_file=None, point_mode = 0, output_dir = None):
-    if output_dir == None:
-        output_dir = os.path.abspath('output/')
-    else:
-        output_dir = os.path.abspath(output_dir)
-    print('start to run, file=%s, mode=%s, output_dir=%s'%(input_file, point_mode, output_dir))
+
+    output_dir = os.path.abspath(output_dir)
+    print('Start to run, file=%s, mode=%s, output_dir=%s'%(input_file, point_mode, output_dir))
 
     _file = codecs.open(input_file, 'r', 'utf-8')
     line = _file.readline()
@@ -137,7 +135,7 @@ def run(input_file=None, point_mode = 0, output_dir = None):
 
 @manager.command
 def test():
-    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv1 -m 0 -o output/m0/'
+    command_line = 'python3 PrintBusTurnAround.py run -i test/sample.csv1'
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
