@@ -2,9 +2,8 @@
 #!/usr/bin/python
 
 import codecs, sys, getopt, subprocess, os
-tags = os.path.split(os.path.abspath(__file__))
-new_path = os.path.join(tags[0],os.pardir)
-sys.path.append(new_path)
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0,parentdir)
 from Util.CommandManager import Manager
 from Util.Business.BusPoint import WenCanOffLinePoint
 from Util.Business.BusPoint import OffLineBusPoint
