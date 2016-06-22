@@ -88,15 +88,15 @@ def Count(line, PointClass):
     if point.is_rec:
         BusMap[point.bus_id].addNewGps(point.line_id, point.dir, point.station)
 
-def getOutputFile(input_file):
+def getOutputFile(input_file, output_dir):
     tags = os.path.split(input_file)
-    output_file = os.path.join('output', tags[1])
-    if (not os.path.exists('output')):
-        os.makedirs('output')
+    output_file = os.path.join(output_dir, tags[1])
+    if (not os.path.exists(output_dir)):
+        os.makedirs(output_dir)
     return output_file
 
-def report(input_file):
-    dest_file_name = getOutputFile(input_file)
+def report(input_file, output_dir):
+    dest_file_name = getOutputFile(input_file, output_dir)
     tmp_file_name = dest_file_name + '.tmp'
     dest_file = codecs.open(dest_file_name, 'w', 'utf-8')
     tmp_file = codecs.open(tmp_file_name, 'w', 'utf-8')
@@ -112,8 +112,13 @@ def report(input_file):
 
 @manager.option('-i', '--input', dest='input_file')
 @manager.option('-m', '--point_mode', dest='point_mode')
-def run(input_file=None, point_mode = 0):
-    print('start to run, file=%s, mode=%s'%(input_file, point_mode))
+@manager.option('-o', '--output', dest='output_dir')
+def run(input_file=None, point_mode = 0, output_dir = None):
+    if output_dir == None:
+        output_dir = os.path.abspath('output/')
+    else:
+        output_dir = os.path.abspath(output_dir)
+    print('start to run, file=%s, mode=%s, output_dir=%s'%(input_file, point_mode, output_dir))
 
     _file = codecs.open(input_file, 'r', 'utf-8')
     line = _file.readline()
@@ -126,7 +131,7 @@ def run(input_file=None, point_mode = 0):
             Count(line, OffLineBusPoint)
         line = _file.readline()
 
-    report(input_file)
+    report(input_file, output_dir)
 
 @manager.command
 def test():
