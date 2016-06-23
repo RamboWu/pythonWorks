@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+#用来统计离线结果中的 环线是哪些，主要是0，1方向都有的环线是哪些
 import codecs, sys, getopt, subprocess, os
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,parentdir)
