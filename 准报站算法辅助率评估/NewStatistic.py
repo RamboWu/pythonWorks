@@ -4,7 +4,8 @@
 #NewStatistic.py
 import codecs, sys, getopt
 
-sys.path.append("..")
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0,parentdir)
 from Util.Business import OnlineOfflineGPSFileReader
 from Util.Business import OnlineResCount
 from Util.Tools import LogHelper
