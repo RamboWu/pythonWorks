@@ -1,0 +1,1 @@
+PyInstaller PrintBusTurnAround.py -F -p ../ --distpath ./build/dist --specpath ./build
