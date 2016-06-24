@@ -14,7 +14,7 @@ from Util.Business import OfflineResHitCount
 from Util.Tools import LogHelper
 
 logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
-logger.info('BusState Log init finish!')
+logger.info('NewStatistic Log init finish!')
 OnlineResCount.logger = logger
 OnlineResAssistCount.logger = logger
 OfflineResHitCount.logger = logger
