@@ -14,5 +14,9 @@ def test():
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
+    command_line = 'python3 OffLineCorrectRate.py run -i test/matching.log1 --bus_relation_file=test/bus_rel.csv1 --basedata=test/s_json.csv1 --dragon=True'
+    print(command_line)
+    status = subprocess.call(command_line, shell=True)
+
 if __name__=="__main__":
     manager.run()
