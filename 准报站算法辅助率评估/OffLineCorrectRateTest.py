@@ -18,5 +18,9 @@ def test():
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
+    command_line = 'python3 OffLineCorrectRate.py count -i test/matching.log.sort-100000 -j test/matching.log.sort.cmp-100000'
+    print(command_line)
+    status = subprocess.call(command_line, shell=True)
+
 if __name__=="__main__":
     manager.run()

@@ -38,5 +38,10 @@ def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False):
 
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp)
 
+@manager.option('-i', '--input', dest='input_file', required=True)
+@manager.option('-j', '--judge', dest='judge_file', required=True)
+def count(input_file=None, judge_file = None):
+    NewStatistic.StartStatistic(input_file, judge_file)
+
 if __name__=="__main__":
     manager.run()
