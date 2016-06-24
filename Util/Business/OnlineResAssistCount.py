@@ -17,7 +17,7 @@ TotalOfflineAssistCorrect = 0
 def Report():
     global logger
     if logger != None:
-        logger.info("实时辅助概况总览: ")
+        logger.info("\n实时辅助概况总览: ")
         logger.info('总共%s行', Total)
         logger.info('总共辅助:%s', TotalOfflineAssistCount)
         logger.info('没有使用的辅助:%s', TotalOfflineAssistCountNotInUse)

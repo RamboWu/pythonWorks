@@ -33,7 +33,7 @@ BusMap = dict()
 def Report():
     global logger
     if logger != 0:
-        logger.info("实时算法概况总览: ")
+        logger.info("\n实时算法概况总览: ")
         logger.info('总共%s行', Total)
         logger.info('识别总数:%s', TotalCorrect)
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
