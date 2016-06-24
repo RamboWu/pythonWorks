@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #OnlineResCount.py
-
+from Util.Tools import MathHelper
 logger = 0
 
 class OnlineResCountBus:
@@ -16,19 +16,12 @@ class OnlineResCountBus:
         self.miss = 0
         self.wrong = 0
 
-
-    def missRate(self):
-        if self.total != 0:
-            return float(self.miss) / float(self.total)
-        else:
-            return 0
-
     def report(self):
         global logger
         if logger != 0:
             logger.info(\
-                'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %.3f%%', \
-                self.bus_id, self.total, self.miss, self.wrong, self.missRate() * 100)
+                'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
+                self.bus_id, self.total, self.miss, self.wrong, MathHelper.percentToString(self.miss,self.total))
 
 Total = 0
 TotalCorrect = 0
@@ -36,11 +29,6 @@ TotalCorrectCanCmp = 0
 TotalCorrectRight = 0
 TotalCorrectMis = 0
 BusMap = dict()
-
-def percent(a, b):
-    if (b == 0):
-        b = 1
-    return "%.2f%%"%(float(a)/float(b))
 
 def Report():
     global logger
@@ -51,8 +39,8 @@ def Report():
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
         logger.info('准确数:%s', TotalCorrectRight)
         logger.info('miss数:%s', TotalCorrectMis)
-        logger.info('准确率:%s', percent(TotalCorrectRight, TotalCorrectCanCmp))
-        logger.info('占所有点准确率:%s', percent(TotalCorrectRight, Total))
+        logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
+        logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
 
     for key in BusMap.keys():
         BusMap[key].report()
