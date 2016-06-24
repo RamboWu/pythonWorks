@@ -4,6 +4,7 @@
 #hello.py
 import sys, getopt, codecs, os, subprocess, BusStat
 import Kernal
+import NewStatistic
 
 #是否一条龙
 one_dragon_service = False
@@ -49,13 +50,7 @@ def init():
     if (not os.path.exists('compare')):
         os.makedirs('compare')
 
-def test():
-    test = BusStat.OneFileTest('test/matching.log.sort-100000', 'test/matching.log.sort.cmp-100000')
-    test.CountAccuracy()
-
 if __name__=="__main__":
-
-    #test()
 
 #初始化
     init()
@@ -67,5 +62,4 @@ if __name__=="__main__":
     input_file_cmp = input_file_sorted+".cmp"
     Kernal.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp, force = one_dragon_service)
 #统计正确率
-    test = BusStat.OneFileTest(input_file_sorted, input_file_cmp)
-    test.CountAccuracy()
+    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp)
