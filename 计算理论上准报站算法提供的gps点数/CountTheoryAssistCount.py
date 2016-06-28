@@ -133,6 +133,9 @@ def test():
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
+    command_line = 'python3 CountTheoryAssistCount.py run -i test/10301.csv1'
+    print(command_line)
+    status = subprocess.call(command_line, shell=True)
 
 if  __name__ ==  '__main__':
     manager.run()
