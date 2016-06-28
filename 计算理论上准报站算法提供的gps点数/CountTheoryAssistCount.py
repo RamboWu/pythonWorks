@@ -26,6 +26,7 @@ class BusStat:
         self.assist = 0
         self.real_assist = 0
         self.real_assist_not_in_use = 0
+        self.real_assist_diff = 0
 
     def countAssist(self):
         if self.dect_count >= 4:
@@ -50,8 +51,9 @@ class BusStat:
             self.dect_count = 0
 
     def report(self):
-        logger.info('Bus[%s] Assist[%s] Assist4[%s] Assist8[%s] Assist12[%s] 真实Assist[%s], 真实没有使用[%s]', \
-            self.bus_id, self.assist, self.assist_4, self.assist_8, self.assist_12, self.real_assist, self.real_assist_not_in_use)
+        logger.info('Bus[%s] Assist[%s] Assist4[%s] Assist8[%s] Assist12[%s] 真实Assist[%s], 真实没有使用[%s], 和老大不一样的点[%s]', \
+            self.bus_id, self.assist, self.assist_4, self.assist_8, self.assist_12, \
+            self.real_assist, self.real_assist_not_in_use, self.real_assist_diff)
 
 def Count(line):
     line = line.strip()
@@ -67,6 +69,10 @@ def Count(line):
 
     if point.assist_line_id != '-':
         BusMap[point.bus_id].real_assist += 1
+        if point.is_rec:
+            if point.line_id != point.assist_line_id:
+                BusMap[point.bus_id].real_assist_diff += 1
+
         if not point.is_rec:
             BusMap[point.bus_id].real_assist_not_in_use += 1
 
@@ -78,6 +84,7 @@ def report(input_file, lineno):
     total_assist = 0
     total_real_assist = 0
     total_real_assist_not_in_use = 0
+    total_real_assist_diff = 0
 
     for key in BusMap.keys():
         total_assist_4 += BusMap[key].assist_4
@@ -86,6 +93,7 @@ def report(input_file, lineno):
         total_assist += BusMap[key].assist
         total_real_assist += BusMap[key].real_assist
         total_real_assist_not_in_use += BusMap[key].real_assist_not_in_use
+        total_real_assist_diff += BusMap[key].real_assist_diff
 
     logger.info('%s 理论辅助统计报告', input_file)
     logger.info('总共%s行', lineno)
@@ -95,6 +103,8 @@ def report(input_file, lineno):
     logger.info('Assist_12:%s', total_assist_12)
     logger.info('真实辅助:%s', total_real_assist)
     logger.info('真实辅助没有使用:%s', total_real_assist_not_in_use)
+    logger.info('和老大差别的个数:%s', total_real_assist_diff)
+    logger.info('差异占总比:%s', MathHelper.percentToString(total_real_assist_diff, total_assist))
 
     for key in BusMap.keys():
         BusMap[key].report()
