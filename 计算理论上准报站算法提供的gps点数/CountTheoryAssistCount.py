@@ -12,6 +12,7 @@ from Util.Tools import LogHelper
 
 logger = LogHelper.makeConsoleAndFileLogger('CountTheoryAssistCount')
 logger.info('CountTheoryAssistCount Log init finish!')
+diff_logger = LogHelper.makeConsoleAndFileLogger('Diff')
 manager = Manager()
 BusMap = dict()
 
@@ -72,6 +73,7 @@ def Count(line):
         if point.is_rec:
             if point.line_id != point.assist_line_id:
                 BusMap[point.bus_id].real_assist_diff += 1
+                diff_logger.info(line)
 
         if not point.is_rec:
             BusMap[point.bus_id].real_assist_not_in_use += 1

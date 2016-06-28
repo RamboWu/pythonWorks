@@ -7,7 +7,7 @@ from Util.Tools import DateHelp
 
 def makeConsoleAndFileLogger(log_name):
 
-    logger = logging.getLogger('BusStat')
+    logger = logging.getLogger(log_name)
     logger.setLevel(logging.INFO)
 
     # 定义一个Handler打印INFO及以上级别的日志到sys.stdout
