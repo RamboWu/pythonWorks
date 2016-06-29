@@ -6,13 +6,36 @@ def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
         os.makedirs(dir_name)
 
+def BundleTest():
+     #获取脚本路径
+    frozen = 'not'
+    if getattr(sys, 'frozen', False):
+            # we are running in a bundle
+            frozen = 'ever so'
+            bundle_dir = sys._MEIPASS
+    else:
+            # we are running in a normal Python environment
+            bundle_dir = os.path.dirname(os.path.abspath(__file__))
+    print( 'we are',frozen,'frozen')
+    print( 'bundle dir is', bundle_dir )
+    print( 'sys.argv[0] is', sys.argv[0] )
+    print( 'sys.executable is', sys.executable )
+    print( 'os.getcwd is', os.getcwd() )
+
+def GetExcuatbleDir():
+
+    #如果是pyinstaller的exe
+    if getattr(sys, 'frozen', False):
+        return os.getcwd()
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+
 #排序文件
 def sortFile(file_name):
 
     makeDir('temp')
 
-    tags = os.path.split(__file__)
-    filesort = os.path.join(tags[0],'FileSort.jar')
+    filesort = os.path.join(GetExcuatbleDir(),'FileSort.jar')
 
     file_sorted = file_name + ".sort"
 
@@ -38,8 +61,7 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
         print(bus_rel + ' not exist!')
         return False
 
-    tags = os.path.split(__file__)
-    excute_file = os.path.join(tags[0],'BusMatchingResultGenerator.exe')
+    excute_file = os.path.join(GetExcuatbleDir(),'BusMatchingResultGenerator.exe')
 
     command_line = excute_file + ' -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
     print('生成judgement_result.csv: ' + command_line)
