@@ -7,6 +7,7 @@
 
 #OnlineResCount.py
 from Util.Tools import MathHelper
+from Util.Tools import LogHelper
 logger = None
 
 class BusStat:
@@ -42,8 +43,13 @@ TotalAssistRealDectectRight = 0
 TotalAssistRealDectectWrong = 0
 BusMap = dict()
 
+def initLogger():
+    global logger
+    logger = LogHelper.makeConsoleAndFileLogger('准报站统计')
+
 def Report():
     global logger
+    initLogger()
     if logger != None:
         logger.info("\n离线算法概况总览: ")
         logger.info('总共%s行', Total)

@@ -6,6 +6,7 @@ import sys, getopt, codecs, os, subprocess
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,parentdir)
 from Util.CommandManager import Manager
+from Util.Tools import FileHelper
 
 manager = Manager()
 @manager.command
@@ -23,4 +24,6 @@ def test():
     status = subprocess.call(command_line, shell=True)
 
 if __name__=="__main__":
+
+    FileHelper.BundleTest();
     manager.run()

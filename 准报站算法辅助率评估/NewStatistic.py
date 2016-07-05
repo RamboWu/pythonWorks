@@ -15,9 +15,6 @@ from Util.Tools import LogHelper
 
 logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
 logger.info('NewStatistic Log init finish!')
-OnlineResCount.logger = logger
-OnlineResAssistCount.logger = logger
-OfflineResHitCount.logger = logger
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
 

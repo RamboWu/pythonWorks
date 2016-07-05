@@ -1,9 +1,10 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
-
+#主要分析 算法在在线情况下的 辅助分析
 #OnlineResCount.py
 
 from Util.Tools import MathHelper
+from Util.Tools import LogHelper
 logger = None
 
 Total = 0
@@ -14,8 +15,13 @@ TotalOfflineAssistCountNotInUse = 0
 TotalOfflineAssistCanCmp = 0
 TotalOfflineAssistCorrect = 0
 
+def initLogger():
+    global logger
+    logger = LogHelper.makeConsoleAndFileLogger('在线辅助效果分析')
+
 def Report():
     global logger
+    initLogger()
     if logger != None:
         logger.info("\n实时辅助概况总览: ")
         logger.info('总共%s行', Total)

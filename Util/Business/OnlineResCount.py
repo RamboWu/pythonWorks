@@ -3,6 +3,7 @@
 
 #OnlineResCount.py
 from Util.Tools import MathHelper
+from Util.Tools import LogHelper
 logger = 0
 
 class OnlineResCountBus:
@@ -30,8 +31,13 @@ TotalCorrectRight = 0
 TotalCorrectMis = 0
 BusMap = dict()
 
+def initLogger():
+    global logger
+    logger = LogHelper.makeConsoleAndFileLogger('在线算法评测')
+
 def Report():
     global logger
+    initLogger()
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
         logger.info('总共%s行', Total)
