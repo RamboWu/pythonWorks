@@ -32,6 +32,7 @@ class BusPoint:
         self.is_rec = line_tags[0] == '1'
         self.line_id = line_tags[4]
         self.is_assist_real_dectected = line_tags[1] == 'D'
+        self.zhunbaozhan_line_id = line_tags[2]
 
 class OffLineBusPoint:
     '''

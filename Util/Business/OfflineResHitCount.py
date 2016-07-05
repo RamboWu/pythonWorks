@@ -1,6 +1,10 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+'''
+用于统计 离线情况下的 准报站算法识别情况，每一辆车的矫正情况
+'''
+
 #OnlineResCount.py
 from Util.Tools import MathHelper
 logger = None
@@ -16,15 +20,16 @@ class BusStat:
         self.assist_real_detect = 0
         self.assist_real_detect_modify = 0
         self.assist_real_dectect_hit_miss = 0
+        self.assist_real_dectect_wrong = 0
 
     def report(self):
         global logger
         if logger != None:
             logger.info(\
-                'Bus_id: %s Total: %s 离线识别:%s 离线矫正:%s, HitMiss:%s 识别率: %s', \
+                'Bus_id: %s Total: %s 离线识别:%s 离线矫正:%s, HitMiss:%s 识别率:%s, 离线错误:%s', \
                 self.bus_id, self.total, \
                 self.assist_real_detect, self.assist_real_detect_modify, self.assist_real_dectect_hit_miss,\
-                MathHelper.percentToString(self.assist_real_detect, self.total))
+                MathHelper.percentToString(self.assist_real_detect, self.total), self.assist_real_dectect_wrong)
 
 Total = 0
 TotalAssistRealDetect = 0
@@ -34,6 +39,7 @@ TotalAssistRealDetectModify = 0
 TotalAssistRealDectectHitMiss = 0
 TotalAssistRealDectectCanCmp = 0
 TotalAssistRealDectectRight = 0
+TotalAssistRealDectectWrong = 0
 BusMap = dict()
 
 def Report():
@@ -46,6 +52,7 @@ def Report():
         logger.info('HitMiss:%s', TotalAssistRealDectectHitMiss)
         logger.info('可以比较的数量:%s', TotalAssistRealDectectCanCmp)
         logger.info('准确数:%s', TotalAssistRealDectectRight)
+        logger.info('错误数:%s', TotalAssistRealDectectWrong)
         logger.info('准确率:%s', MathHelper.percentToString(TotalAssistRealDectectRight, TotalAssistRealDectectCanCmp))
 
     for key in BusMap.keys():
@@ -58,6 +65,7 @@ def Count(bus_point, off_bus_point):
     global TotalAssistRealDectectHitMiss
     global TotalAssistRealDectectCanCmp
     global TotalAssistRealDectectRight
+    global TotalAssistRealDectectWrong
     global BusMap
 
     if not bus_point.bus_id in BusMap.keys():
@@ -79,5 +87,8 @@ def Count(bus_point, off_bus_point):
 
         if off_bus_point.is_rec:
             TotalAssistRealDectectCanCmp += 1
-            if bus_point.line_id == off_bus_point.line_id:
+            if bus_point.zhunbaozhan_line_id == off_bus_point.line_id:
                 TotalAssistRealDectectRight += 1
+            else:
+                TotalAssistRealDectectWrong += 1
+                BusMap[bus_point.bus_id].assist_real_dectect_wrong += 1
