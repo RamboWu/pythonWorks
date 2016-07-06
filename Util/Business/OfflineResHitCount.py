@@ -31,6 +31,8 @@ class BusStat:
                 self.bus_id, self.total, \
                 self.assist_real_detect, self.assist_real_detect_modify, self.assist_real_dectect_hit_miss,\
                 MathHelper.percentToString(self.assist_real_detect, self.total), self.assist_real_dectect_wrong)
+            if self.assist_real_dectect_wrong > 0:
+                logger.info('Found it!')
 
 Total = 0
 TotalAssistRealDetect = 0
