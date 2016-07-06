@@ -1,6 +1,7 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+#用来统计准报站算法在一天的很多次 线上 开关识别的 总次数，之前主要是想要知道一下 真实的识别数
 import sys, getopt, codecs, os, http.client, urllib.request, urllib.parse
 import http.cookiejar
 import time

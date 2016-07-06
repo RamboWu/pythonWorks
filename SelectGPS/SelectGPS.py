@@ -1,6 +1,7 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+#主要用来提取 某个城市，几日－几日， 某些特定车辆的GPS数据到某个文件夹，并且产生对比文件，方便测试
 #hello.py
 import sys, getopt, codecs, os, subprocess, shutil
 import re
