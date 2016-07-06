@@ -1,6 +1,8 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+#初期用来统计 准确率的一个东西，暂时被遗弃
+
 #hello.py
 import sys, getopt, codecs, os, subprocess, BusStat
 
