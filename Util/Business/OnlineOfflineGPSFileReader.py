@@ -7,9 +7,10 @@ import codecs, sys, getopt
 from Util.Business import BusPoint
 
 class OnlineOfflineGPSFileReader:
-    def __init__(self):
+    def __init__(self, offline_mode = BusPoint.LAODA_MODE):
         self.__count_func_set = []
         self.__report_func_set = []
+        self.__offline_mode = offline_mode
         pass
 
     def RegisterCount(self, f):
@@ -35,7 +36,7 @@ class OnlineOfflineGPSFileReader:
             return -2, 0, 0
 
         bus_point = BusPoint.BusPoint(sample_line)
-        off_bus_point = BusPoint.OffLineBusPoint(cmp_line)
+        off_bus_point = BusPoint.OffLineBusPoint(cmp_line, self.__offline_mode)
 
         if bus_point.bus_id < off_bus_point.bus_id:
             return -1, 0, 0

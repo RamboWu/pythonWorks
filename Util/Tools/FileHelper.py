@@ -1,6 +1,6 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
-import os, subprocess, sys, codecs
+import os, subprocess, sys, codecs, shutil
 
 def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
@@ -22,6 +22,7 @@ def BundleTest():
     print( 'sys.executable is', sys.executable )
     print( 'os.getcwd is', os.getcwd() )
 
+#获取jar等执行文件的目录位置
 def GetExcuatbleDir():
 
     #如果是pyinstaller的exe
@@ -61,15 +62,20 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
         print(bus_rel + ' not exist!')
         return False
 
-    excute_file = os.path.join(GetExcuatbleDir(),'BusMatchingResultGenerator.exe')
+    excute_file = os.path.join(GetExcuatbleDir(),'OfflineJudgeAlg.jar')
+    #java -jar OfflineJudgeAlg.jar r=1 j=s_json.csv i=42255.csv  b=single.csv o=tmp/
+    tmp_dir = os.path.basename(output).replace('.','_')
+    parent_dir = os.path.dirname(output)
+    new_dir = os.path.join(parent_dir,tmp_dir)
 
-    command_line = excute_file + ' -m=0 -lon=10 -lat=11 -l=' + basedata + ' -i=' + input_file + ' -b=' + bus_rel+ ' -o=' + output
+    command_line = 'java -jar ' + excute_file + ' r=1 j=' + basedata + ' i=' + input_file + ' b=' + bus_rel+ ' o=' + new_dir
     print('生成judgement_result.csv: ' + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
 
+    os.rename(os.path.join(new_dir,'answer.log'), output)
     return True
 
 #从bus_file里获取公交车辆关系

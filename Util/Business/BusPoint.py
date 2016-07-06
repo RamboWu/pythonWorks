@@ -2,6 +2,9 @@
 #!/usr/bin/python
 import os, subprocess, sys, codecs
 
+LAODA_MODE = 0
+WENCAN_MODE = 1
+
 class BusPoint:
     '''
     classdocs
@@ -35,11 +38,12 @@ class BusPoint:
         self.zhunbaozhan_line_id = line_tags[2]
 
 class OffLineBusPoint:
+
     '''
     classdocs
     '''
 
-    def __init__(self, line):
+    def __init__(self, line, mode = LAODA_MODE):
 
         self.bus_id = ""
         self.gps_time = ""
@@ -47,9 +51,12 @@ class OffLineBusPoint:
         self.line_id = ""
         self.dir = 0
         self.station = 0
-        self.parse(line)
+        if mode == LAODA_MODE:
+            self.parseLaoDa(line)
+        else:
+            self.parseWenCan(line)
 
-    def parse(self, line):
+    def parseLaoDa(self, line):
         line = line.strip()
         line_tags = line.split(',')
 
@@ -59,6 +66,17 @@ class OffLineBusPoint:
         self.line_id = line_tags[4]
         self.dir = int(line_tags[6])
         self.station = int(line_tags[7])
+
+    def parseWenCan(self, line):
+        line = line.strip()
+        line_tags = line.split(',')
+
+        self.bus_id = line_tags[1]
+        self.gps_time = line_tags[9]
+        self.is_rec = line_tags[0] == '1'
+        self.line_id = line_tags[2]
+        self.dir = int(line_tags[3])
+        self.station = int(line_tags[4])
 
 class WenCanOffLinePoint:
     def __init__(self, line):

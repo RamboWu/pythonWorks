@@ -11,12 +11,13 @@ from Util.Business import OnlineOfflineGPSFileReader
 from Util.Business import OnlineResCount
 from Util.Business import OnlineResAssistCount
 from Util.Business import OfflineResHitCount
+from Util.Business import BusPoint
 from Util.Tools import LogHelper
 
 logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
 logger.info('NewStatistic Log init finish!')
 
-file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader()
+file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader(BusPoint.WENCAN_MODE)
 
 @file_reader.RegisterCount
 def Count(bus_point, off_bus_point):
