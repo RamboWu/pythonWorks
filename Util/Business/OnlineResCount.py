@@ -23,6 +23,8 @@ class OnlineResCountBus:
             logger.info(\
                 'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
                 self.bus_id, self.total, self.miss, self.wrong, MathHelper.percentToString(self.miss,self.total))
+            if self.wrong > 0:
+                logger.info('Found it!')
 
 Total = 0
 TotalCorrect = 0
