@@ -33,6 +33,8 @@ TotalCorrectRight = 0
 TotalCorrectMis = 0
 BusMap = dict()
 
+MissTimePeriod = dict()
+
 def initLogger():
     global logger
     logger = LogHelper.makeConsoleAndFileLogger('在线算法评测')
@@ -50,6 +52,10 @@ def Report():
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
         logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
 
+    items = sorted(MissTimePeriod.items(), key=lambda d:d[0], reverse = False)
+    for item in items:
+        logger.info('Miss Num At Hour[%s] is %s.', item[0], item[1])
+
     for key in BusMap.keys():
         BusMap[key].report()
 
@@ -60,6 +66,7 @@ def Count(bus_point, off_bus_point):
     global TotalCorrectRight
     global TotalCorrectMis
     global BusMap
+    global MissTimePeriod
 
     if bus_point.bus_id in BusMap.keys():
         bus_stat = BusMap.get(bus_point.bus_id)
@@ -80,5 +87,10 @@ def Count(bus_point, off_bus_point):
                 BusMap[bus_point.bus_id].wrong += 1
 
     if not bus_point.is_rec and off_bus_point.is_rec:
+        #print(bus_point.gps_time + ' ' + bus_point.gps_time[11:13])
+        hour = bus_point.gps_time[11:13]
+        if not hour in MissTimePeriod.keys():
+            MissTimePeriod[hour] = 0
+        MissTimePeriod[hour] += 1
         TotalCorrectMis += 1
         BusMap[bus_point.bus_id].miss += 1
