@@ -1,6 +1,7 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 import os, subprocess, sys, codecs, shutil
+import random
 
 def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
@@ -77,6 +78,33 @@ def generateRealOffLineResult(basedata, input_file, bus_rel, output):
 
     os.rename(os.path.join(new_dir,'answer.log'), output)
     return True
+
+def generateBusLineRelationFile(basedata, input_file, output):
+    if not os.path.exists(basedata):
+        print(basedata + ' not exist!')
+        return False
+    if not os.path.exists(input_file):
+        print(input_file + 'not exist!')
+        return False
+
+
+    tmpdir = os.path.join('temp','temp'+str(random.randint(1, 1000000)))
+    makeDir(tmpdir)
+
+    excute_file = os.path.join(GetExcuatbleDir(),'BusLineRelation.exe')
+    '''
+	cmdArg[1] = "-l=" + Configuration.lineDataFile;
+	cmdArg[2] = "-i=" + Configuration.getFileInTemp(ResultConfig.mergerResult);
+	cmdArg[3] = "-a=" + Configuration.getFileInTemp(ResultConfig.answerFile);
+	cmdArg[4] = "-o=" + Configuration.tempDir;
+    '''
+    command_line = excute_file + ' -l=' + basedata + ' -i=' + input_file + ' -a=' + output+ ' -o=' + tmpdir
+
+    print('生成 '+ output + " :\n" + command_line)
+    status = subprocess.call(command_line, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
 
 #从bus_file里获取公交车辆关系
 def getBusRelations(bus_relation_file):
