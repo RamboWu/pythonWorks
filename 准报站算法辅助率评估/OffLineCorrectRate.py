@@ -37,8 +37,10 @@ def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False):
         bus_relation_file = os.path.abspath(bus_relation_file)
         if not os.path.exists(bus_relation_file):
             FileHelper.generateBusLineRelationFile(basedata, input_file_sorted, bus_relation_file)
-
-        FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp)
+        if not os.path.exists(input_file_cmp):
+            FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp)
+        else:
+            print(input_file_cmp + ' already exist! move to next step!')
 
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp)
 

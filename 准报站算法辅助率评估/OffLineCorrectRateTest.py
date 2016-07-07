@@ -36,7 +36,7 @@ def testnew():
 
 @manager.command
 def testBusLine():
-    command_line = 'python3 OffLineCorrectRate.py run -i test/test2/42255.csv1 --bus_relation_file=test/test2/single.csv --basedata=test/test2/s_json.csv'
+    command_line = 'python OffLineCorrectRate.py run -i test/test2/42255.csv1 --bus_relation_file=test/test2/single.csv --basedata=test/test2/s_json.csv'
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 

@@ -98,13 +98,14 @@ def generateBusLineRelationFile(basedata, input_file, output):
 	cmdArg[3] = "-a=" + Configuration.getFileInTemp(ResultConfig.answerFile);
 	cmdArg[4] = "-o=" + Configuration.tempDir;
     '''
-    command_line = excute_file + ' -l=' + basedata + ' -i=' + input_file + ' -a=' + output+ ' -o=' + tmpdir
+    command_line = excute_file + ' -l=' + basedata + ' -i=' + input_file + ' -o=' + tmpdir + os.path.sep
 
     print('生成 '+ output + " :\n" + command_line)
     status = subprocess.call(command_line, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
+    os.rename(os.path.join(tmpdir,'single.csv'), output)
 
 #从bus_file里获取公交车辆关系
 def getBusRelations(bus_relation_file):
