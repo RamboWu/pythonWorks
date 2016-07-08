@@ -29,18 +29,20 @@ def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False):
     print(input_file, bus_relation_file, basedata, dragon)
     #看看是否有必要生成排序好的Sample
     input_file_sorted = input_file + '.sort'
-    if dragon or IfContinueOn("是否排序%s"%(input_file)):
+    if not os.path.exists(input_file_sorted):
         FileHelper.sortFile(input_file)
 
+    bus_relation_file = os.path.abspath(bus_relation_file)
+    if not os.path.exists(bus_relation_file):
+        FileHelper.generateBusLineRelationFile(basedata, input_file_sorted, bus_relation_file)
+    else:
+        print(bus_relation_file + ' already exist! move to next step!')
+
     input_file_cmp = input_file_sorted+".cmp"
-    if dragon or IfContinueOn("是否生成对拍结果%s"%(input_file_cmp)):
-        bus_relation_file = os.path.abspath(bus_relation_file)
-        if not os.path.exists(bus_relation_file):
-            FileHelper.generateBusLineRelationFile(basedata, input_file_sorted, bus_relation_file)
-        if not os.path.exists(input_file_cmp):
-            FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp)
-        else:
-            print(input_file_cmp + ' already exist! move to next step!')
+    if not os.path.exists(input_file_cmp):
+        FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp)
+    else:
+        print(input_file_cmp + ' already exist! move to next step!')
 
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp)
 
