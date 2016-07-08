@@ -90,6 +90,7 @@ def generateBusLineRelationFile(basedata, input_file, output):
 
     tmpdir = os.path.join('temp','temp'+str(random.randint(1, 1000000)))
     makeDir(tmpdir)
+    makeDir(os.path.dirname(output))
 
     excute_file = os.path.join(GetExcuatbleDir(),'BusLineRelation.exe')
     '''
