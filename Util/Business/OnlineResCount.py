@@ -16,13 +16,22 @@ class OnlineResCountBus:
         self.total = 0
         self.miss = 0
         self.wrong = 0
+        self.is_detected_by_zhunbaozhan = False
+        self.miss_before_detected_by_zhunbaozhan = 0
+
+    def addMiss(self):
+        self.miss += 1
+        if not self.is_detected_by_zhunbaozhan:
+            self.miss_before_detected_by_zhunbaozhan += 1
 
     def report(self):
         global logger
         if logger != 0:
             logger.info(\
-                'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
-                self.bus_id, self.total, self.miss, self.wrong, MathHelper.percentToString(self.miss,self.total))
+                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s 丢失率: %s', \
+                self.bus_id, self.total, self.miss, \
+                self.miss_before_detected_by_zhunbaozhan, \
+                self.wrong, MathHelper.percentToString(self.miss,self.total))
             if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
 
@@ -86,6 +95,9 @@ def Count(bus_point, off_bus_point):
             else:
                 BusMap[bus_point.bus_id].wrong += 1
 
+    if bus_point.is_assist_real_dectected:
+        BusMap[bus_point.bus_id].is_detected_by_zhunbaozhan = True
+        
     if not bus_point.is_rec and off_bus_point.is_rec:
         #print(bus_point.gps_time + ' ' + bus_point.gps_time[11:13])
         hour = bus_point.gps_time[11:13]
@@ -93,4 +105,4 @@ def Count(bus_point, off_bus_point):
             MissTimePeriod[hour] = 0
         MissTimePeriod[hour] += 1
         TotalCorrectMis += 1
-        BusMap[bus_point.bus_id].miss += 1
+        BusMap[bus_point.bus_id].addMiss()
