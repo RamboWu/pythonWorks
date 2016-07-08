@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 '''
-用于统计 离线情况下的 准报站算法识别情况，每一辆车的矫正情况
+用于统计 离线情况下的 准报站算法识别情况，每一辆车的矫正情况，判出时间统计
 '''
 
 #OnlineResCount.py
@@ -22,13 +22,15 @@ class BusStat:
         self.assist_real_detect_modify = 0
         self.assist_real_dectect_hit_miss = 0
         self.assist_real_dectect_wrong = 0
+        self.assist_real_dectect_time = ''
 
     def report(self):
         global logger
         if logger != None:
             logger.info(\
-                'Bus_id: %s Total: %s 离线识别:%s 离线矫正:%s, HitMiss:%s 识别率:%s, 离线错误:%s', \
+                'Bus_id: %s Total: %s 识别时间:%s 识别数量:%s 矫正:%s, HitMiss:%s 识别率:%s, 错误:%s', \
                 self.bus_id, self.total, \
+                self.assist_real_dectect_time, \
                 self.assist_real_detect, self.assist_real_detect_modify, self.assist_real_dectect_hit_miss,\
                 MathHelper.percentToString(self.assist_real_detect, self.total), self.assist_real_dectect_wrong)
             if self.assist_real_dectect_wrong > 0:
@@ -44,6 +46,7 @@ TotalAssistRealDectectCanCmp = 0
 TotalAssistRealDectectRight = 0
 TotalAssistRealDectectWrong = 0
 BusMap = dict()
+DetectTimePeriod = dict()
 
 def initLogger():
     global logger
@@ -63,6 +66,13 @@ def Report():
         logger.info('错误数:%s', TotalAssistRealDectectWrong)
         logger.info('准确率:%s', MathHelper.percentToString(TotalAssistRealDectectRight, TotalAssistRealDectectCanCmp))
 
+    items = sorted(DetectTimePeriod.items(), key=lambda d:d[0], reverse = False)
+    detect_num = 0
+    for item in items:
+        detect_num += item[1]
+        logger.info('Detect Num At Hour[%s] is %s.', item[0], item[1])
+
+    logger.info('NoDetect Num is %s.', len(BusMap) - detect_num)
     for key in BusMap.keys():
         BusMap[key].report()
 
@@ -83,6 +93,13 @@ def Count(bus_point, off_bus_point):
     BusMap[bus_point.bus_id].total += 1
 
     if bus_point.is_assist_real_dectected:
+        if (BusMap[bus_point.bus_id].assist_real_dectect_time == ''):
+            BusMap[bus_point.bus_id].assist_real_dectect_time = bus_point.gps_time
+            hour = bus_point.gps_time[11:13]
+            if not hour in DetectTimePeriod.keys():
+                DetectTimePeriod[hour] = 0
+            DetectTimePeriod[hour] += 1
+
         TotalAssistRealDetect += 1
         BusMap[bus_point.bus_id].assist_real_detect += 1
         if not bus_point.is_rec:
