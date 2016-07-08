@@ -19,6 +19,7 @@ class BusPoint:
         self.line_id = ""
         #在准报站算法中是否被识别
         self.is_assist_real_dectected = False
+        self.first_bit = ''
         self.parse(line)
 
         #print('是否被准报站算法识别:', self.is_assist_real_dectected)
@@ -32,6 +33,7 @@ class BusPoint:
         self.gps_time = line_tags[13]
         if count > 18:
             self.assist_line_id = line_tags[18]
+        self.first_bit = line_tags[0]
         self.is_rec = line_tags[0] == '1'
         self.line_id = line_tags[4]
         self.is_assist_real_dectected = line_tags[1] == 'D'

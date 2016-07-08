@@ -89,9 +89,6 @@ def Count(bus_point, off_bus_point):
     if not bus_point.bus_id in BusMap.keys():
         BusMap[bus_point.bus_id] = BusStat(bus_point.bus_id)
 
-    Total += 1
-    BusMap[bus_point.bus_id].total += 1
-
     if bus_point.is_assist_real_dectected:
         if (BusMap[bus_point.bus_id].assist_real_dectect_time == ''):
             BusMap[bus_point.bus_id].assist_real_dectect_time = bus_point.gps_time
@@ -100,6 +97,13 @@ def Count(bus_point, off_bus_point):
                 DetectTimePeriod[hour] = 0
             DetectTimePeriod[hour] += 1
 
+    if int(bus_point.first_bit) < 0:
+        return
+
+    Total += 1
+    BusMap[bus_point.bus_id].total += 1
+
+    if bus_point.is_assist_real_dectected:
         TotalAssistRealDetect += 1
         BusMap[bus_point.bus_id].assist_real_detect += 1
         if not bus_point.is_rec:

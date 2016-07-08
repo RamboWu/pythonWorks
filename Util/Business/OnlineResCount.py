@@ -43,6 +43,7 @@ class OnlineResCountBus:
                 logger.info('Found it!')
 
 Total = 0
+UselessTotal = 0
 TotalCorrect = 0
 TotalCorrectCanCmp = 0
 TotalCorrectRight = 0
@@ -72,6 +73,7 @@ def Report():
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
         logger.info('总共%s行', Total)
+        logger.info('无效数据%s行', UselessTotal)
         logger.info('识别总数:%s', TotalCorrect)
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
         logger.info('准确数:%s', TotalCorrectRight)
@@ -95,12 +97,17 @@ def Count(bus_point, off_bus_point):
     global TotalCorrectMis
     global BusMap
     global MissTimePeriod
+    global UselessTotal
 
-    if bus_point.bus_id in BusMap.keys():
-        bus_stat = BusMap.get(bus_point.bus_id)
-    else:
-        bus_stat = OnlineResCountBus(bus_point.bus_id)
-        BusMap[bus_point.bus_id] = bus_stat
+    if not bus_point.bus_id in BusMap.keys():
+        BusMap[bus_point.bus_id] = OnlineResCountBus(bus_point.bus_id)
+
+    if bus_point.is_assist_real_dectected:
+        BusMap[bus_point.bus_id].is_detected_by_zhunbaozhan = True
+
+    if int(bus_point.first_bit) < 0:
+        UselessTotal += 1
+        return
 
     Total += 1
     BusMap[bus_point.bus_id].total += 1
@@ -114,8 +121,7 @@ def Count(bus_point, off_bus_point):
             else:
                 BusMap[bus_point.bus_id].wrong += 1
 
-    if bus_point.is_assist_real_dectected:
-        BusMap[bus_point.bus_id].is_detected_by_zhunbaozhan = True
+
 
     if not bus_point.is_rec and off_bus_point.is_rec:
         #print(bus_point.gps_time + ' ' + bus_point.gps_time[11:13])
