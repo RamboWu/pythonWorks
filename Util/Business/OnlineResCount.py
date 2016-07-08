@@ -23,7 +23,7 @@ class OnlineResCountBus:
             logger.info(\
                 'Bus_id: %s Total: %s Miss: %s Wrong: %s 丢失率: %s', \
                 self.bus_id, self.total, self.miss, self.wrong, MathHelper.percentToString(self.miss,self.total))
-            if self.wrong > 0:
+            if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
 
 Total = 0
@@ -81,7 +81,7 @@ def Count(bus_point, off_bus_point):
         TotalCorrect += 1
         if off_bus_point.is_rec:
             TotalCorrectCanCmp += 1
-            if bus_point.bus_id == off_bus_point.bus_id:
+            if bus_point.line_id == off_bus_point.line_id:
                 TotalCorrectRight += 1
             else:
                 BusMap[bus_point.bus_id].wrong += 1
