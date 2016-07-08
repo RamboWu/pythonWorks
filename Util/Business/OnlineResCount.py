@@ -26,11 +26,18 @@ class OnlineResCountBus:
 
     def report(self):
         global logger
+
+        tmp = ''
+        if self.is_detected_by_zhunbaozhan:
+            tmp = str(self.miss_before_detected_by_zhunbaozhan)
+        else:
+            tmp = 'NotDetect'
+
         if logger != 0:
             logger.info(\
                 'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s 丢失率: %s', \
                 self.bus_id, self.total, self.miss, \
-                self.miss_before_detected_by_zhunbaozhan, \
+                tmp, \
                 self.wrong, MathHelper.percentToString(self.miss,self.total))
             if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
@@ -51,6 +58,17 @@ def initLogger():
 def Report():
     global logger
     initLogger()
+
+    miss_before = 0
+    miss_after = 0
+    miss_not_detect = 0
+    for key in BusMap.keys():
+        if BusMap[key].is_detected_by_zhunbaozhan:
+            miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
+            miss_after += BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan
+        else:
+            miss_not_detect += BusMap[key].miss
+
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
         logger.info('总共%s行', Total)
@@ -60,6 +78,7 @@ def Report():
         logger.info('miss数:%s', TotalCorrectMis)
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
         logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
+        logger.info('在识别前miss:%s 在识别后miss:%s 未识别miss:%s', miss_before, miss_after, miss_not_detect)
 
     items = sorted(MissTimePeriod.items(), key=lambda d:d[0], reverse = False)
     for item in items:
@@ -97,7 +116,7 @@ def Count(bus_point, off_bus_point):
 
     if bus_point.is_assist_real_dectected:
         BusMap[bus_point.bus_id].is_detected_by_zhunbaozhan = True
-        
+
     if not bus_point.is_rec and off_bus_point.is_rec:
         #print(bus_point.gps_time + ' ' + bus_point.gps_time[11:13])
         hour = bus_point.gps_time[11:13]
