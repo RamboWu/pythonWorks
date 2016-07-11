@@ -9,6 +9,7 @@ from Util.CommandManager import Manager
 
 
 def pickup(input_file_name, keys, index, output_file):
+    print(input_file_name, keys, output_file, index)
     if not os.path.exists(input_file_name):
         print(input_file_name + ' not exists')
         return
@@ -35,7 +36,7 @@ manager = Manager()
 @manager.option('-k', '--keys', dest='keys', required = True)
 @manager.option('-n', '--index', dest='index', default = 3)
 @manager.option('-o', '--output', dest='output_file', default = 'output')
-def run(input_file = None, keys = None, index = 3, output_file = 'output'):
+def run(input_file = None, keys = None, output_file = 'output', index = 3):
     pickup(input_file, keys, index, output_file)
 
 @manager.command
