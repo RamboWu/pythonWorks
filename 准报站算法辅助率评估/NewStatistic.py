@@ -25,14 +25,26 @@ def Count(bus_point, off_bus_point):
     OnlineResAssistCount.Count(bus_point, off_bus_point)
     OfflineResHitCount.Count(bus_point,off_bus_point)
 
-def outputBuses(input_file, buses, output, index = 3):
-    keys = ','.join(buses)
-    PickUp.PickUp.run(input_file, keys, output, index)
+
 
 file_dir = ''
 nodetect_buses = []
 wrong_buses = []
 missafter_buses = []
+
+def outputBuses(input_file, buses, output, index = 3):
+    keys = ','.join(buses)
+    PickUp.PickUp.run(input_file, keys, output, index)
+
+def output(sample_file, cmp_file):
+    outputBuses(sample_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv'))
+    outputBuses(cmp_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv'),nodetect_buses,os.path.join(file_dir,'nodetect.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv'),wrong_buses,os.path.join(file_dir,'wrong.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv'),missafter_buses,os.path.join(file_dir,'missafter.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),nodetect_buses,os.path.join(file_dir,'nodetect.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),wrong_buses,os.path.join(file_dir,'wrong.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),missafter_buses,os.path.join(file_dir,'missafter.csv.cmp'), 1)
 
 @file_reader.RegisterReport
 def Report():
@@ -44,11 +56,9 @@ def Report():
 def StartStatistic(sample_file, cmp_file):
     global file_dir
     file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
-
     file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)
     file_reader.Report()
-    outputBuses(sample_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv'))
-    outputBuses(cmp_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv.cmp'), 1)
+    output(sample_file, cmp_file)
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)
