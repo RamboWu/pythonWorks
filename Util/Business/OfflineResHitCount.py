@@ -37,7 +37,6 @@ class BusStat:
             if self.assist_real_dectect_wrong > 0:
                 logger.info('Found it!')
 
-#TODO 统计没有识别的，识别错误的
 Total = 0
 TotalAssistRealDetect = 0
 #矫正个数

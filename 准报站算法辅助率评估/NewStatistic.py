@@ -23,16 +23,25 @@ def Count(bus_point, off_bus_point):
     OnlineResAssistCount.Count(bus_point, off_bus_point)
     OfflineResHitCount.Count(bus_point,off_bus_point)
 
+def outputBuses():
+    pass
+
+nodetect_buses = []
+wrong_buses = []
+missafter_buses = []
+
 @file_reader.RegisterReport
 def Report():
+    global missafter_buses, nodetect_buses, wrong_buses
     file_name = os.path.join('log','Statistic'+DateHelp.getTime())
-    OnlineResCount.Report(file_name)
+    missafter_buses = OnlineResCount.Report(file_name)
     OnlineResAssistCount.Report(file_name)
-    OfflineResHitCount.Report(file_name)
+    nodetect_buses, wrong_buses = OfflineResHitCount.Report(file_name)
 
 def StartStatistic(sample_file, cmp_file):
     file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)
     file_reader.Report()
+    print(missafter_buses, nodetect_buses, wrong_buses)
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)

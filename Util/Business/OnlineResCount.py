@@ -43,8 +43,6 @@ class OnlineResCountBus:
             if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
 
-#TODO 统计MissAter > 100的车
-
 Total = 0
 UselessTotal = 0
 TotalCorrect = 0
