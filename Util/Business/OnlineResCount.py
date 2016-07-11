@@ -2,6 +2,7 @@
 #!/usr/bin/python
 
 #OnlineResCount.py
+import os
 from Util.Tools import MathHelper
 from Util.Tools import LogHelper
 logger = 0
@@ -52,13 +53,13 @@ BusMap = dict()
 
 MissTimePeriod = dict()
 
-def initLogger():
+def initLogger(log_dir):
     global logger
-    logger = LogHelper.makeConsoleAndFileLogger('在线算法评测')
+    logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'在线算法评测.log'))
 
-def Report():
+def Report(log_dir = 'log'):
     global logger
-    initLogger()
+    initLogger(log_dir)
 
     miss_before = 0
     miss_after = 0

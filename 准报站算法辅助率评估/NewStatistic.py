@@ -13,9 +13,7 @@ from Util.Business import OnlineResAssistCount
 from Util.Business import OfflineResHitCount
 from Util.Business import BusPoint
 from Util.Tools import LogHelper
-
-logger = LogHelper.makeConsoleAndFileLogger('NewStatistic')
-logger.info('NewStatistic Log init finish!')
+from Util.Tools import DateHelp
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader(BusPoint.WENCAN_MODE)
 
@@ -27,9 +25,10 @@ def Count(bus_point, off_bus_point):
 
 @file_reader.RegisterReport
 def Report():
-    OnlineResCount.Report()
-    OnlineResAssistCount.Report()
-    OfflineResHitCount.Report()
+    file_name = os.path.join('log','Statistic'+DateHelp.getTime())
+    OnlineResCount.Report(file_name)
+    OnlineResAssistCount.Report(file_name)
+    OfflineResHitCount.Report(file_name)
 
 def StartStatistic(sample_file, cmp_file):
     file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)

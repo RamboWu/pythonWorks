@@ -5,8 +5,9 @@
 import logging, sys, inspect, os
 from Util.Tools import DateHelp
 
-def makeConsoleAndFileLogger(log_name):
+def makeConsoleAndFileLogger(file_name):
 
+    log_name = os.path.basename(file_name)
     logger = logging.getLogger(log_name)
     logger.setLevel(logging.INFO)
 
@@ -17,10 +18,9 @@ def makeConsoleAndFileLogger(log_name):
     this_file = inspect.getfile(inspect.currentframe())
     dirpath = os.path.abspath(os.path.dirname(this_file))
 
-    if (not os.path.exists('log')):
-        os.makedirs('log')
-    log_file = 'log/' + log_name + DateHelp.getTime() + '.log'
-    file_handler = logging.FileHandler(log_file)
+    if (not os.path.exists(os.path.dirname(file_name))):
+        os.makedirs(os.path.dirname(file_name))
+    file_handler = logging.FileHandler(file_name)
 
     # 设置日志打印格式
     formatter = logging.Formatter('%(asctime)s: %(levelname)-8s %(message)s')

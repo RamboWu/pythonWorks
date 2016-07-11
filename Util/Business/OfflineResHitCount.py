@@ -6,6 +6,7 @@
 '''
 
 #OnlineResCount.py
+import os
 from Util.Tools import MathHelper
 from Util.Tools import LogHelper
 logger = None
@@ -48,13 +49,13 @@ TotalAssistRealDectectWrong = 0
 BusMap = dict()
 DetectTimePeriod = dict()
 
-def initLogger():
+def initLogger(log_dir):
     global logger
-    logger = LogHelper.makeConsoleAndFileLogger('准报站统计')
+    logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'准报站统计.log'))
 
-def Report():
+def Report(log_dir = 'log'):
     global logger
-    initLogger()
+    initLogger(log_dir)
     if logger != None:
         logger.info("\n离线算法概况总览: ")
         logger.info('总共%s行', Total)
