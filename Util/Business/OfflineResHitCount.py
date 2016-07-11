@@ -89,6 +89,8 @@ def Report(log_dir = 'log'):
     for key in BusMap.keys():
         BusMap[key].report()
 
+    return nodetect_buses, wrong_buses
+
 def Count(bus_point, off_bus_point):
     global Total
     global TotalAssistRealDetect

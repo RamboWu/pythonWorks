@@ -89,8 +89,17 @@ def Report(log_dir = 'log'):
     for item in items:
         logger.info('Miss Num At Hour[%s] is %s.', item[0], item[1])
 
+    missafter_buses = []
+    for key in BusMap.keys():
+        if BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan > 50:
+            missafter_buses.append(key)
+
+    logger.info('MissAfter Buses are: %s', missafter_buses)
+
     for key in BusMap.keys():
         BusMap[key].report()
+
+    return missafter_buses
 
 def Count(bus_point, off_bus_point):
     global Total
