@@ -76,11 +76,15 @@ def Report(log_dir = 'log'):
     logger.info('NoDetect Num is %s.', len(BusMap) - detect_num)
 
     nodetect_buses = []
+    wrong_buses = []
     for key in BusMap.keys():
         if BusMap[key].assist_real_dectect_time == '':
             nodetect_buses.append(key)
+        if BusMap[key].assist_real_dectect_wrong > 0:
+            wrong_buses.append(key)
 
     logger.info('NoDetect Buses are: %s', nodetect_buses)
+    logger.info('Wrong Buses are: %s', wrong_buses)
 
     for key in BusMap.keys():
         BusMap[key].report()
