@@ -36,6 +36,12 @@ def outputBuses(input_file, buses, output, index = 3):
     keys = ','.join(buses)
     PickUp.PickUp.run(input_file, keys, output, index)
 
+def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
+    for bus in buses:
+        haha = []
+        haha.append(bus)
+        outputBuses(input_file, haha, os.path.join(output,bus+postfix), index)
+
 def output(sample_file, cmp_file):
     outputBuses(sample_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv'))
     outputBuses(cmp_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv.cmp'), 1)
@@ -45,6 +51,12 @@ def output(sample_file, cmp_file):
     outputBuses(os.path.join(file_dir,'total.csv.cmp'),nodetect_buses,os.path.join(file_dir,'nodetect.csv.cmp'), 1)
     outputBuses(os.path.join(file_dir,'total.csv.cmp'),wrong_buses,os.path.join(file_dir,'wrong.csv.cmp'), 1)
     outputBuses(os.path.join(file_dir,'total.csv.cmp'),missafter_buses,os.path.join(file_dir,'missafter.csv.cmp'), 1)
+    outputSingleBus(os.path.join(file_dir,'total.csv'), nodetect_buses, os.path.join(file_dir, 'nodetect'))
+    outputSingleBus(os.path.join(file_dir,'total.csv'), wrong_buses, os.path.join(file_dir, 'wrong'))
+    outputSingleBus(os.path.join(file_dir,'total.csv'), missafter_buses, os.path.join(file_dir, 'missafter'))
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),nodetect_buses,os.path.join(file_dir,'nodetect'), 1, '.csv.cmp')
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),wrong_buses,os.path.join(file_dir,'wrong'), 1, '.csv.cmp')
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),missafter_buses,os.path.join(file_dir,'missafter'), 1, '.csv.cmp')
 
 @file_reader.RegisterReport
 def Report():
