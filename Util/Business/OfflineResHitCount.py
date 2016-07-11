@@ -37,6 +37,7 @@ class BusStat:
             if self.assist_real_dectect_wrong > 0:
                 logger.info('Found it!')
 
+#TODO 统计没有识别的，识别错误的
 Total = 0
 TotalAssistRealDetect = 0
 #矫正个数
@@ -72,8 +73,15 @@ def Report(log_dir = 'log'):
     for item in items:
         detect_num += item[1]
         logger.info('Detect Num At Hour[%s] is %s.', item[0], item[1])
-
     logger.info('NoDetect Num is %s.', len(BusMap) - detect_num)
+
+    nodetect_buses = []
+    for key in BusMap.keys():
+        if BusMap[key].assist_real_dectect_time == '':
+            nodetect_buses.append(key)
+
+    logger.info('NoDetect Buses are: %s', nodetect_buses)
+
     for key in BusMap.keys():
         BusMap[key].report()
 
