@@ -85,7 +85,7 @@ def Report(log_dir = 'log'):
 
     items = sorted(MissTimePeriod.items(), key=lambda d:d[0], reverse = False)
     for item in items:
-        logger.info('Miss Num At Hour[%s] is %s.', item[0], item[1])
+        logger.info('Miss Num At Hour[%s:%s] is %s.', str(int(item[0]*10/60)), str(item[0]%6*10), item[1])
 
     missafter_buses = []
     for key in BusMap.keys():
@@ -135,10 +135,10 @@ def Count(bus_point, off_bus_point):
 
 
     if not bus_point.is_rec and off_bus_point.is_rec:
-        #print(bus_point.gps_time + ' ' + bus_point.gps_time[11:13])
-        hour = bus_point.gps_time[11:13]
-        if not hour in MissTimePeriod.keys():
-            MissTimePeriod[hour] = 0
-        MissTimePeriod[hour] += 1
+        period = int((int(bus_point.gps_time[11:13])*60 + int(bus_point.gps_time[14:16]))/10)
+        #print(bus_point.gps_time + ' ' + str(period) + ' ' + str(int(period*10/60)) + ' ' + str(period%6*10))
+        if not period in MissTimePeriod.keys():
+            MissTimePeriod[period] = 0
+        MissTimePeriod[period] += 1
         TotalCorrectMis += 1
         BusMap[bus_point.bus_id].addMiss()
