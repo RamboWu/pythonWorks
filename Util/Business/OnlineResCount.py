@@ -89,7 +89,8 @@ def Report(log_dir = 'log'):
 
     missafter_buses = []
     for key in BusMap.keys():
-        if BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan > 50:
+        if BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan > 50 and \
+            BusMap[key].is_detected_by_zhunbaozhan:
             missafter_buses.append(key)
 
     logger.info('MissAfter Buses are: %s', missafter_buses)
