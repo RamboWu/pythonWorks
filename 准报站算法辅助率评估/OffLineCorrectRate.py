@@ -3,6 +3,7 @@
 
 #hello.py
 import sys, getopt, codecs, os, subprocess
+import time
 
 import NewStatistic
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +26,14 @@ manager = Manager()
 @manager.option('--bus_relation_file', dest='bus_relation_file', required=True)
 @manager.option('--basedata', dest='basedata', required=True)
 @manager.option('--dragon', dest='dragon', default=False)
-def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False):
-    print(input_file, bus_relation_file, basedata, dragon)
+@manager.option('--sleep', dest='sleep_time', default = None)
+def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False, sleep_time = None):
+    print(input_file, bus_relation_file, basedata, dragon, sleep_time)
+
+    if sleep_time != None:
+        print('sleep %s seconds'%(sleep_time))
+        time.sleep(int(sleep_time))
+
     #看看是否有必要生成排序好的Sample
     input_file_sorted = input_file + '.sort'
     if not os.path.exists(input_file_sorted):
