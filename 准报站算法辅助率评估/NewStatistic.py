@@ -68,12 +68,15 @@ def Report():
     WrongBusSet = set(wrong_buses)
     MissAfterBusSet = set(missafter_buses)
 
-def StartStatistic(sample_file, cmp_file):
+def StartStatistic(sorted_file, cmp_file, original = None):
     global file_dir
     file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
-    file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)
+    file_reader.startCount(sample_file=sorted_file,cmp_file=cmp_file)
     file_reader.Report()
-    outputDetail(sample_file, cmp_file)
+    if original == None:
+        outputDetail(sorted_file, cmp_file)
+    else:
+        outputDetail(original, cmp_file)
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)

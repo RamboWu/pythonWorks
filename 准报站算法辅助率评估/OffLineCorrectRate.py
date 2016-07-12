@@ -44,7 +44,7 @@ def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False):
     else:
         print(input_file_cmp + ' already exist! move to next step!')
 
-    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp)
+    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, input_file)
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)
