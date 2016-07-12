@@ -42,7 +42,7 @@ def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
         haha.append(bus)
         outputBuses(input_file, haha, os.path.join(output,bus+postfix), index)
 
-def output(sample_file, cmp_file):
+def outputDetail(sample_file, cmp_file):
     outputBuses(sample_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'total.csv'))
     outputBuses(cmp_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'total.csv.cmp'), 1)
     outputBuses(os.path.join(file_dir,'total.csv'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv'))
@@ -73,7 +73,7 @@ def StartStatistic(sample_file, cmp_file):
     file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
     file_reader.startCount(sample_file=sample_file,cmp_file=cmp_file)
     file_reader.Report()
-    output(sample_file, cmp_file)
+    outputDetail(sample_file, cmp_file)
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)
