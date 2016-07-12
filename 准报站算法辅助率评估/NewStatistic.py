@@ -32,9 +32,9 @@ NoDetectBusSet = set()
 WrongBusSet = set()
 MissAfterBusSet = set()
 
-def outputBuses(input_file, buses, output, index = 3):
+def outputBuses(input_file, buses, output, index = 3, single_dir=None, postfix='.csv', noTotalFile=False):
     keys = ','.join(buses)
-    PickUp.PickUp.run(input_file, keys, output, index)
+    PickUp.PickUp.run(input_file, keys, output, index, single_dir, postfix, noTotalFile)
 
 def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
     for bus in buses:
@@ -44,16 +44,14 @@ def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
 
 def outputDetail(sample_file, cmp_file):
     outputBuses(sample_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'total.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv'), NoDetectBusSet, os.path.join(file_dir, 'nodetect.csv'), single_dir='NoDetect')
+    outputBuses(os.path.join(file_dir,'total.csv'), WrongBusSet, os.path.join(file_dir, 'wrong.csv'), single_dir='Wrong')
+    outputBuses(os.path.join(file_dir,'total.csv'), MissAfterBusSet, os.path.join(file_dir, 'missafter.csv'), single_dir='Miss')
+
     outputBuses(cmp_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'sorted.cmp'), 1)
-    outputBuses(os.path.join(file_dir,'total.csv'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv'),WrongBusSet,os.path.join(file_dir,'wrong.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv'))
-    outputSingleBus(os.path.join(file_dir,'total.csv'), NoDetectBusSet, os.path.join(file_dir, 'nodetect'))
-    outputSingleBus(os.path.join(file_dir,'total.csv'), WrongBusSet, os.path.join(file_dir, 'wrong'))
-    outputSingleBus(os.path.join(file_dir,'total.csv'), MissAfterBusSet, os.path.join(file_dir, 'missafter'))
-    outputSingleBus(os.path.join(file_dir,'sorted.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect'), 1, '.csv.cmp')
-    outputSingleBus(os.path.join(file_dir,'sorted.cmp'),WrongBusSet,os.path.join(file_dir,'wrong'), 1, '.csv.cmp')
-    outputSingleBus(os.path.join(file_dir,'sorted.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter'), 1, '.csv.cmp')
+    outputBuses(os.path.join(file_dir,'sorted.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv.cmp'), 1, single_dir='NoDetect', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(file_dir,'sorted.cmp'),WrongBusSet,os.path.join(file_dir,'wrong.csv.cmp'), 1, single_dir='Wrong', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(file_dir,'sorted.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv.cmp'), 1, single_dir='Miss', postfix='.csv.cmp', noTotalFile=True)
     os.remove(os.path.join(file_dir,'sorted.cmp'))
 
 @file_reader.RegisterReport
