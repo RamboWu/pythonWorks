@@ -28,9 +28,9 @@ def Count(bus_point, off_bus_point):
 
 
 file_dir = ''
-nodetect_buses = []
-wrong_buses = []
-missafter_buses = []
+NoDetectBusSet = set()
+WrongBusSet = set()
+MissAfterBusSet = set()
 
 def outputBuses(input_file, buses, output, index = 3):
     keys = ','.join(buses)
@@ -43,27 +43,30 @@ def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
         outputBuses(input_file, haha, os.path.join(output,bus+postfix), index)
 
 def output(sample_file, cmp_file):
-    outputBuses(sample_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv'))
-    outputBuses(cmp_file,nodetect_buses+wrong_buses+missafter_buses,os.path.join(file_dir,'total.csv.cmp'), 1)
-    outputBuses(os.path.join(file_dir,'total.csv'),nodetect_buses,os.path.join(file_dir,'nodetect.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv'),wrong_buses,os.path.join(file_dir,'wrong.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv'),missafter_buses,os.path.join(file_dir,'missafter.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv.cmp'),nodetect_buses,os.path.join(file_dir,'nodetect.csv.cmp'), 1)
-    outputBuses(os.path.join(file_dir,'total.csv.cmp'),wrong_buses,os.path.join(file_dir,'wrong.csv.cmp'), 1)
-    outputBuses(os.path.join(file_dir,'total.csv.cmp'),missafter_buses,os.path.join(file_dir,'missafter.csv.cmp'), 1)
-    outputSingleBus(os.path.join(file_dir,'total.csv'), nodetect_buses, os.path.join(file_dir, 'nodetect'))
-    outputSingleBus(os.path.join(file_dir,'total.csv'), wrong_buses, os.path.join(file_dir, 'wrong'))
-    outputSingleBus(os.path.join(file_dir,'total.csv'), missafter_buses, os.path.join(file_dir, 'missafter'))
-    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),nodetect_buses,os.path.join(file_dir,'nodetect'), 1, '.csv.cmp')
-    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),wrong_buses,os.path.join(file_dir,'wrong'), 1, '.csv.cmp')
-    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),missafter_buses,os.path.join(file_dir,'missafter'), 1, '.csv.cmp')
+    outputBuses(sample_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'total.csv'))
+    outputBuses(cmp_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet, os.path.join(file_dir,'total.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv'),WrongBusSet,os.path.join(file_dir,'wrong.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv'))
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),WrongBusSet,os.path.join(file_dir,'wrong.csv.cmp'), 1)
+    outputBuses(os.path.join(file_dir,'total.csv.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv.cmp'), 1)
+    outputSingleBus(os.path.join(file_dir,'total.csv'), NoDetectBusSet, os.path.join(file_dir, 'nodetect'))
+    outputSingleBus(os.path.join(file_dir,'total.csv'), WrongBusSet, os.path.join(file_dir, 'wrong'))
+    outputSingleBus(os.path.join(file_dir,'total.csv'), MissAfterBusSet, os.path.join(file_dir, 'missafter'))
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect'), 1, '.csv.cmp')
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),WrongBusSet,os.path.join(file_dir,'wrong'), 1, '.csv.cmp')
+    outputSingleBus(os.path.join(file_dir,'total.csv.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter'), 1, '.csv.cmp')
 
 @file_reader.RegisterReport
 def Report():
-    global missafter_buses, nodetect_buses, wrong_buses
+    global NoDetectBusSet, WrongBusSet, MissAfterBusSet
     missafter_buses = OnlineResCount.Report(file_dir)
     OnlineResAssistCount.Report(file_dir)
     nodetect_buses, wrong_buses = OfflineResHitCount.Report(file_dir)
+    NoDetectBusSet = set(nodetect_buses)
+    WrongBusSet = set(wrong_buses)
+    MissAfterBusSet = set(missafter_buses)
 
 def StartStatistic(sample_file, cmp_file):
     global file_dir
