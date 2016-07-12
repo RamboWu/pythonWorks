@@ -85,6 +85,9 @@ def Report(log_dir = 'log'):
     logger.info('NoDetect Buses are: %s', nodetect_buses)
     logger.info('Wrong Buses are: %s', wrong_buses)
 
+    if TotalAssistRealDetect == 0:
+        nodetect_buses = []
+
     for key in BusMap.keys():
         BusMap[key].report()
 
