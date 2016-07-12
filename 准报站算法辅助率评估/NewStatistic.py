@@ -54,6 +54,7 @@ def outputDetail(sample_file, cmp_file):
     outputSingleBus(os.path.join(file_dir,'sorted.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect'), 1, '.csv.cmp')
     outputSingleBus(os.path.join(file_dir,'sorted.cmp'),WrongBusSet,os.path.join(file_dir,'wrong'), 1, '.csv.cmp')
     outputSingleBus(os.path.join(file_dir,'sorted.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter'), 1, '.csv.cmp')
+    os.remove(os.path.join(file_dir,'sorted.cmp'))
 
 @file_reader.RegisterReport
 def Report():
