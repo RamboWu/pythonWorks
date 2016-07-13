@@ -80,9 +80,11 @@ def Report(log_dir = 'log'):
         logger.info('识别总数:%s', TotalCorrect)
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
         logger.info('准确数:%s', TotalCorrectRight)
+        logger.info('错误数:%s', TotalCorrectCanCmp - TotalCorrectRight - TotalDirWrong)
+        logger.info('方向错误:%s', TotalDirWrong)
         logger.info('miss数:%s', TotalCorrectMis)
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
-        logger.info('方向错误:%s', TotalDirWrong)
+
         logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
         logger.info('在识别前miss:%s 在识别后miss:%s 未识别miss:%s', miss_before, miss_after, miss_not_detect)
 
@@ -92,19 +94,25 @@ def Report(log_dir = 'log'):
 
     missafter_buses = []
     dirwrong_buses = []
+    onlinewrong_buses = []
     for key in BusMap.keys():
         if BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan > 50 and \
             BusMap[key].is_detected_by_zhunbaozhan:
             missafter_buses.append(key)
-        if BusMap[key].direction_wrong > 0:
+        if BusMap[key].direction_wrong > 20:
             dirwrong_buses.append(key)
+        if BusMap[key].wrong > 20:
+            onlinewrong_buses.append(key)
 
     logger.info('MissAfter Buses are: %s', missafter_buses)
+    logger.info('OnlineWrong Buses are: %s', onlinewrong_buses)
+    logger.info('DirWrong Buses are: %s', dirwrong_buses)
+
 
     for key in BusMap.keys():
         BusMap[key].report()
 
-    return missafter_buses, dirwrong_buses
+    return missafter_buses, dirwrong_buses, onlinewrong_buses
 
 def Count(bus_point, off_bus_point):
     global Total

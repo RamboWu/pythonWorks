@@ -32,6 +32,7 @@ NoDetectBusSet = set()
 WrongBusSet = set()
 MissAfterBusSet = set()
 DirWrongBusSet = set()
+OnlineWrongBusSet = set()
 
 def outputBuses(input_file, buses, output, index = 3, single_dir=None, postfix='.csv', noTotalFile=False):
     keys = ','.join(buses)
@@ -44,29 +45,32 @@ def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
         outputBuses(input_file, haha, os.path.join(output,bus+postfix), index)
 
 def outputDetail(sample_file, cmp_file):
-    outputBuses(sample_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet | DirWrongBusSet, os.path.join(file_dir,'total.csv'))
+    outputBuses(sample_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet | DirWrongBusSet | OnlineWrongBusSet, os.path.join(file_dir,'total.csv'))
     outputBuses(os.path.join(file_dir,'total.csv'), NoDetectBusSet, os.path.join(file_dir, 'nodetect.csv'), single_dir='NoDetect')
     outputBuses(os.path.join(file_dir,'total.csv'), WrongBusSet, os.path.join(file_dir, 'wrong.csv'), single_dir='Wrong')
     outputBuses(os.path.join(file_dir,'total.csv'), MissAfterBusSet, os.path.join(file_dir, 'missafter.csv'), single_dir='Miss')
     outputBuses(os.path.join(file_dir,'total.csv'), DirWrongBusSet, os.path.join(file_dir, 'dirwrong.csv'), single_dir='DirWrong')
+    outputBuses(os.path.join(file_dir,'total.csv'), OnlineWrongBusSet, os.path.join(file_dir, 'onlinewrong.csv'), single_dir='OnlineWrong')
 
-    outputBuses(cmp_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet | DirWrongBusSet, os.path.join(file_dir,'sorted.cmp'), 1)
+    outputBuses(cmp_file, NoDetectBusSet | WrongBusSet | MissAfterBusSet | DirWrongBusSet | OnlineWrongBusSet, os.path.join(file_dir,'sorted.cmp'), 1)
     outputBuses(os.path.join(file_dir,'sorted.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv.cmp'), 1, single_dir='NoDetect', postfix='.csv.cmp', noTotalFile=True)
     outputBuses(os.path.join(file_dir,'sorted.cmp'),WrongBusSet,os.path.join(file_dir,'wrong.csv.cmp'), 1, single_dir='Wrong', postfix='.csv.cmp', noTotalFile=True)
     outputBuses(os.path.join(file_dir,'sorted.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv.cmp'), 1, single_dir='Miss', postfix='.csv.cmp', noTotalFile=True)
     outputBuses(os.path.join(file_dir,'sorted.cmp'),DirWrongBusSet,os.path.join(file_dir,'dirwrong.csv.cmp'), 1, single_dir='DirWrong', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(file_dir,'sorted.cmp'),OnlineWrongBusSet,os.path.join(file_dir,'onlinewrong.csv.cmp'), 1, single_dir='OnlineWrong', postfix='.csv.cmp', noTotalFile=True)
     os.remove(os.path.join(file_dir,'sorted.cmp'))
 
 @file_reader.RegisterReport
 def Report():
-    global NoDetectBusSet, WrongBusSet, MissAfterBusSet, DirWrongBusSet
-    missafter_buses, dirwrong_buses = OnlineResCount.Report(file_dir)
+    global NoDetectBusSet, WrongBusSet, MissAfterBusSet, DirWrongBusSet, OnlineWrongBusSet
+    missafter_buses, dirwrong_buses, onlinewrong_buses = OnlineResCount.Report(file_dir)
     OnlineResAssistCount.Report(file_dir)
     nodetect_buses, wrong_buses = OfflineResHitCount.Report(file_dir)
     NoDetectBusSet = set(nodetect_buses)
     WrongBusSet = set(wrong_buses)
     MissAfterBusSet = set(missafter_buses)
     DirWrongBusSet = set(dirwrong_buses)
+    OnlineWrongBusSet = set(onlinewrong_buses)
 
 def StartStatistic(sorted_file, cmp_file, original = None):
     global file_dir
