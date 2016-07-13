@@ -16,6 +16,7 @@ class OnlineResCountBus:
         self.bus_id = bus_id
         self.total = 0
         self.miss = 0
+        self.direction_wrong = 0
         self.wrong = 0
         self.is_detected_by_zhunbaozhan = False
         self.miss_before_detected_by_zhunbaozhan = 0
@@ -36,10 +37,10 @@ class OnlineResCountBus:
 
         if logger != 0:
             logger.info(\
-                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s 丢失率: %s', \
+                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s 方向错误:%s 丢失率: %s', \
                 self.bus_id, self.total, self.miss, \
                 tmp, \
-                self.wrong, MathHelper.percentToString(self.miss,self.total))
+                self.wrong, self.direction_wrong, MathHelper.percentToString(self.miss,self.total))
             if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
 
@@ -49,6 +50,7 @@ TotalCorrect = 0
 TotalCorrectCanCmp = 0
 TotalCorrectRight = 0
 TotalCorrectMis = 0
+TotalDirWrong = 0
 BusMap = dict()
 
 MissTimePeriod = dict()
@@ -80,6 +82,7 @@ def Report(log_dir = 'log'):
         logger.info('准确数:%s', TotalCorrectRight)
         logger.info('miss数:%s', TotalCorrectMis)
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
+        logger.info('方向错误:%s', TotalDirWrong)
         logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
         logger.info('在识别前miss:%s 在识别后miss:%s 未识别miss:%s', miss_before, miss_after, miss_not_detect)
 
@@ -109,6 +112,7 @@ def Count(bus_point, off_bus_point):
     global BusMap
     global MissTimePeriod
     global UselessTotal
+    global TotalDirWrong
 
     if not bus_point.bus_id in BusMap.keys():
         BusMap[bus_point.bus_id] = OnlineResCountBus(bus_point.bus_id)
@@ -128,7 +132,11 @@ def Count(bus_point, off_bus_point):
         if off_bus_point.is_rec:
             TotalCorrectCanCmp += 1
             if bus_point.line_id == off_bus_point.line_id:
-                TotalCorrectRight += 1
+                if bus_point.dir == off_bus_point.dir:
+                    TotalCorrectRight += 1
+                else:
+                    TotalDirWrong += 1
+                    BusMap[bus_point.bus_id].direction_wrong += 1
             else:
                 BusMap[bus_point.bus_id].wrong += 1
 
