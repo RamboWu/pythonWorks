@@ -25,7 +25,6 @@ manager = Manager()
 @manager.option('-i', '--input_file', dest='input_file', required=True)
 @manager.option('--bus_relation_file', dest='bus_relation_file', required=True)
 @manager.option('--basedata', dest='basedata', required=True)
-@manager.option('--dragon', dest='dragon', default=False)
 @manager.option('--sleep', dest='sleep_time', default = None)
 def run(input_file = None, bus_relation_file=None, basedata=None, dragon=False, sleep_time = None):
     print(input_file, bus_relation_file, basedata, dragon, sleep_time)
