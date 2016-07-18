@@ -21,6 +21,7 @@ class BusPoint:
         self.is_assist_real_dectected = False
         self.first_bit = ''
         self.dir = ''
+        self.original_line_id = ''
         self.parse(line)
 
         #print('是否被准报站算法识别:', self.is_assist_real_dectected)
@@ -40,6 +41,7 @@ class BusPoint:
         self.is_assist_real_dectected = line_tags[1] == 'D'
         self.zhunbaozhan_line_id = line_tags[2]
         self.dir = line_tags[6]
+        self.original_line_id = line_tags[12]
 
 class OffLineBusPoint:
 

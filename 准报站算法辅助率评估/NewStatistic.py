@@ -11,6 +11,7 @@ from Util.Business import OnlineOfflineGPSFileReader
 from Util.Business import OnlineResCount
 from Util.Business import OnlineResAssistCount
 from Util.Business import OfflineResHitCount
+from Util.Business import CountOriginalWrong
 from Util.Business import BusPoint
 from Util.Tools import LogHelper
 from Util.Tools import DateHelp
@@ -24,8 +25,7 @@ def Count(bus_point, off_bus_point):
     OnlineResCount.Count(bus_point, off_bus_point)
     OnlineResAssistCount.Count(bus_point, off_bus_point)
     OfflineResHitCount.Count(bus_point,off_bus_point)
-
-
+    CountOriginalWrong.Count(bus_point,off_bus_point)
 
 file_dir = ''
 NoDetectBusSet = set()
@@ -66,6 +66,7 @@ def Report():
     missafter_buses, dirwrong_buses, onlinewrong_buses = OnlineResCount.Report(file_dir)
     OnlineResAssistCount.Report(file_dir)
     nodetect_buses, wrong_buses = OfflineResHitCount.Report(file_dir)
+    CountOriginalWrong.Report(file_dir)
     NoDetectBusSet = set(nodetect_buses)
     WrongBusSet = set(wrong_buses)
     MissAfterBusSet = set(missafter_buses)
