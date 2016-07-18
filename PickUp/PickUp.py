@@ -12,7 +12,7 @@ def writeOneLineToOneFile(line, file_name):
     if not os.path.exists(os.path.dirname(file_name)):
         os.makedirs(os.path.dirname(file_name))
 
-    dest_file = codecs.open(file_name, 'a', 'utf-8')
+    dest_file = codecs.open(file_name, 'a', encoding='utf-8', errors='ignore')
     dest_file.write(line)
     dest_file.close()
 
@@ -26,9 +26,9 @@ def pickup(input_file_name, keys, index, output_file, single_dir, postfix, noTot
         os.makedirs(os.path.dirname(output_file))
 
     keys = keys.split(',')
-    input_file = codecs.open(input_file_name, 'r', 'utf-8')
+    input_file = codecs.open(input_file_name, 'r', encoding='utf-8', errors='ignore')
     if not noTotalFile:
-        dest_file = codecs.open(output_file, 'w', 'utf-8')
+        dest_file = codecs.open(output_file, 'w', encoding='utf-8', errors='ignore')
     line = input_file.readline()
     while line:
         tags = line.strip().split(',')
