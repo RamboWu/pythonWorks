@@ -66,7 +66,7 @@ def Report(log_dir = 'log'):
     TotalOriginalDiff = 0
     TotalOriginalDiffWrong = 0
     for key in BusMap.keys():
-        if BusMap[key].total_original_diff > 0 and BusMap[key].total_original_diff_wrong >= 10:
+        if BusMap[key].total_original_diff > 0:
             original_diff_wrong_buses.append(key)
         TotalCanCmp += BusMap[key].total_can_cmp
         TotalOriginalDiff += BusMap[key].total_original_diff
