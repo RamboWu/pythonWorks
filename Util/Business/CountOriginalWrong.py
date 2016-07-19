@@ -106,7 +106,8 @@ def Report(log_dir = 'log'):
         logger.info('Original Diff Wrong Buses are: %s', original_diff_wrong_buses)
 
     for key in BusMap.keys():
-        BusMap[key].report()
+        if BusMap[key].total_original_diff > 0:
+            BusMap[key].report()
 
     return original_diff_wrong_buses
 
