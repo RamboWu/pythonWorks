@@ -56,10 +56,10 @@ class OnlineOfflineGPSFileReader:
 
         return 0, bus_point, off_bus_point
 
-    def startCount(self, sample_file, cmp_file):
+    def startCount(self, sample_file_name, cmp_file_name):
 
-        sample_file = codecs.open(sample_file, 'r', 'utf-8')
-        cmp_file = codecs.open(cmp_file, 'r', 'utf-8')
+        sample_file = codecs.open(sample_file_name, 'r', 'utf-8')
+        cmp_file = codecs.open(cmp_file_name, 'r', 'utf-8')
 
         sample_line = sample_file.readline()
         cmp_line = cmp_file.readline()
@@ -67,6 +67,8 @@ class OnlineOfflineGPSFileReader:
         lineno = 0
         while sample_line and cmp_line:
             res, bus_point, off_bus_point= self.__Verify(sample_line, cmp_line, lineno)
+            if lineno % 100000 == 0:
+                print('read file[%s,%s] over %s lines'%(sample_file_name, cmp_file_name, lineno))
             if res == 0:
                 lineno += 1
                 self.__CountEach(bus_point, off_bus_point)

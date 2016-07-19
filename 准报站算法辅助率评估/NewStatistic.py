@@ -81,7 +81,7 @@ def Report():
 def StartStatistic(sorted_file, cmp_file, original = None):
     global file_dir
     file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
-    file_reader.startCount(sample_file=sorted_file,cmp_file=cmp_file)
+    file_reader.startCount(sample_file_name=sorted_file,cmp_file_name=cmp_file)
     file_reader.Report()
     if original == None:
         outputDetail(sorted_file, cmp_file)
