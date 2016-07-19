@@ -18,6 +18,7 @@ class OnlineResCountBus:
         self.miss = 0
         self.direction_wrong = 0
         self.wrong = 0
+        self.wrong_2 = 0
         self.is_detected_by_zhunbaozhan = False
         self.miss_before_detected_by_zhunbaozhan = 0
 
@@ -37,10 +38,10 @@ class OnlineResCountBus:
 
         if logger != 0:
             logger.info(\
-                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s 方向错误:%s 丢失率: %s', \
+                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s Wrong2: %s 方向错误:%s 丢失率: %s', \
                 self.bus_id, self.total, self.miss, \
                 tmp, \
-                self.wrong, self.direction_wrong, MathHelper.percentToString(self.miss,self.total))
+                self.wrong, self.wrong_2, self.direction_wrong, MathHelper.percentToString(self.miss,self.total))
             if self.wrong > 50 or self.miss > 50:
                 logger.info('Found it!')
 
@@ -66,12 +67,16 @@ def Report(log_dir = 'log'):
     miss_before = 0
     miss_after = 0
     miss_not_detect = 0
+    total_wrong = 0
+    total_wrong2 = 0
     for key in BusMap.keys():
         if BusMap[key].is_detected_by_zhunbaozhan:
             miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
             miss_after += BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan
         else:
             miss_not_detect += BusMap[key].miss
+        total_wrong += BusMap[key].wrong
+        total_wrong2 += BusMap[key].wrong_2
 
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
@@ -80,7 +85,8 @@ def Report(log_dir = 'log'):
         logger.info('识别总数:%s', TotalCorrect)
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
         logger.info('准确数:%s', TotalCorrectRight)
-        logger.info('错误数:%s', TotalCorrectCanCmp - TotalCorrectRight - TotalDirWrong)
+        logger.info('错误数:%s', total_wrong)
+        logger.info('2号错误数:%s', total_wrong2)
         logger.info('方向错误:%s', TotalDirWrong)
         logger.info('miss数:%s', TotalCorrectMis)
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
@@ -140,7 +146,7 @@ def Count(bus_point, off_bus_point):
 
     if bus_point.is_rec:
         TotalCorrect += 1
-        if off_bus_point.is_rec:
+        if off_bus_point.is_rec or off_bus_point.first_bit == '2':
             TotalCorrectCanCmp += 1
             if bus_point.line_id == off_bus_point.line_id:
                 if bus_point.dir == off_bus_point.dir:
@@ -150,6 +156,8 @@ def Count(bus_point, off_bus_point):
                     BusMap[bus_point.bus_id].direction_wrong += 1
             else:
                 BusMap[bus_point.bus_id].wrong += 1
+                if off_bus_point.first_bit == '2':
+                    BusMap[bus_point.bus_id].wrong_2 += 1
 
 
 

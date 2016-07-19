@@ -57,6 +57,7 @@ class OffLineBusPoint:
         self.line_id = ""
         self.dir = ''
         self.station = 0
+        self.first_bit = ''
         if mode == LAODA_MODE:
             self.parseLaoDa(line)
         else:
@@ -69,6 +70,7 @@ class OffLineBusPoint:
         self.bus_id = line_tags[3]
         self.gps_time = line_tags[12]
         self.is_rec = line_tags[0] == '1'
+        self.first_bit = line_tags[0]
         self.line_id = line_tags[4]
         self.dir = line_tags[6]
         self.station = int(line_tags[7])
@@ -80,6 +82,7 @@ class OffLineBusPoint:
         self.bus_id = line_tags[1]
         self.gps_time = line_tags[9]
         self.is_rec = line_tags[0] == '1'
+        self.first_bit = line_tags[0]
         self.line_id = line_tags[2]
         self.dir = line_tags[3]
         self.station = int(line_tags[4])
