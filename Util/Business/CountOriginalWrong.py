@@ -17,29 +17,40 @@ class CountOriginalWrongBus:
         self.total_can_cmp = 0
         self.total_original_diff = 0
         self.total_original_diff_wrong = 0
+        self.total_original_diff_miss = 0
         self.is_detected_by_zhunbaozhan = False
         self.wrong_before_detected_by_zhunbaozhan = 0
+        self.miss_before_detected_by_zhunbaozhan = 0
 
     def addWrong(self):
         self.total_original_diff_wrong += 1
         if not self.is_detected_by_zhunbaozhan:
             self.wrong_before_detected_by_zhunbaozhan += 1
 
+    def addMiss(self):
+        self.total_original_diff_miss += 1
+        if not self.is_detected_by_zhunbaozhan:
+            self.miss_before_detected_by_zhunbaozhan += 1
+
     def report(self):
         global logger
 
-        tmp = ''
+        wrong_tmp = ''
+        miss_tmp = ''
         if self.is_detected_by_zhunbaozhan:
-            tmp = str(self.wrong_before_detected_by_zhunbaozhan)
+            wrong_tmp = str(self.wrong_before_detected_by_zhunbaozhan)
+            miss_tmp = str(self.miss_before_detected_by_zhunbaozhan)
         else:
-            tmp = 'NotDetect'
+            wrong_tmp = 'NotDetect'
+            miss_tmp = 'NotDetect'
 
         if logger != 0:
             logger.info(\
-                'Bus_id: %s TotalCanCmp: %s 原始线路编号不正确: %s 导致错误个数: %s WrongBefore:%s 错误率: %s', \
+                'Bus_id: %s TotalCanCmp: %s 原始线路编号不正确: %s 导致错误个数: %s WrongBefore:%s 错误率: %s 导致Miss数: %s MissBefore: %s', \
                 self.bus_id, self.total_can_cmp, self.total_original_diff, \
-                self.total_original_diff_wrong, tmp, \
-                MathHelper.percentToString(self.total_original_diff_wrong, self.total_original_diff))
+                self.total_original_diff_wrong, wrong_tmp, \
+                MathHelper.percentToString(self.total_original_diff_wrong, self.total_original_diff), \
+                self.total_original_diff_miss, miss_tmp)
 
 BusMap = dict()
 
@@ -54,12 +65,18 @@ def Report(log_dir = 'log'):
     original_diff_wrong_before = 0
     original_diff_wrong_after = 0
     original_diff_wrong_not_detect = 0
+    original_diff_miss_before = 0
+    original_diff_miss_after = 0
+    original_diff_miss_not_detect = 0
     for key in BusMap.keys():
         if BusMap[key].is_detected_by_zhunbaozhan:
             original_diff_wrong_before += BusMap[key].wrong_before_detected_by_zhunbaozhan
             original_diff_wrong_after += BusMap[key].total_original_diff_wrong - BusMap[key].wrong_before_detected_by_zhunbaozhan
+            original_diff_miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
+            original_diff_miss_after += BusMap[key].total_original_diff_miss - BusMap[key].miss_before_detected_by_zhunbaozhan
         else:
             original_diff_wrong_not_detect += BusMap[key].total_original_diff_wrong
+            original_diff_miss_not_detect += BusMap[key].total_original_diff_miss
 
     original_diff_wrong_buses = []
     TotalCanCmp = 0
@@ -77,10 +94,14 @@ def Report(log_dir = 'log'):
         logger.info('总共可比较%s行', TotalCanCmp)
         logger.info('线路编号给错总数:%s', TotalOriginalDiff)
         logger.info('导致错误数:%s', TotalOriginalDiffWrong)
+        logger.info('导致Miss数:%s', original_diff_miss_before+original_diff_miss_after+original_diff_miss_not_detect)
         logger.info('错误率:%s', MathHelper.percentToString(TotalOriginalDiffWrong, TotalOriginalDiff))
 
         logger.info('在识别前wrong:%s 在识别后wrong:%s 未识别wrong:%s', \
             original_diff_wrong_before, original_diff_wrong_after, original_diff_wrong_not_detect)
+
+        logger.info('在识别前Miss:%s 在识别后Miss:%s 未识别Miss:%s', \
+            original_diff_miss_before, original_diff_miss_after, original_diff_miss_not_detect)
 
         logger.info('Original Diff Wrong Buses are: %s', original_diff_wrong_buses)
 
@@ -107,3 +128,7 @@ def Count(bus_point, off_bus_point):
             BusMap[bus_point.bus_id].total_original_diff += 1
             if bus_point.line_id != off_bus_point.line_id:
                 BusMap[bus_point.bus_id].addWrong()
+
+    if not bus_point.is_rec and off_bus_point.is_rec:
+        if bus_point.original_line_id != off_bus_point.line_id:
+            BusMap[bus_point.bus_id].addMiss()
