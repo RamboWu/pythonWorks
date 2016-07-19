@@ -43,6 +43,13 @@ class OnlineOfflineGPSFileReader:
         if bus_point.bus_id > off_bus_point.bus_id:
             return -2, 0, 0
 
+        if bus_point.gps_time < off_bus_point.gps_time:
+            #print("-1 lineNo:%s sample_line: %s; cmp_line: %s. "% (lineno, sample_line, cmp_line))
+            return -1, 0, 0
+        if bus_point.gps_time > off_bus_point.gps_time:
+            #print("-2 lineNo:%s sample_line: %s; cmp_line: %s. "% (lineno, sample_line, cmp_line))
+            return -2, 0, 0
+
         if bus_point.bus_id != off_bus_point.bus_id or bus_point.gps_time != off_bus_point.gps_time:
             print("lineNo:%s sample_line: %s; cmp_line: %s. "% (lineno, sample_line, cmp_line))
             sys.exit(0)
