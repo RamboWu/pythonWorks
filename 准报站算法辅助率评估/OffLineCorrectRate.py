@@ -72,7 +72,7 @@ def batch(location = None, exucte_file = None):
 
             offline_file = os.path.join(location, 'offline.log')
             if os.path.exists(offline_file) and os.path.exists(basedata) and exucte_file != None:
-                FileHelper.generateDataCompleteProcess(online_file, basedata, exucte_file)
+                FileHelper.generateDataCompleteProcess(online_file, basedata, exucte_file, input_file)
                 if os.path.exists(input_file):
                     run(input_file, bus_relation_file, basedata, output=location)
 
