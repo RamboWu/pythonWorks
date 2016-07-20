@@ -44,7 +44,8 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, original=input_file, output = output)
 
 @manager.option('-l', '--location', dest='location', required=True)
-def batch(location = None):
+@manager.option('-e', '--excute', dest='exucte_file', default=None)
+def batch(location = None, exucte_file = None):
     if not os.path.isdir(location):
         print(location + ' isn\'t a dir')
         return
@@ -53,13 +54,27 @@ def batch(location = None):
     for line in list:
         filepath = os.path.join(location,line)
         if os.path.isdir(filepath):  #如果filepath是目录，则再列出该目录下的所有文件
-            batch(filepath)
+            batch(filepath, exucte_file)
 
     input_file = os.path.join(location, 'matching.log')
     bus_relation_file = os.path.join(location, 'single.csv')
     basedata = os.path.join(location, 's_json.csv')
     if os.path.exists(input_file) and os.path.exists(basedata):
         run(input_file, bus_relation_file, basedata, output=location)
+    else:
+
+        online_file = os.path.join(location, 'online.log')
+        if os.path.exists(online_file) and os.path.exists(basedata) and exucte_file != None:
+            FileHelper.generateDataAfterBusMatching(online_file, basedata, exucte_file, input_file)
+            if os.path.exists(input_file):
+                run(input_file, bus_relation_file, basedata, output=location)
+        else:
+
+            offline_file = os.path.join(location, 'offline.log')
+            if os.path.exists(offline_file) and os.path.exists(basedata) and exucte_file != None:
+                FileHelper.generateDataCompleteProcess(online_file, basedata, exucte_file)
+                if os.path.exists(input_file):
+                    run(input_file, bus_relation_file, basedata, output=location)
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)

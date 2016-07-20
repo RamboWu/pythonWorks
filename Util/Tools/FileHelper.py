@@ -2,6 +2,7 @@
 #!/usr/bin/python
 import os, subprocess, sys, codecs, shutil
 import random
+import configparser
 
 def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
@@ -135,3 +136,51 @@ def getBusRelations(bus_relation_file):
     #print(bus_relations)
 
     return True, bus_relations
+
+class myconf(configparser.ConfigParser):
+    def __init__(self,defaults=None):
+        configparser.ConfigParser.__init__(self,defaults=None)
+    def optionxform(self, optionstr):
+        return optionstr
+
+def deleteFirstLine(file):
+    fin=open(file, 'r')
+    a=fin.readlines()
+    fin.close()
+
+    fout=open(file,'w')
+    b=''.join(a[1:])
+    fout.write(b)
+    fout.close()
+
+def generateDataAfterBusMatching(input_file, basedata, excute_file, output_file):
+    print('generateDataAfterBusMatching', input_file, basedata, excute_file)
+    excute_dir = os.path.dirname(excute_file)
+
+    config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'config.ini')
+    config_ini_file = myconf()
+    ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
+    config_ini_file.read_string(ini_str)
+    config_ini_file.set("root", "INPUT_MODE", '0')
+    config_ini_file.set("root", "INPUT_FILE", input_file)
+    config_ini_file.set("root","MATCHING_OUTPUT_FILE_NOT_APPEND_DATE", '1')
+    config_ini_file.set("root","MATCHING_OUTPUT_FILE", output_file)
+    config_ini_file.write(open(config_ini_file_name, "w"))
+    deleteFirstLine(config_ini_file_name)
+
+    config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'LineManager.conf')
+    config_ini_file = myconf()
+    ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
+    config_ini_file.read_string(ini_str)
+    config_ini_file.set("root","LINE_FILE_PATH", basedata)
+    config_ini_file.write(open(config_ini_file_name, "w"))
+    deleteFirstLine(config_ini_file_name)
+
+    print('生成 '+ output_file + " :\n" + excute_file)
+    status = subprocess.call(excute_file, shell=True)
+    if (status != 0):
+        print("Error: Program End.")
+        sys.exit(-1)
+
+def generateDataCompleteProcess(input_file, basedata, excute_file):
+    pass
