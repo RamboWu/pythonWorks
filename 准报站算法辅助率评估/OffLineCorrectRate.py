@@ -16,7 +16,8 @@ manager = Manager()
 @manager.option('--bus_relation_file', dest='bus_relation_file', required=True)
 @manager.option('--basedata', dest='basedata', required=True)
 @manager.option('--sleep', dest='sleep_time', default = None)
-def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = None):
+@manager.option('-o', '--output', dest='output', default = None)
+def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = None, output = None):
     print(input_file, bus_relation_file, basedata, sleep_time)
 
     if sleep_time != None:
@@ -40,7 +41,7 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
     else:
         print(input_file_cmp + ' already exist! move to next step!')
 
-    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, input_file)
+    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, original=input_file, output = output)
 
 @manager.option('-l', '--location', dest='location', required=True)
 def batch(location = None):
@@ -58,7 +59,7 @@ def batch(location = None):
     bus_relation_file = os.path.join(location, 'single.csv')
     basedata = os.path.join(location, 's_json.csv')
     if os.path.exists(input_file) and os.path.exists(basedata):
-        run(input_file, bus_relation_file, basedata)
+        run(input_file, bus_relation_file, basedata, output=location)
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)

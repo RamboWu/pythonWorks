@@ -45,24 +45,24 @@ def outputSingleBus(input_file, buses, output, index = 3, postfix = '.csv'):
         haha.append(bus)
         outputBuses(input_file, haha, os.path.join(output,bus+postfix), index)
 
-def outputDetail(sample_file, cmp_file):
+def outputDetail(sample_file, cmp_file, outputdir):
     TotalBusSet = NoDetectBusSet | WrongBusSet | MissAfterBusSet | DirWrongBusSet | OnlineWrongBusSet | OriginalDiffWrongBusSet
-    outputBuses(sample_file, TotalBusSet, os.path.join(file_dir,'total.csv'))
-    outputBuses(os.path.join(file_dir,'total.csv'), NoDetectBusSet, os.path.join(file_dir, 'nodetect.csv'), single_dir='NoDetect')
-    outputBuses(os.path.join(file_dir,'total.csv'), WrongBusSet, os.path.join(file_dir, 'wrong.csv'), single_dir='Wrong')
-    outputBuses(os.path.join(file_dir,'total.csv'), MissAfterBusSet, os.path.join(file_dir, 'missafter.csv'), single_dir='Miss')
-    outputBuses(os.path.join(file_dir,'total.csv'), DirWrongBusSet, os.path.join(file_dir, 'dirwrong.csv'), single_dir='DirWrong')
-    outputBuses(os.path.join(file_dir,'total.csv'), OnlineWrongBusSet, os.path.join(file_dir, 'onlinewrong.csv'), single_dir='OnlineWrong')
-    outputBuses(os.path.join(file_dir,'total.csv'), OriginalDiffWrongBusSet, os.path.join(file_dir, 'original_diff_wrong.csv'), single_dir='OriginalDiffWrong')
+    outputBuses(sample_file, TotalBusSet, os.path.join(outputdir,'total.csv'))
+    outputBuses(os.path.join(outputdir,'total.csv'), NoDetectBusSet, os.path.join(outputdir, 'nodetect.csv'), single_dir='NoDetect')
+    outputBuses(os.path.join(outputdir,'total.csv'), WrongBusSet, os.path.join(outputdir, 'wrong.csv'), single_dir='Wrong')
+    outputBuses(os.path.join(outputdir,'total.csv'), MissAfterBusSet, os.path.join(outputdir, 'missafter.csv'), single_dir='Miss')
+    outputBuses(os.path.join(outputdir,'total.csv'), DirWrongBusSet, os.path.join(outputdir, 'dirwrong.csv'), single_dir='DirWrong')
+    outputBuses(os.path.join(outputdir,'total.csv'), OnlineWrongBusSet, os.path.join(outputdir, 'onlinewrong.csv'), single_dir='OnlineWrong')
+    outputBuses(os.path.join(outputdir,'total.csv'), OriginalDiffWrongBusSet, os.path.join(outputdir, 'original_diff_wrong.csv'), single_dir='OriginalDiffWrong')
 
-    outputBuses(cmp_file, TotalBusSet, os.path.join(file_dir,'sorted.cmp'), 1)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),NoDetectBusSet,os.path.join(file_dir,'nodetect.csv.cmp'), 1, single_dir='NoDetect', postfix='.csv.cmp', noTotalFile=True)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),WrongBusSet,os.path.join(file_dir,'wrong.csv.cmp'), 1, single_dir='Wrong', postfix='.csv.cmp', noTotalFile=True)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),MissAfterBusSet,os.path.join(file_dir,'missafter.csv.cmp'), 1, single_dir='Miss', postfix='.csv.cmp', noTotalFile=True)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),DirWrongBusSet,os.path.join(file_dir,'dirwrong.csv.cmp'), 1, single_dir='DirWrong', postfix='.csv.cmp', noTotalFile=True)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),OnlineWrongBusSet,os.path.join(file_dir,'onlinewrong.csv.cmp'), 1, single_dir='OnlineWrong', postfix='.csv.cmp', noTotalFile=True)
-    outputBuses(os.path.join(file_dir,'sorted.cmp'),OriginalDiffWrongBusSet,os.path.join(file_dir,'original_diff_wrong.csv.cmp'), 1, single_dir='OriginalDiffWrong', postfix='.csv.cmp', noTotalFile=True)
-    os.remove(os.path.join(file_dir,'sorted.cmp'))
+    outputBuses(cmp_file, TotalBusSet, os.path.join(outputdir,'sorted.cmp'), 1)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),NoDetectBusSet,os.path.join(outputdir,'nodetect.csv.cmp'), 1, single_dir='NoDetect', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),WrongBusSet,os.path.join(outputdir,'wrong.csv.cmp'), 1, single_dir='Wrong', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),MissAfterBusSet,os.path.join(outputdir,'missafter.csv.cmp'), 1, single_dir='Miss', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),DirWrongBusSet,os.path.join(outputdir,'dirwrong.csv.cmp'), 1, single_dir='DirWrong', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),OnlineWrongBusSet,os.path.join(outputdir,'onlinewrong.csv.cmp'), 1, single_dir='OnlineWrong', postfix='.csv.cmp', noTotalFile=True)
+    outputBuses(os.path.join(outputdir,'sorted.cmp'),OriginalDiffWrongBusSet,os.path.join(outputdir,'original_diff_wrong.csv.cmp'), 1, single_dir='OriginalDiffWrong', postfix='.csv.cmp', noTotalFile=True)
+    os.remove(os.path.join(outputdir,'sorted.cmp'))
 
 @file_reader.RegisterReport
 def Report():
@@ -78,21 +78,33 @@ def Report():
     OnlineWrongBusSet = set(onlinewrong_buses)
     OriginalDiffWrongBusSet = set(original_diff_wrong_buses)
 
-def StartStatistic(sorted_file, cmp_file, original = None):
+def StartStatistic(sorted_file, cmp_file, original = None, output = None):
     global file_dir
-    file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
+    if output == None:
+        file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
+    else:
+        file_dir = output
+
+    verify_file = os.path.join(file_dir, 'statistic.log')
+    if os.path.exists(verify_file):
+        return
+    dest_file = codecs.open(verify_file, 'w', encoding='utf-8', errors='ignore')
+    dest_file.write(sorted_file + '\n' + cmp_file)
+    dest_file.close()
+
     file_reader.startCount(sample_file_name=sorted_file,cmp_file_name=cmp_file)
     file_reader.Report()
     if original == None:
-        outputDetail(sorted_file, cmp_file)
+        outputDetail(sorted_file, cmp_file, os.path.join(file_dir,'detail'))
     else:
-        outputDetail(original, cmp_file)
+        outputDetail(original, cmp_file, os.path.join(file_dir,'detail'))
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)
-def run(input_file=None, judge_file = None):
-    StartStatistic(input_file, judge_file)
+@manager.option('-o', '--output', dest='output', default = None)
+def run(input_file=None, judge_file = None, output = None):
+    StartStatistic(input_file, judge_file, output)
 
 @manager.command
 def test():
