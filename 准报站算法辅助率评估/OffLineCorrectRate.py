@@ -11,16 +11,6 @@ sys.path.insert(0,parentdir)
 from Util.CommandManager import Manager
 from Util.Tools import FileHelper
 
-def IfContinueOn(tip):
-    a = 'O'
-    while (not(a in ('Y','y','N','n'))):
-        a=input(tip +"?Y/N ")
-
-    if a in ('N','n'):
-        return False
-    else:
-        return True
-
 manager = Manager()
 @manager.option('-i', '--input_file', dest='input_file', required=True)
 @manager.option('--bus_relation_file', dest='bus_relation_file', required=True)
@@ -51,6 +41,24 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
         print(input_file_cmp + ' already exist! move to next step!')
 
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, input_file)
+
+@manager.option('-l', '--location', dest='location', required=True)
+def batch(location = None):
+    if not os.path.isdir(location):
+        print(location + ' isn\'t a dir')
+        return
+
+    list = os.listdir(location)  #列出目录下的所有文件和目录
+    for line in list:
+        filepath = os.path.join(location,line)
+        if os.path.isdir(filepath):  #如果filepath是目录，则再列出该目录下的所有文件
+            batch(filepath)
+
+    input_file = os.path.join(location, 'matching.log')
+    bus_relation_file = os.path.join(location, 'single.csv')
+    basedata = os.path.join(location, 's_json.csv')
+    if os.path.exists(input_file) and os.path.exists(basedata):
+        run(input_file, bus_relation_file, basedata)
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)
