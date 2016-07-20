@@ -64,15 +64,15 @@ def batch(location = None, exucte_file = None):
     else:
 
         online_file = os.path.join(location, 'online.log')
-        if os.path.exists(online_file) and os.path.exists(basedata) and exucte_file != None:
-            FileHelper.generateDataAfterBusMatching(online_file, basedata, exucte_file, input_file)
+        if os.path.exists(online_file) and os.path.exists(basedata):
+            FileHelper.generateDataAfterBusMatching(online_file, basedata, input_file)
             if os.path.exists(input_file):
                 run(input_file, bus_relation_file, basedata, output=location)
         else:
 
             offline_file = os.path.join(location, 'offline.log')
-            if os.path.exists(offline_file) and os.path.exists(basedata) and exucte_file != None:
-                FileHelper.generateDataCompleteProcess(online_file, basedata, exucte_file, input_file)
+            if os.path.exists(offline_file) and os.path.exists(basedata):
+                FileHelper.generateDataCompleteProcess(offline_file, basedata, input_file)
                 if os.path.exists(input_file):
                     run(input_file, bus_relation_file, basedata, output=location)
 

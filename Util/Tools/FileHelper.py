@@ -153,9 +153,8 @@ def deleteFirstLine(file):
     fout.write(b)
     fout.close()
 
-def generateDataAfterBusMatching(input_file, basedata, excute_file, output_file):
-    print('generateDataAfterBusMatching', input_file, basedata, excute_file)
-    excute_dir = os.path.dirname(excute_file)
+def changeBusMatchingIniFile(input_file, basedata, output_file):
+    excute_dir = GetExcuatbleDir()
 
     config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'config.ini')
     config_ini_file = myconf()
@@ -176,44 +175,29 @@ def generateDataAfterBusMatching(input_file, basedata, excute_file, output_file)
     config_ini_file.write(open(config_ini_file_name, "w"))
     deleteFirstLine(config_ini_file_name)
 
-    print('生成 '+ output_file + " :\n" + excute_file)
-    status = subprocess.call(excute_file, shell=True)
+def generateDataAfterBusMatching(input_file, basedata, output_file):
+    print('generateDataAfterBusMatching', input_file, basedata, output_file)
+
+    changeBusMatchingIniFile(input_file, basedata, output_file)
+
+    status = subprocess.call('.\BusMatching.exe', shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
 
-def generateDataCompleteProcess(input_file, basedata, excute_file, output_file):
-    print('generateDataCompleteProcess', input_file, basedata, excute_file)
-    excute_dir = os.path.dirname(excute_file)
+def generateDataCompleteProcess(input_file, basedata, output_file):
+    print('generateDataCompleteProcess', input_file, basedata)
 
-    config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'config.ini')
-    config_ini_file = myconf()
-    ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
-    config_ini_file.read_string(ini_str)
-    config_ini_file.set("root", "INPUT_MODE", '0')
-    config_ini_file.set("root", "INPUT_FILE", input_file)
-    config_ini_file.set("root","MATCHING_OUTPUT_FILE_NOT_APPEND_DATE", '1')
-    config_ini_file.set("root","MATCHING_OUTPUT_FILE", output_file)
-    config_ini_file.write(open(config_ini_file_name, "w"))
-    deleteFirstLine(config_ini_file_name)
+    changeBusMatchingIniFile(input_file, basedata, output_file)
 
-    config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'LineManager.conf')
-    config_ini_file = myconf()
-    ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
-    config_ini_file.read_string(ini_str)
-    config_ini_file.set("root","LINE_FILE_PATH", basedata)
-    config_ini_file.write(open(config_ini_file_name, "w"))
-    deleteFirstLine(config_ini_file_name)
-
-    command_line_offline = excute_file + ' --offline --min_ac --inputFile ' + input_file
+    command_line_offline = '.\BusMatching.exe --offline --min_ac --inputFile ' + input_file
     print('生成 '+ output_file + " :\n" + command_line_offline)
     status = subprocess.call(command_line_offline, shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
 
-    print('生成 '+ output_file + " :\n" + excute_file)
-    status = subprocess.call(excute_file, shell=True)
+    status = subprocess.call('.\BusMatching.exe', shell=True)
     if (status != 0):
         print("Error: Program End.")
         sys.exit(-1)
