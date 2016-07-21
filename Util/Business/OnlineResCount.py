@@ -146,14 +146,15 @@ def Count(bus_point, off_bus_point):
 
     if bus_point.is_rec:
         TotalCorrect += 1
+        if off_bus_point.is_rec:
+            if bus_point.dir != off_bus_point.dir:
+                TotalDirWrong += 1
+                BusMap[bus_point.bus_id].direction_wrong += 1
+
         if off_bus_point.is_rec or off_bus_point.first_bit == '2':
             TotalCorrectCanCmp += 1
             if bus_point.line_id == off_bus_point.line_id:
-                if bus_point.dir == off_bus_point.dir:
-                    TotalCorrectRight += 1
-                else:
-                    TotalDirWrong += 1
-                    BusMap[bus_point.bus_id].direction_wrong += 1
+                TotalCorrectRight += 1
             else:
                 BusMap[bus_point.bus_id].wrong += 1
                 if off_bus_point.first_bit == '2':
