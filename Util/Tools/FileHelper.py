@@ -166,6 +166,7 @@ def changeBusMatchingIniFile(input_file, basedata, output_file):
     ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
     config_ini_file.read_string(ini_str)
     config_ini_file.set("root", "INPUT_MODE", '0')
+    config_ini_file.set("root", "OUTPUT_MODE", '0')
     config_ini_file.set("root", "INPUT_FILE", input_file)
     config_ini_file.set("root","MATCHING_OUTPUT_FILE_NOT_APPEND_DATE", '1')
     config_ini_file.set("root","MATCHING_OUTPUT_FILE", output_file)
