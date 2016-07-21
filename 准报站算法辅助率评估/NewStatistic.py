@@ -79,7 +79,8 @@ def Report():
     OnlineWrongBusSet = set(onlinewrong_buses)
     OriginalDiffWrongBusSet = set(original_diff_wrong_buses)
 
-def StartStatistic(sorted_file, cmp_file, original = None, output = None):
+def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail = True):
+    print('StartStatistic', sorted_file, cmp_file, original, output, detail)
     global file_dir
     if output == None:
         file_dir = os.path.join('log','Statistic'+DateHelp.getTime()+ '_r' + str(random.randint(1, 1000000)))
@@ -100,10 +101,12 @@ def StartStatistic(sorted_file, cmp_file, original = None, output = None):
 
     file_reader.startCount(sample_file_name=sorted_file,cmp_file_name=cmp_file)
     file_reader.Report()
-    if original == None:
-        outputDetail(sorted_file, cmp_file, os.path.join(file_dir,'detail'))
-    else:
-        outputDetail(original, cmp_file, os.path.join(file_dir,'detail'))
+
+    if detail:
+        if original == None:
+            outputDetail(sorted_file, cmp_file, os.path.join(file_dir,'detail'))
+        else:
+            outputDetail(original, cmp_file, os.path.join(file_dir,'detail'))
 
 manager = Manager()
 @manager.option('-i', '--input', dest='input_file', required=True)

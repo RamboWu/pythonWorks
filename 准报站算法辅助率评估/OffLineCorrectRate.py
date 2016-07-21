@@ -17,8 +17,9 @@ manager = Manager()
 @manager.option('--basedata', dest='basedata', required=True)
 @manager.option('--sleep', dest='sleep_time', default = None)
 @manager.option('-o', '--output', dest='output', default = None)
-def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = None, output = None):
-    print(input_file, bus_relation_file, basedata, sleep_time)
+@manager.option('--detail', dest='detail', default = True)
+def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = None, output = None, detail=True):
+    print('run', input_file, bus_relation_file, basedata, sleep_time, detail)
 
     if sleep_time != None:
         print('sleep %s seconds'%(sleep_time))
@@ -41,11 +42,14 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
     else:
         print(input_file_cmp + ' already exist! move to next step!')
 
-    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, original=input_file, output = output)
+    NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, original=input_file, output = output, detail=detail)
 
 @manager.option('-l', '--location', dest='location', required=True)
 @manager.option('-e', '--excute', dest='exucte_file', default=None)
-def batch(location = None, exucte_file = None):
+@manager.option('--detail', dest='detail', default = True)
+def batch(location = None, exucte_file = None, detail = True):
+    detail = bool(int(detail) > 0)
+    print('Batch:', location, exucte_file, detail, type(detail) )
     if not os.path.isdir(location):
         print(location + ' isn\'t a dir')
         return
@@ -54,27 +58,27 @@ def batch(location = None, exucte_file = None):
     for line in list:
         filepath = os.path.join(location,line)
         if os.path.isdir(filepath):  #如果filepath是目录，则再列出该目录下的所有文件
-            batch(filepath, exucte_file)
+            batch(filepath, exucte_file, detail)
 
     input_file = os.path.join(location, 'matching.log')
     bus_relation_file = os.path.join(location, 'single.csv')
     basedata = os.path.join(location, 's_json.csv')
     if os.path.exists(input_file) and os.path.exists(basedata):
-        run(input_file, bus_relation_file, basedata, output=location)
+        run(input_file, bus_relation_file, basedata, output=location, detail=detail)
     else:
 
         online_file = os.path.join(location, 'online.log')
         if os.path.exists(online_file) and os.path.exists(basedata):
             FileHelper.generateDataAfterBusMatching(online_file, basedata, input_file)
             if os.path.exists(input_file):
-                run(input_file, bus_relation_file, basedata, output=location)
+                run(input_file, bus_relation_file, basedata, output=location, detail=detail)
         else:
 
             offline_file = os.path.join(location, 'offline.log')
             if os.path.exists(offline_file) and os.path.exists(basedata):
                 FileHelper.generateDataCompleteProcess(offline_file, basedata, input_file)
                 if os.path.exists(input_file):
-                    run(input_file, bus_relation_file, basedata, output=location)
+                    run(input_file, bus_relation_file, basedata, output=location, detail=detail)
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)
