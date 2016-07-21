@@ -17,6 +17,7 @@ from Util.Tools import LogHelper
 from Util.Tools import DateHelp
 
 import PickUp.PickUp
+import random
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader(BusPoint.WENCAN_MODE)
 
@@ -81,13 +82,18 @@ def Report():
 def StartStatistic(sorted_file, cmp_file, original = None, output = None):
     global file_dir
     if output == None:
-        file_dir = os.path.join('log','Statistic'+DateHelp.getTime())
+        file_dir = os.path.join('log','Statistic'+DateHelp.getTime()+ '_r' + str(random.randint(1, 1000000)))
     else:
         file_dir = output
 
     verify_file = os.path.join(file_dir, 'statistic.log')
     if os.path.exists(verify_file):
+        print(verify_file +' exists!')
         return
+
+    if not os.path.exists(os.path.dirname(verify_file)):
+        os.makedirs(os.path.dirname(verify_file))
+
     dest_file = codecs.open(verify_file, 'w', encoding='utf-8', errors='ignore')
     dest_file.write(sorted_file + '\n' + cmp_file)
     dest_file.close()
