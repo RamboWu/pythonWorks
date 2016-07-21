@@ -3,6 +3,7 @@
 import os, subprocess, sys, codecs, shutil
 import random
 import configparser
+import shutil
 
 def makeDir(dir_name):
     if (not os.path.exists(dir_name)):
@@ -153,7 +154,7 @@ def deleteFirstLine(file):
     fout.write(b)
     fout.close()
 
-def changeBusMatchingIniFile(input_file, basedata, output_file):
+def changeBusMatchingIniFile(input_file, basedata, output_file, use_verify):
     excute_dir = GetExcuatbleDir()
     if not os.path.exists(os.path.join(excute_dir,'log4cplus.cfg')):
         status = subprocess.call('.\BusMatching.exe -sample', shell=True)
@@ -181,10 +182,21 @@ def changeBusMatchingIniFile(input_file, basedata, output_file):
     config_ini_file.write(open(config_ini_file_name, "w"))
     deleteFirstLine(config_ini_file_name)
 
+    config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'Algorithm.conf')
+    config_ini_file = myconf()
+    ini_str = '[root]\n' + open(config_ini_file_name, 'r').read()
+    config_ini_file.read_string(ini_str)
+    if use_verify:
+        config_ini_file.set("root","USE_VERIFY", '1')
+    else:
+        config_ini_file.set("root","USE_VERIFY", '0')
+    config_ini_file.write(open(config_ini_file_name, "w"))
+    deleteFirstLine(config_ini_file_name)
+
 def generateDataAfterBusMatching(input_file, basedata, output_file):
     print('generateDataAfterBusMatching', input_file, basedata, output_file)
 
-    changeBusMatchingIniFile(input_file, basedata, output_file)
+    changeBusMatchingIniFile(input_file, basedata, output_file, False)
 
     print('.\BusMatching.exe')
     status = subprocess.call('.\BusMatching.exe', shell=True)
@@ -195,7 +207,7 @@ def generateDataAfterBusMatching(input_file, basedata, output_file):
 def generateDataCompleteProcess(input_file, basedata, output_file):
     print('generateDataCompleteProcess', input_file, basedata)
 
-    changeBusMatchingIniFile(input_file, basedata, output_file)
+    changeBusMatchingIniFile(input_file, basedata, output_file, True)
 
     command_line_offline = '.\BusMatching.exe --offline --min_ac --inputFile ' + input_file
     print('生成 '+ output_file + " :\n" + command_line_offline)
