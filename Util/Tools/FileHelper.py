@@ -155,6 +155,11 @@ def deleteFirstLine(file):
 
 def changeBusMatchingIniFile(input_file, basedata, output_file):
     excute_dir = GetExcuatbleDir()
+    if not os.path.exists(os.path.join(excute_dir,'log4cplus.cfg')):
+        status = subprocess.call('.\BusMatching.exe -sample', shell=True)
+        if (status != 0):
+            print("Error: Program End.")
+            sys.exit(-1)
 
     config_ini_file_name = os.path.join(os.path.join(excute_dir, 'conf'), 'config.ini')
     config_ini_file = myconf()
@@ -180,6 +185,7 @@ def generateDataAfterBusMatching(input_file, basedata, output_file):
 
     changeBusMatchingIniFile(input_file, basedata, output_file)
 
+    print('.\BusMatching.exe')
     status = subprocess.call('.\BusMatching.exe', shell=True)
     if (status != 0):
         print("Error: Program End.")
@@ -197,6 +203,7 @@ def generateDataCompleteProcess(input_file, basedata, output_file):
         print("Error: Program End.")
         sys.exit(-1)
 
+    print('.\BusMatching.exe')
     status = subprocess.call('.\BusMatching.exe', shell=True)
     if (status != 0):
         print("Error: Program End.")
