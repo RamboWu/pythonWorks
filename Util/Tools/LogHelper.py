@@ -28,6 +28,7 @@ def makeConsoleAndFileLogger(file_name):
     file_handler.setFormatter(formatter)
 
     # 将定义好的console日志handler添加到root logger
+    logger.handlers = []
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
