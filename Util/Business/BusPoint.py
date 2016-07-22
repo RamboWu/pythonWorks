@@ -22,6 +22,7 @@ class BusPoint:
         self.first_bit = ''
         self.dir = ''
         self.original_line_id = ''
+        self.recv_time = ''
         self.parse(line)
 
         #print('是否被准报站算法识别:', self.is_assist_real_dectected)
@@ -33,6 +34,7 @@ class BusPoint:
 
         self.bus_id = line_tags[3]
         self.gps_time = line_tags[13]
+        self.recv_time = line_tags[14]
         if count > 18:
             self.assist_line_id = line_tags[18]
         self.first_bit = line_tags[0]
@@ -58,6 +60,7 @@ class OffLineBusPoint:
         self.dir = ''
         self.station = 0
         self.first_bit = ''
+        self.recv_time = ''
         if mode == LAODA_MODE:
             self.parseLaoDa(line)
         else:
@@ -69,6 +72,7 @@ class OffLineBusPoint:
 
         self.bus_id = line_tags[3]
         self.gps_time = line_tags[12]
+        self.recv_time = line_tags[13]
         self.is_rec = line_tags[0] == '1'
         self.first_bit = line_tags[0]
         self.line_id = line_tags[4]
@@ -81,6 +85,7 @@ class OffLineBusPoint:
 
         self.bus_id = line_tags[1]
         self.gps_time = line_tags[9]
+        self.recv_time = line_tags[10]
         self.is_rec = line_tags[0] == '1'
         self.first_bit = line_tags[0]
         self.line_id = line_tags[2]

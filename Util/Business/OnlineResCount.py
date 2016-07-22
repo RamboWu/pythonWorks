@@ -6,6 +6,7 @@ import os
 from Util.Tools import MathHelper
 from Util.Tools import LogHelper
 logger = 0
+dir_wrong_logger = 0
 
 class OnlineResCountBus:
     '''
@@ -55,13 +56,17 @@ TotalDirWrong = 0
 BusMap = dict()
 
 MissTimePeriod = dict()
+dirWrongLines = []
 
 def initLogger(log_dir):
     global logger
+    global dir_wrong_logger
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'在线算法评测.log'))
+    dir_wrong_logger = LogHelper.makeFileLogger(os.path.join(log_dir,'方向错误.log'))
 
 def Report(log_dir = 'log'):
     global logger
+    global dir_wrong_logger
     initLogger(log_dir)
 
     miss_before = 0
@@ -118,6 +123,9 @@ def Report(log_dir = 'log'):
     for key in BusMap.keys():
         BusMap[key].report()
 
+    for line in dirWrongLines:
+        dir_wrong_logger.info(line)
+
     return missafter_buses, dirwrong_buses, onlinewrong_buses
 
 def Count(bus_point, off_bus_point):
@@ -150,6 +158,11 @@ def Count(bus_point, off_bus_point):
             if bus_point.dir != off_bus_point.dir:
                 TotalDirWrong += 1
                 BusMap[bus_point.bus_id].direction_wrong += 1
+                dirWrongLines.append(\
+                'Sample: %s %s %s %s %s %s Cmp: %s %s %s %s %s %s '%\
+                (bus_point.first_bit, bus_point.bus_id, bus_point.dir, bus_point.line_id, bus_point.gps_time, bus_point.recv_time,\
+                off_bus_point.first_bit, off_bus_point.bus_id, off_bus_point.dir, off_bus_point.line_id, off_bus_point.gps_time, off_bus_point.recv_time))
+                #print(bus_point.gps_time)
 
         if off_bus_point.is_rec or off_bus_point.first_bit == '2':
             TotalCorrectCanCmp += 1
