@@ -82,8 +82,10 @@ def batch(location = None, exucte_file = None, detail = True):
 
 @manager.option('-i', '--input', dest='input_file', required=True)
 @manager.option('-j', '--judge', dest='judge_file', required=True)
-def count(input_file=None, judge_file = None):
-    NewStatistic.StartStatistic(input_file, judge_file)
+@manager.option('--detail', dest='detail', default = True)
+def count(input_file=None, judge_file = None, detail = True):
+    detail = bool(int(detail) > 0)
+    NewStatistic.StartStatistic(input_file, judge_file, detail=detail)
 
 if __name__=="__main__":
     manager.run()
