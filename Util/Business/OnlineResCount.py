@@ -183,3 +183,32 @@ def Count(bus_point, off_bus_point):
         MissTimePeriod[period] += 1
         TotalCorrectMis += 1
         BusMap[bus_point.bus_id].addMiss()
+
+def Clear():
+    global Total
+    global UselessTotal
+    global TotalCorrect
+    global TotalCorrectCanCmp
+    global TotalCorrectRight
+    global TotalCorrectMis
+    global TotalDirWrong
+    global BusMap
+    global MissTimePeriod
+    global dirWrongLines
+    global logger
+    global dir_wrong_logger
+
+    Total = 0
+    UselessTotal = 0
+    TotalCorrect = 0
+    TotalCorrectCanCmp = 0
+    TotalCorrectRight = 0
+    TotalCorrectMis = 0
+    TotalDirWrong = 0
+    BusMap = dict()
+    MissTimePeriod = dict()
+    dirWrongLines = []
+    logger = 0
+    dir_wrong_logger = 0
+
+    print('OnlineResCount Clear')

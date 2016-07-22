@@ -51,3 +51,23 @@ def Count(bus_point, off_bus_point):
         TotalOfflineAssistCanCmp += 1
         if bus_point.assist_line_id == off_bus_point.line_id:
             TotalOfflineAssistCorrect += 1
+
+def Clear():
+    global logger
+    global Total
+    global TotalOfflineAssistCount
+    global TotalOfflineAssistCountNotInUse
+    global TotalOfflineAssistCanCmp
+    global TotalOfflineAssistCorrect
+
+    logger = None
+
+    Total = 0
+    TotalOfflineAssistCount = 0
+    #没有使用准报站算法gps点数
+    TotalOfflineAssistCountNotInUse = 0
+    #准报站算法提供的意见准确率
+    TotalOfflineAssistCanCmp = 0
+    TotalOfflineAssistCorrect = 0
+
+    print('OnlineResAssistCount Clear')

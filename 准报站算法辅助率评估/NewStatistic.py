@@ -21,6 +21,15 @@ import random
 
 file_reader = OnlineOfflineGPSFileReader.OnlineOfflineGPSFileReader(BusPoint.WENCAN_MODE)
 
+@file_reader.RegisterClear
+def Clear():
+
+    OnlineResCount.Clear()
+    OnlineResAssistCount.Clear()
+    OfflineResHitCount.Clear()
+    CountOriginalWrong.Clear()
+    print('Clear')
+
 @file_reader.RegisterCount
 def Count(bus_point, off_bus_point):
     OnlineResCount.Count(bus_point, off_bus_point)

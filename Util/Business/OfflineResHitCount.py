@@ -138,3 +138,30 @@ def Count(bus_point, off_bus_point):
             else:
                 TotalAssistRealDectectWrong += 1
                 BusMap[bus_point.bus_id].assist_real_dectect_wrong += 1
+
+def Clear():
+    global Total
+    global TotalAssistRealDetect
+    global TotalAssistRealDetectModify
+    global TotalAssistRealDectectHitMiss
+    global TotalAssistRealDectectCanCmp
+    global TotalAssistRealDectectRight
+    global TotalAssistRealDectectWrong
+    global BusMap
+    global DetectTimePeriod
+    global logger
+
+    Total = 0
+    TotalAssistRealDetect = 0
+    #矫正个数
+    TotalAssistRealDetectModify = 0
+    #hit_miss
+    TotalAssistRealDectectHitMiss = 0
+    TotalAssistRealDectectCanCmp = 0
+    TotalAssistRealDectectRight = 0
+    TotalAssistRealDectectWrong = 0
+    BusMap = dict()
+    DetectTimePeriod = dict()
+    logger = None
+
+    print('OfflineResHitCount Clear')

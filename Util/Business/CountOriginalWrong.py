@@ -133,3 +133,10 @@ def Count(bus_point, off_bus_point):
     if not bus_point.is_rec and off_bus_point.is_rec:
         if bus_point.original_line_id != off_bus_point.line_id:
             BusMap[bus_point.bus_id].addMiss()
+
+def Clear():
+    global BusMap
+    global logger
+    BusMap = dict()
+    logger = 0
+    print('CountOriginalWrong Clear')

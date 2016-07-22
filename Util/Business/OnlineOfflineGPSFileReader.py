@@ -10,6 +10,7 @@ class OnlineOfflineGPSFileReader:
     def __init__(self, offline_mode = BusPoint.LAODA_MODE):
         self.__count_func_set = []
         self.__report_func_set = []
+        self.__clear_func_set = []
         self.__offline_mode = offline_mode
         pass
 
@@ -21,6 +22,10 @@ class OnlineOfflineGPSFileReader:
         self.__report_func_set.append(f)
         return f
 
+    def RegisterClear(self, f):
+        self.__clear_func_set.append(f)
+        return f
+
     def Report(self):
         for f in self.__report_func_set:
             f();
@@ -28,6 +33,10 @@ class OnlineOfflineGPSFileReader:
     def __CountEach(self, bus_point, off_bus_point):
         for f in self.__count_func_set:
             f(bus_point, off_bus_point)
+
+    def __ClearEach(self):
+        for f in self.__clear_func_set:
+            f()
 
     def __Verify(self, sample_line, cmp_line, lineno):
         if (sample_line.strip() == ""):
@@ -57,7 +66,7 @@ class OnlineOfflineGPSFileReader:
         return 0, bus_point, off_bus_point
 
     def startCount(self, sample_file_name, cmp_file_name):
-
+        self.__ClearEach()
         sample_file = codecs.open(sample_file_name, 'r', 'utf-8')
         cmp_file = codecs.open(cmp_file_name, 'r', 'utf-8')
 
