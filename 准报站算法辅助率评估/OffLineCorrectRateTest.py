@@ -43,11 +43,11 @@ def testBusLine():
 
 @manager.command
 def batchtest():
-    command_line = 'python3 OffLineCorrectRate.py batch -l test/batch -e test/Svn190/busmatching.exe'
+    command_line = 'python3 OffLineCorrectRate.py batch -l test/batch '
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 
-    command_line = 'python3 OffLineCorrectRate.py batch -l test/batch/1012 -e test/Svn190/busmatching.exe --detail 0'
+    command_line = 'python3 OffLineCorrectRate.py batch -l test/batch/1012 --detail 0'
     print(command_line)
     status = subprocess.call(command_line, shell=True)
 

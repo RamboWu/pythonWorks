@@ -10,7 +10,9 @@ parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,parentdir)
 from Util.CommandManager import Manager
 from Util.Tools import FileHelper
+from Util.Tools import LogHelper
 
+system_logger = LogHelper.makeConsoleAndFileLogger('log/System.log')
 manager = Manager()
 @manager.option('-i', '--input_file', dest='input_file', required=True)
 @manager.option('--bus_relation_file', dest='bus_relation_file', required=True)
@@ -19,7 +21,8 @@ manager = Manager()
 @manager.option('-o', '--output', dest='output', default = None)
 @manager.option('--detail', dest='detail', default = True)
 def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = None, output = None, detail=True):
-    print('run', input_file, bus_relation_file, basedata, sleep_time, detail)
+    system_logger.info('生成评测报告run input=%s single=%s s_json=%s delay=%s outputdetail=%s', \
+        input_file, bus_relation_file, basedata, sleep_time, detail)
 
     if sleep_time != None:
         print('sleep %s seconds'%(sleep_time))
@@ -28,28 +31,32 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
     #看看是否有必要生成排序好的Sample
     input_file_sorted = input_file + '.sort'
     if not os.path.exists(input_file_sorted):
+        system_logger.info('排序: input:%s output:%s', input_file, input_file_sorted)
         FileHelper.sortFile(input_file)
 
     bus_relation_file = os.path.abspath(bus_relation_file)
     if not os.path.exists(bus_relation_file):
+        system_logger.info('生成single.csv: input:%s s_json:%s, output:%s', input_file_sorted, basedata, bus_relation_file)
         FileHelper.generateBusLineRelationFile(basedata, input_file_sorted, bus_relation_file)
     else:
-        print(bus_relation_file + ' already exist! move to next step!')
+        system_logger.info('Single.csv already exist! move to next step!')
 
     input_file_cmp = input_file_sorted+".cmp"
     if not os.path.exists(input_file_cmp):
+        system_logger.info('生成cmp: input:%s s_json:%s, single=%s output=%s', input_file_sorted, basedata, bus_relation_file, input_file_cmp)
         FileHelper.generateRealOffLineResult(basedata=basedata, input_file=input_file_sorted, bus_rel=bus_relation_file, output=input_file_cmp)
     else:
-        print(input_file_cmp + ' already exist! move to next step!')
+        system_logger.info('Cmp already exist! move to next step!')
 
+    system_logger.info('StartStatistic: -i %s -j %s -o %s -detail %s', input_file_sorted, input_file_cmp, output, detail)
     NewStatistic.StartStatistic(input_file_sorted, input_file_cmp, original=input_file, output = output, detail=detail)
 
 @manager.option('-l', '--location', dest='location', required=True)
-@manager.option('-e', '--excute', dest='exucte_file', default=None)
 @manager.option('--detail', dest='detail', default = True)
 def batch(location = None, exucte_file = None, detail = True):
     detail = bool(int(detail) > 0)
-    print('Batch:', location, exucte_file, detail, type(detail) )
+    system_logger.info('')
+    system_logger.info('批量测试: locaiton=%s outputdetail=%s ', location, detail )
     if not os.path.isdir(location):
         print(location + ' isn\'t a dir')
         return
@@ -58,7 +65,7 @@ def batch(location = None, exucte_file = None, detail = True):
     for line in list:
         filepath = os.path.join(location,line)
         if os.path.isdir(filepath):  #如果filepath是目录，则再列出该目录下的所有文件
-            batch(filepath, exucte_file, detail)
+            batch(filepath, detail)
 
     input_file = os.path.join(location, 'matching.log')
     bus_relation_file = os.path.join(location, 'single.csv')
@@ -69,6 +76,7 @@ def batch(location = None, exucte_file = None, detail = True):
 
         online_file = os.path.join(location, 'online.log')
         if os.path.exists(online_file) and os.path.exists(basedata):
+            system_logger.info('根据online.log=>matching.log: input=%s s_json=%s ', online_file, basedata )
             FileHelper.generateDataAfterBusMatching(online_file, basedata, input_file)
             if os.path.exists(input_file):
                 run(input_file, bus_relation_file, basedata, output=location, detail=detail)
@@ -76,6 +84,7 @@ def batch(location = None, exucte_file = None, detail = True):
 
             offline_file = os.path.join(location, 'offline.log')
             if os.path.exists(offline_file) and os.path.exists(basedata):
+                system_logger.info('根据offline.log=>matching.log: input=%s s_json=%s ', online_file, basedata )
                 FileHelper.generateDataCompleteProcess(offline_file, basedata, input_file)
                 if os.path.exists(input_file):
                     run(input_file, bus_relation_file, basedata, output=location, detail=detail)
