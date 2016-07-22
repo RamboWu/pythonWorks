@@ -53,7 +53,7 @@ def run(input_file = None, bus_relation_file=None, basedata=None, sleep_time = N
 
 @manager.option('-l', '--location', dest='location', required=True)
 @manager.option('--detail', dest='detail', default = True)
-def batch(location = None, exucte_file = None, detail = True):
+def batch(location = None, detail = True):
     detail = bool(int(detail) > 0)
     system_logger.info('')
     system_logger.info('批量测试: locaiton=%s outputdetail=%s ', location, detail )
