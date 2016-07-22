@@ -65,14 +65,16 @@ class OnlineOfflineGPSFileReader:
         cmp_line = cmp_file.readline()
 
         lineno = 0
+        line_cmp = 0
         drop_sample = 0
         drop_cmp = 0
         while sample_line and cmp_line:
             res, bus_point, off_bus_point= self.__Verify(sample_line, cmp_line, lineno)
             if lineno % 100000 == 0:
-                print('read file[%s,%s] over %s lines'%(sample_file_name, cmp_file_name, lineno))
+                print('read file[%s,%s] over %s lines at sample, %s lines at cmp'%(sample_file_name, cmp_file_name, lineno, line_cmp))
             if res == 0:
                 lineno += 1
+                line_cmp += 1
                 self.__CountEach(bus_point, off_bus_point)
                 sample_line = sample_file.readline()
                 cmp_line = cmp_file.readline()
@@ -81,7 +83,9 @@ class OnlineOfflineGPSFileReader:
                 drop_sample += 1
                 sample_line = sample_file.readline()
             elif res == -2:
+                line_cmp += 1
                 drop_cmp += 1
                 cmp_line = cmp_file.readline()
 
+        print('totalSample:%s, totalCmp:%s'%(lineno, line_cmp))
         print('drop_sample: %s drop_cmp: %s'%(drop_sample,drop_cmp))
