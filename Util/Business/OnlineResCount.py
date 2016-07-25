@@ -81,7 +81,8 @@ def GetKernalReport():
         if BusMap[key].direction_wrong > 0:
             miss_caused_by_dir_wrong += BusMap[key].miss
 
-    msg = '总共行数:%s\n'%Total + \
+    msg = '在线统计分析:\n\n' + \
+        '总共行数:%s\n'%Total + \
         '无效数据行数:%s\n'%UselessTotal + \
         '识别总数:%s\n'%TotalCorrect + \
         '线路错误:%s\n'%total_wrong + \

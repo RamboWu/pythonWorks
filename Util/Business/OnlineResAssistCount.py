@@ -19,18 +19,22 @@ def initLogger(log_dir):
     global logger
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'在线辅助效果分析.log'))
 
+def GetKernalReport():
+    msg = '实时辅助概况总览:\n\n' + \
+        '总共行数:%s\n'%Total + \
+        '总共辅助:%s\n'%TotalOfflineAssistCount + \
+        '没有使用的辅助:%s\n'%TotalOfflineAssistCountNotInUse + \
+        '准确数:%s\n'%TotalOfflineAssistCorrect + \
+        '可以比较的数:%s\n'%TotalOfflineAssistCanCmp + \
+        '准确率:%s\n'%MathHelper.percentToString(TotalOfflineAssistCorrect, TotalOfflineAssistCanCmp)
+
+    return msg
+
 def Report(log_dir = 'log'):
     global logger
     initLogger(log_dir)
     if logger != None:
-        logger.info("\n实时辅助概况总览: ")
-        logger.info('总共%s行', Total)
-        logger.info('总共辅助:%s', TotalOfflineAssistCount)
-        logger.info('没有使用的辅助:%s', TotalOfflineAssistCountNotInUse)
-        logger.info('准确数:%s', TotalOfflineAssistCorrect)
-        logger.info('可以比较的数:%s', TotalOfflineAssistCanCmp)
-        logger.info('准确率:%s', MathHelper.percentToString(TotalOfflineAssistCorrect, TotalOfflineAssistCanCmp))
-
+        logger.info('\n' + GetKernalReport())
 
 def Count(bus_point, off_bus_point):
     global Total
