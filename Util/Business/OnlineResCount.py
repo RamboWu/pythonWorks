@@ -28,7 +28,7 @@ class OnlineResCountBus:
         if not self.is_detected_by_zhunbaozhan:
             self.miss_before_detected_by_zhunbaozhan += 1
 
-    def report(self):
+    def tostring(self):
         global logger
 
         tmp = ''
@@ -37,14 +37,10 @@ class OnlineResCountBus:
         else:
             tmp = 'NotDetect'
 
-        if logger != 0:
-            logger.info(\
-                'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s Wrong2: %s 方向错误:%s 丢失率: %s', \
-                self.bus_id, self.total, self.miss, \
-                tmp, \
-                self.wrong, self.wrong_2, self.direction_wrong, MathHelper.percentToString(self.miss,self.total))
-            if self.wrong > 50 or self.miss > 50:
-                logger.info('Found it!')
+        msg = 'Bus_id: %s Total: %s Miss: %s MissBefore:%s Wrong: %s Wrong2: %s 方向错误:%s 丢失率: %s'% \
+            (self.bus_id, self.total, self.miss, tmp, self.wrong, self.wrong_2, self.direction_wrong, MathHelper.percentToString(self.miss,self.total))
+
+        return msg
 
 Total = 0
 UselessTotal = 0
@@ -100,34 +96,12 @@ def GetKernalReport():
         '\t由方向错误导致的miss数:%s\n'%miss_caused_by_dir_wrong + \
         '\t在识别前miss:%s 在识别后miss:%s 未识别miss:%s\n'%(miss_before, miss_after, miss_not_detect)
 
-
-
     return msg
 
 def Report(log_dir = 'log'):
     global logger
     global dir_wrong_logger
     initLogger(log_dir)
-
-    miss_before = 0
-    miss_after = 0
-    miss_not_detect = 0
-    total_wrong = 0
-    total_wrong2 = 0
-    miss_caused_by_wrong = 0
-    miss_caused_by_dir_wrong = 0
-    for key in BusMap.keys():
-        if BusMap[key].is_detected_by_zhunbaozhan:
-            miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
-            miss_after += BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan
-        else:
-            miss_not_detect += BusMap[key].miss
-        total_wrong += BusMap[key].wrong
-        total_wrong2 += BusMap[key].wrong_2
-        if BusMap[key].wrong > 0:
-            miss_caused_by_wrong += BusMap[key].miss
-        if BusMap[key].direction_wrong > 0:
-            miss_caused_by_dir_wrong += BusMap[key].miss
 
     if logger != 0:
         logger.info('\n' + GetKernalReport())
@@ -152,9 +126,8 @@ def Report(log_dir = 'log'):
     logger.info('OnlineWrong Buses are: %s', onlinewrong_buses)
     logger.info('DirWrong Buses are: %s', dirwrong_buses)
 
-
     for key in BusMap.keys():
-        BusMap[key].report()
+        logger.info(BusMap[key].tostring())
 
     for line in dirWrongLines:
         dir_wrong_logger.info(line)
