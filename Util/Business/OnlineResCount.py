@@ -85,8 +85,8 @@ def Report(log_dir = 'log'):
 
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
-        logger.info('总共%s行', Total)
-        logger.info('无效数据%s行', UselessTotal)
+        logger.info('总共行数:%s', Total)
+        logger.info('无效数据行数:%s', UselessTotal)
         logger.info('识别总数:%s', TotalCorrect)
         logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
         logger.info('准确数:%s', TotalCorrectRight)
