@@ -74,6 +74,8 @@ def Report(log_dir = 'log'):
     miss_not_detect = 0
     total_wrong = 0
     total_wrong2 = 0
+    miss_caused_by_wrong = 0
+    miss_caused_by_dir_wrong = 0
     for key in BusMap.keys():
         if BusMap[key].is_detected_by_zhunbaozhan:
             miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
@@ -82,6 +84,10 @@ def Report(log_dir = 'log'):
             miss_not_detect += BusMap[key].miss
         total_wrong += BusMap[key].wrong
         total_wrong2 += BusMap[key].wrong_2
+        if BusMap[key].wrong > 0:
+            miss_caused_by_wrong += BusMap[key].miss
+        if BusMap[key].direction_wrong > 0:
+            miss_caused_by_dir_wrong += BusMap[key].miss
 
     if logger != 0:
         logger.info("\n实时算法概况总览: ")
@@ -94,6 +100,8 @@ def Report(log_dir = 'log'):
         logger.info('2号错误数:%s', total_wrong2)
         logger.info('方向错误:%s', TotalDirWrong)
         logger.info('miss数:%s', TotalCorrectMis)
+        logger.info('由线路错误导致的miss数:%s', miss_caused_by_wrong)
+        logger.info('由方向错误导致的miss数:%s', miss_caused_by_dir_wrong)
         logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
 
         logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
