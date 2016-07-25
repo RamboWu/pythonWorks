@@ -98,3 +98,4 @@ class OnlineOfflineGPSFileReader:
 
         print('totalSample:%s, totalCmp:%s'%(lineno, line_cmp))
         print('drop_sample: %s drop_cmp: %s'%(drop_sample,drop_cmp))
+        self.Report()

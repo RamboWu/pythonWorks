@@ -88,6 +88,11 @@ def Report():
     OnlineWrongBusSet = set(onlinewrong_buses)
     OriginalDiffWrongBusSet = set(original_diff_wrong_buses)
 
+    logger = LogHelper.makeConsoleAndFileLogger(os.path.join(file_dir,'TotalReport.log'))
+    logger.info(\
+        OnlineResCount.GetKernalReport() +\
+        OnlineResAssistCount.GetKernalReport())
+
 def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail = True):
     print('StartStatistic', sorted_file, cmp_file, original, output, detail)
     global file_dir
@@ -109,7 +114,6 @@ def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail
     dest_file.close()
 
     file_reader.startCount(sample_file_name=sorted_file,cmp_file_name=cmp_file)
-    file_reader.Report()
 
     if detail:
         if original == None:
