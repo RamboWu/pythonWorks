@@ -54,7 +54,7 @@ def initLogger(log_dir):
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'准报站统计.log'))
 
 def GetKernalReport():
-    msg = '\n离线算法概况总览:\n\n' + \
+    msg = '\n<离线算法概况总览>\n\n' + \
         '总共行数:%s\n'%Total + \
         '离线识别总数:%s\n'%TotalAssistRealDetect + \
         '离线矫正总数:%s\n'%TotalAssistRealDetectModify + \

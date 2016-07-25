@@ -58,16 +58,16 @@ def initLogger(log_dir):
     global logger
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'原始线路编码给错分析.log'))
 
-def Report(log_dir = 'log'):
-    global logger
-    initLogger(log_dir)
-
+def GetKernalReport():
     original_diff_wrong_before = 0
     original_diff_wrong_after = 0
     original_diff_wrong_not_detect = 0
     original_diff_miss_before = 0
     original_diff_miss_after = 0
     original_diff_miss_not_detect = 0
+    TotalCanCmp = 0
+    TotalOriginalDiff = 0
+    TotalOriginalDiffWrong = 0
     for key in BusMap.keys():
         if BusMap[key].is_detected_by_zhunbaozhan:
             original_diff_wrong_before += BusMap[key].wrong_before_detected_by_zhunbaozhan
@@ -78,30 +78,34 @@ def Report(log_dir = 'log'):
             original_diff_wrong_not_detect += BusMap[key].total_original_diff_wrong
             original_diff_miss_not_detect += BusMap[key].total_original_diff_miss
 
-    original_diff_wrong_buses = []
-    TotalCanCmp = 0
-    TotalOriginalDiff = 0
-    TotalOriginalDiffWrong = 0
-    for key in BusMap.keys():
-        if BusMap[key].total_original_diff > 0:
-            original_diff_wrong_buses.append(key)
         TotalCanCmp += BusMap[key].total_can_cmp
         TotalOriginalDiff += BusMap[key].total_original_diff
         TotalOriginalDiffWrong += BusMap[key].total_original_diff_wrong
 
+    msg = '\n<原始线路编号错误分析>\n\n' + \
+        '总共可比较:%s\n'%TotalCanCmp + \
+        '线路编号给错总数:%s\n'%TotalOriginalDiff + \
+        '导致错误数:%s\n'%TotalOriginalDiffWrong + \
+        '导致Miss数:%s\n'%(original_diff_miss_before+original_diff_miss_after+original_diff_miss_not_detect) + \
+        '错误率:%s\n'%MathHelper.percentToString(TotalOriginalDiffWrong, TotalOriginalDiff) + \
+        '在识别前wrong:%s 在识别后wrong:%s 未识别wrong:%s\n'%(original_diff_wrong_before, original_diff_wrong_after, original_diff_wrong_not_detect) + \
+        '在识别前Miss:%s 在识别后Miss:%s 未识别Miss:%s\n'%(original_diff_miss_before, original_diff_miss_after, original_diff_miss_not_detect)
+
+    return msg
+
+def Report(log_dir = 'log'):
+    global logger
+    initLogger(log_dir)
+
+
+
+    original_diff_wrong_buses = []
+    for key in BusMap.keys():
+        if BusMap[key].total_original_diff > 0:
+            original_diff_wrong_buses.append(key)
+
     if logger != 0:
-        logger.info("\n原始线路编号错误分析: ")
-        logger.info('总共可比较%s行', TotalCanCmp)
-        logger.info('线路编号给错总数:%s', TotalOriginalDiff)
-        logger.info('导致错误数:%s', TotalOriginalDiffWrong)
-        logger.info('导致Miss数:%s', original_diff_miss_before+original_diff_miss_after+original_diff_miss_not_detect)
-        logger.info('错误率:%s', MathHelper.percentToString(TotalOriginalDiffWrong, TotalOriginalDiff))
-
-        logger.info('在识别前wrong:%s 在识别后wrong:%s 未识别wrong:%s', \
-            original_diff_wrong_before, original_diff_wrong_after, original_diff_wrong_not_detect)
-
-        logger.info('在识别前Miss:%s 在识别后Miss:%s 未识别Miss:%s', \
-            original_diff_miss_before, original_diff_miss_after, original_diff_miss_not_detect)
+        logger.info(GetKernalReport())
 
         logger.info('Original Diff Wrong Buses are: %s', original_diff_wrong_buses)
 

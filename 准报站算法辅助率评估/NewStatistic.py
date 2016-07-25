@@ -92,7 +92,8 @@ def Report():
     logger.info(\
         OnlineResCount.GetKernalReport() +\
         OnlineResAssistCount.GetKernalReport() +\
-        OfflineResHitCount.GetKernalReport())
+        OfflineResHitCount.GetKernalReport() +\
+        CountOriginalWrong.GetKernalReport())
 
 def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail = True):
     print('StartStatistic', sorted_file, cmp_file, original, output, detail)

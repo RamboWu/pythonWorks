@@ -20,7 +20,7 @@ def initLogger(log_dir):
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'在线辅助效果分析.log'))
 
 def GetKernalReport():
-    msg = '\n实时辅助概况总览:\n\n' + \
+    msg = '\n<实时辅助概况总览>\n\n' + \
         '总共行数:%s\n'%Total + \
         '总共辅助:%s\n'%TotalOfflineAssistCount + \
         '没有使用的辅助:%s\n'%TotalOfflineAssistCountNotInUse + \
