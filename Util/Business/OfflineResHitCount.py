@@ -53,19 +53,24 @@ def initLogger(log_dir):
     global logger
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'准报站统计.log'))
 
+def GetKernalReport():
+    msg = '\n离线算法概况总览:\n\n' + \
+        '总共行数:%s\n'%Total + \
+        '离线识别总数:%s\n'%TotalAssistRealDetect + \
+        '离线矫正总数:%s\n'%TotalAssistRealDetectModify + \
+        'HitMiss:%s\n'%TotalAssistRealDectectHitMiss + \
+        '可以比较的数量:%s\n'%TotalAssistRealDectectCanCmp + \
+        '准确数:%s\n'%TotalAssistRealDectectRight + \
+        '错误数:%s\n'%TotalAssistRealDectectWrong + \
+        '准确率:%s\n'%MathHelper.percentToString(TotalAssistRealDectectRight, TotalAssistRealDectectCanCmp)
+
+    return msg
+
 def Report(log_dir = 'log'):
     global logger
     initLogger(log_dir)
     if logger != None:
-        logger.info("\n离线算法概况总览: ")
-        logger.info('总共%s行', Total)
-        logger.info('离线识别总数:%s', TotalAssistRealDetect)
-        logger.info('离线矫正总数:%s', TotalAssistRealDetectModify)
-        logger.info('HitMiss:%s', TotalAssistRealDectectHitMiss)
-        logger.info('可以比较的数量:%s', TotalAssistRealDectectCanCmp)
-        logger.info('准确数:%s', TotalAssistRealDectectRight)
-        logger.info('错误数:%s', TotalAssistRealDectectWrong)
-        logger.info('准确率:%s', MathHelper.percentToString(TotalAssistRealDectectRight, TotalAssistRealDectectCanCmp))
+        logger.info(GetKernalReport())
 
     items = sorted(DetectTimePeriod.items(), key=lambda d:d[0], reverse = False)
     detect_num = 0

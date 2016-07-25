@@ -105,7 +105,7 @@ def Report(log_dir = 'log'):
     initLogger(log_dir)
 
     if logger != 0:
-        logger.info('\n' + GetKernalReport())
+        logger.info(GetKernalReport())
 
     items = sorted(MissTimePeriod.items(), key=lambda d:d[0], reverse = False)
     for item in items:

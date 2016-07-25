@@ -91,7 +91,8 @@ def Report():
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(file_dir,'TotalReport.log'))
     logger.info(\
         OnlineResCount.GetKernalReport() +\
-        OnlineResAssistCount.GetKernalReport())
+        OnlineResAssistCount.GetKernalReport() +\
+        OfflineResHitCount.GetKernalReport())
 
 def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail = True):
     print('StartStatistic', sorted_file, cmp_file, original, output, detail)

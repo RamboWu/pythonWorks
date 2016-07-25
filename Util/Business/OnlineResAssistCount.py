@@ -34,7 +34,7 @@ def Report(log_dir = 'log'):
     global logger
     initLogger(log_dir)
     if logger != None:
-        logger.info('\n' + GetKernalReport())
+        logger.info(GetKernalReport())
 
 def Count(bus_point, off_bus_point):
     global Total
