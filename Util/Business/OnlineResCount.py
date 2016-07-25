@@ -64,6 +64,46 @@ def initLogger(log_dir):
     logger = LogHelper.makeConsoleAndFileLogger(os.path.join(log_dir,'在线算法评测.log'))
     dir_wrong_logger = LogHelper.makeFileLogger(os.path.join(log_dir,'方向错误.log'))
 
+def GetKernalReport():
+    miss_before = 0
+    miss_after = 0
+    miss_not_detect = 0
+    total_wrong = 0
+    total_wrong2 = 0
+    miss_caused_by_wrong = 0
+    miss_caused_by_dir_wrong = 0
+    for key in BusMap.keys():
+        if BusMap[key].is_detected_by_zhunbaozhan:
+            miss_before += BusMap[key].miss_before_detected_by_zhunbaozhan
+            miss_after += BusMap[key].miss - BusMap[key].miss_before_detected_by_zhunbaozhan
+        else:
+            miss_not_detect += BusMap[key].miss
+        total_wrong += BusMap[key].wrong
+        total_wrong2 += BusMap[key].wrong_2
+        if BusMap[key].wrong > 0:
+            miss_caused_by_wrong += BusMap[key].miss
+        if BusMap[key].direction_wrong > 0:
+            miss_caused_by_dir_wrong += BusMap[key].miss
+
+    msg = '总共行数:%s\n'%Total + \
+        '无效数据行数:%s\n'%UselessTotal + \
+        '识别总数:%s\n'%TotalCorrect + \
+        '线路错误:%s\n'%total_wrong + \
+        '方向错误:%s\n'%TotalDirWrong + \
+        '\t2号线路错误:%s\n'%total_wrong2 + \
+        '\t可以比较的总数:%s\n'%TotalCorrectCanCmp + \
+        '\t准确数:%s\n'%TotalCorrectRight + \
+        '\t准确率:%s\n'%MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp) + \
+        '\t占所有点准确率:%s\n'%MathHelper.percentToString(TotalCorrectRight, Total) + \
+        'miss数:%s\n'%TotalCorrectMis + \
+        '\t由线路错误导致的miss数:%s\n'%miss_caused_by_wrong + \
+        '\t由方向错误导致的miss数:%s\n'%miss_caused_by_dir_wrong + \
+        '\t在识别前miss:%s 在识别后miss:%s 未识别miss:%s\n'%(miss_before, miss_after, miss_not_detect)
+
+
+
+    return msg
+
 def Report(log_dir = 'log'):
     global logger
     global dir_wrong_logger
@@ -90,22 +130,7 @@ def Report(log_dir = 'log'):
             miss_caused_by_dir_wrong += BusMap[key].miss
 
     if logger != 0:
-        logger.info("\n实时算法概况总览: ")
-        logger.info('总共行数:%s', Total)
-        logger.info('无效数据行数:%s', UselessTotal)
-        logger.info('识别总数:%s', TotalCorrect)
-        logger.info('可以比较的总数:%s', TotalCorrectCanCmp)
-        logger.info('准确数:%s', TotalCorrectRight)
-        logger.info('错误数:%s', total_wrong)
-        logger.info('2号错误数:%s', total_wrong2)
-        logger.info('方向错误:%s', TotalDirWrong)
-        logger.info('miss数:%s', TotalCorrectMis)
-        logger.info('由线路错误导致的miss数:%s', miss_caused_by_wrong)
-        logger.info('由方向错误导致的miss数:%s', miss_caused_by_dir_wrong)
-        logger.info('准确率:%s', MathHelper.percentToString(TotalCorrectRight, TotalCorrectCanCmp))
-
-        logger.info('占所有点准确率:%s', MathHelper.percentToString(TotalCorrectRight, Total))
-        logger.info('在识别前miss:%s 在识别后miss:%s 未识别miss:%s', miss_before, miss_after, miss_not_detect)
+        logger.info('\n' + GetKernalReport())
 
     items = sorted(MissTimePeriod.items(), key=lambda d:d[0], reverse = False)
     for item in items:
