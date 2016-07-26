@@ -47,3 +47,4 @@ PrintBusTurnAround/build
 准报站算法辅助率评估/build
 准报站算法辅助率评估/log
 *.cmp
+!HistoryAnalysis/test
