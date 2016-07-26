@@ -32,8 +32,7 @@ class CountOriginalWrongBus:
         if not self.is_detected_by_zhunbaozhan:
             self.miss_before_detected_by_zhunbaozhan += 1
 
-    def report(self):
-        global logger
+    def info(self):
 
         wrong_tmp = ''
         miss_tmp = ''
@@ -44,13 +43,12 @@ class CountOriginalWrongBus:
             wrong_tmp = 'NotDetect'
             miss_tmp = 'NotDetect'
 
-        if logger != 0:
-            logger.info(\
-                'Bus_id: %s TotalCanCmp: %s 原始线路编号不正确: %s 导致错误个数: %s WrongBefore:%s 错误率: %s 导致Miss数: %s MissBefore: %s', \
-                self.bus_id, self.total_can_cmp, self.total_original_diff, \
+        msg = 'Bus_id: %s TotalCanCmp: %s 原始线路编号不正确: %s 导致错误个数: %s WrongBefore:%s 错误率: %s 导致Miss数: %s MissBefore: %s'%\
+                (self.bus_id, self.total_can_cmp, self.total_original_diff, \
                 self.total_original_diff_wrong, wrong_tmp, \
                 MathHelper.percentToString(self.total_original_diff_wrong, self.total_original_diff), \
                 self.total_original_diff_miss, miss_tmp)
+        return msg
 
 BusMap = dict()
 
@@ -97,8 +95,6 @@ def Report(log_dir = 'log'):
     global logger
     initLogger(log_dir)
 
-
-
     original_diff_wrong_buses = []
     for key in BusMap.keys():
         if BusMap[key].total_original_diff > 0:
@@ -111,7 +107,7 @@ def Report(log_dir = 'log'):
 
     for key in BusMap.keys():
         if BusMap[key].total_original_diff > 0:
-            BusMap[key].report()
+            logger.info(BusMap[key].info())
 
     return original_diff_wrong_buses
 
