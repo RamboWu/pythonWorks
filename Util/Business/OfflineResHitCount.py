@@ -25,6 +25,14 @@ class BusStat:
         self.assist_real_dectect_wrong = 0
         self.assist_real_dectect_time = ''
 
+    def info(self):
+        msg = 'Bus_id: %s Total: %s 识别时间:%s 识别数量:%s 矫正:%s, HitMiss:%s 识别率:%s, 错误:%s'%\
+            (self.bus_id, self.total, \
+            self.assist_real_dectect_time, \
+            self.assist_real_detect, self.assist_real_detect_modify, self.assist_real_dectect_hit_miss,\
+            MathHelper.percentToString(self.assist_real_detect, self.total), self.assist_real_dectect_wrong)
+        return msg
+
     def report(self):
         global logger
         if logger != None:
@@ -94,7 +102,7 @@ def Report(log_dir = 'log'):
         nodetect_buses = []
 
     for key in BusMap.keys():
-        BusMap[key].report()
+        logger.info(BusMap[key].info())
 
     return nodetect_buses, wrong_buses
 
