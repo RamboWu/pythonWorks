@@ -95,6 +95,11 @@ def Report():
         OfflineResHitCount.GetKernalReport() +\
         CountOriginalWrong.GetKernalReport())
 
+    for bus in OnlineResCount.BusMap.keys():
+        logger.info( OnlineResCount.BusMap[bus].info() )
+        logger.info( OfflineResHitCount.BusMap[bus].info() )
+        logger.info( CountOriginalWrong.BusMap[bus].info() )
+
 def StartStatistic(sorted_file, cmp_file, original = None, output = None, detail = True):
     print('StartStatistic', sorted_file, cmp_file, original, output, detail)
     global file_dir

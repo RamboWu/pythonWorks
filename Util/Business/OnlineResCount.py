@@ -28,7 +28,7 @@ class OnlineResCountBus:
         if not self.is_detected_by_zhunbaozhan:
             self.miss_before_detected_by_zhunbaozhan += 1
 
-    def tostring(self):
+    def info(self):
         global logger
 
         tmp = ''
@@ -128,7 +128,7 @@ def Report(log_dir = 'log'):
     logger.info('DirWrong Buses are: %s', dirwrong_buses)
 
     for key in BusMap.keys():
-        logger.info(BusMap[key].tostring())
+        logger.info(BusMap[key].info())
 
     for line in dirWrongLines:
         dir_wrong_logger.info(line)
