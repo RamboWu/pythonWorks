@@ -10,6 +10,7 @@ sys.path.insert(0,parentdir)
 
 from Util.Tools import FileHelper
 from Util.Tools import LogHelper
+from Util.Tools import MathHelper
 
 def getBusRelations(bus_relation_file):
 
@@ -43,13 +44,35 @@ class HistoryFlightsAnalysis:
                 self.dates.append(line)
 
         self.dates = sorted(self.dates, key=lambda d:d[0], reverse = False)
-        self.prettyPrint()
 
-    def prettyPrint(self):
+        LogHelper.printFile('log/tongji.log', 'w', self.getString(self.BusMap.keys()))
+        self.analysis()
+
+    def analysis(self):
+        diff_buses = []
+        for bus_id in self.BusMap.keys():
+            same = True
+            bus_line = ''
+            for date in self.BusMap[bus_id].keys():
+                if self.BusMap[bus_id][date] != '':
+                    if bus_line == '':
+                        bus_line = self.BusMap[bus_id][date]
+                    else:
+                        if self.BusMap[bus_id][date] != bus_line:
+                            same = False
+                            break
+            if not same:
+                diff_buses.append(bus_id)
+
+        print(MathHelper.percentToString(len(diff_buses),len(self.BusMap.keys())))
+        print(diff_buses)
+        #print(self.getString(diff_buses))
+
+    def getString(self, buses):
         mix = PrettyTable()
         mix.field_names = ["Bus_ID"] + self.dates
 
-        for key in self.BusMap.keys():
+        for key in buses:
             items = []
             for date in self.dates:
                 if date in self.BusMap[key].keys():
@@ -58,8 +81,8 @@ class HistoryFlightsAnalysis:
                     items.append('')
             mix.add_row([key] + items)
 
-        LogHelper.printFile('log/tongji.log','w',mix.get_string())
-        print(mix)
+        return mix.get_string()
+
 
     def readOneDayFlight(self, dir, title):
         flight_file = os.path.join(dir, 'single.log')
