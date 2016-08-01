@@ -9,6 +9,7 @@ parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,parentdir)
 
 from Util.Tools import FileHelper
+from Util.Tools import LogHelper
 
 def getBusRelations(bus_relation_file):
 
@@ -56,6 +57,8 @@ class HistoryFlightsAnalysis:
                 else:
                     items.append('')
             mix.add_row([key] + items)
+
+        LogHelper.printFile('log/tongji.log','w',mix.get_string())
         print(mix)
 
     def readOneDayFlight(self, dir, title):

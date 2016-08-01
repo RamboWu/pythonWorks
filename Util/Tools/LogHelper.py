@@ -2,7 +2,7 @@
 #!/usr/bin/python
 
 #LogHelper.py
-import logging, sys, inspect, os
+import logging, sys, inspect, os, codecs
 from Util.Tools import DateHelp
 
 def makeConsoleAndFileLogger(file_name):
@@ -56,3 +56,11 @@ def makeFileLogger(file_name):
     logger.addHandler(file_handler)
 
     return logger
+
+def printFile(file_name, mode, content):
+    if (not os.path.exists(os.path.dirname(file_name))):
+        os.makedirs(os.path.dirname(file_name))
+        
+    dest_file = codecs.open(file_name, mode, encoding='utf-8', errors='ignore')
+    dest_file.write(content)
+    dest_file.close()
