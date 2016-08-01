@@ -3,6 +3,7 @@
 
 import sys, getopt, codecs, os
 import datetime
+from prettytable import PrettyTable
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,parentdir)
@@ -29,6 +30,7 @@ def getBusRelations(bus_relation_file):
 class HistoryFlightsAnalysis:
     def __init__(self):
         self.BusMap = dict()
+        self.dates = []
         pass
 
     def readCity(self, city_dir):
@@ -37,9 +39,30 @@ class HistoryFlightsAnalysis:
             filepath = os.path.join(city_dir,line)
             if os.path.isdir(filepath):  #如果filepath是目录，则再列出该目录下的所有文件
                 self.readOneDayFlight(filepath, line)
+                self.dates.append(line)
+
+        self.dates = sorted(self.dates, key=lambda d:d[0], reverse = False)
+        self.prettyPrint()
+
+    def prettyPrint(self):
+        mix = PrettyTable()
+        mix.field_names = ["Bus_ID"] + self.dates
+
+        for key in self.BusMap.keys():
+            items = []
+            for date in self.dates:
+                if date in self.BusMap[key].keys():
+                    items.append(self.BusMap[key][date])
+                else:
+                    items.append('')
+            mix.add_row([key] + items)
+        print(mix)
 
     def readOneDayFlight(self, dir, title):
         flight_file = os.path.join(dir, 'single.log')
         if os.path.exists(flight_file):
             bus_relations = getBusRelations(flight_file)
-            print(bus_relations,'\n')
+            for key in bus_relations.keys():
+                if not key in self.BusMap.keys():
+                    self.BusMap[key] = dict()
+                self.BusMap[key][title] = bus_relations[key]
