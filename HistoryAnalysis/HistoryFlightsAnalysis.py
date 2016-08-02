@@ -60,11 +60,31 @@ class HistoryFlightsAnalysis:
                     bus_line_count[self.BusMap[bus_id][date]] += 1
 
             sorted_count = sorted(bus_line_count.items(), key=lambda d:d[1], reverse = True)
-            self.BusCommonLine[bus_id] = sorted_count[0][0]
+            total = sum(x[1] for x in sorted_count)
+            if float(sorted_count[0][1]) / total > 0.6:
+                self.BusCommonLine[bus_id] = sorted_count[0][0]
 
-    def analysis(self):
-        self.analysisCommonLine()
+        print('CommonLinePercent:', MathHelper.percentToString(len(self.BusCommonLine.keys()),len(self.BusMap.keys())))
 
+    def analysisDiffCount(self):
+        diff_buses = []
+        for bus_id in self.BusMap.keys():
+            same = True
+            bus_line = ''
+            for date in self.BusMap[bus_id].keys():
+                if self.BusMap[bus_id][date] != '':
+                    if bus_line == '':
+                        bus_line = self.BusMap[bus_id][date]
+                    elif self.BusMap[bus_id][date] != bus_line:
+                        same = False
+                        break
+
+            if not same:
+                diff_buses.append(bus_id)
+
+        print('DiffCountPercent:', MathHelper.percentToString(len(diff_buses),len(self.BusMap.keys())))
+
+    def analysisContinueDiff(self):
         diff_buses = []
         continue_diff_count = dict()
         for bus_id in self.BusMap.keys():
@@ -94,6 +114,13 @@ class HistoryFlightsAnalysis:
         print(total)
         #print(diff_buses)
         #print(self.getString(diff_buses))
+
+    def analysis(self):
+        self.analysisDiffCount()
+        self.analysisCommonLine()
+        #self.analysisContinueDiff()
+
+
 
     def getString(self, buses):
         mix = PrettyTable()
