@@ -3,6 +3,7 @@
 
 import sys, getopt, codecs, os
 import datetime
+import functools
 from prettytable import PrettyTable
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,6 +34,7 @@ class HistoryFlightsAnalysis:
     def __init__(self):
         self.BusMap = dict()
         self.dates = []
+        self.BusCommonLine = dict()
         pass
 
     def readCity(self, city_dir):
@@ -48,24 +50,49 @@ class HistoryFlightsAnalysis:
         LogHelper.printFile('log/tongji.log', 'w', self.getString(self.BusMap.keys()))
         self.analysis()
 
-    def analysis(self):
-        diff_buses = []
+    def analysisCommonLine(self):
         for bus_id in self.BusMap.keys():
-            same = True
-            bus_line = ''
+            bus_line_count = dict()
             for date in self.BusMap[bus_id].keys():
                 if self.BusMap[bus_id][date] != '':
-                    if bus_line == '':
-                        bus_line = self.BusMap[bus_id][date]
+                    if not self.BusMap[bus_id][date] in bus_line_count.keys():
+                        bus_line_count[self.BusMap[bus_id][date]] = 0
+                    bus_line_count[self.BusMap[bus_id][date]] += 1
+
+            sorted_count = sorted(bus_line_count.items(), key=lambda d:d[1], reverse = True)
+            self.BusCommonLine[bus_id] = sorted_count[0][0]
+
+    def analysis(self):
+        self.analysisCommonLine()
+
+        diff_buses = []
+        continue_diff_count = dict()
+        for bus_id in self.BusMap.keys():
+            same = True
+            continue_diff = 0
+            sorted_items = sorted(self.BusMap[bus_id].keys(), key=lambda d:d, reverse = False)
+            for date in sorted_items:
+                if self.BusMap[bus_id][date] != '':
+                    if self.BusMap[bus_id][date] != self.BusCommonLine[bus_id]:
+                        same = False
+                        continue_diff += 1
                     else:
-                        if self.BusMap[bus_id][date] != bus_line:
-                            same = False
-                            break
+                        if continue_diff > 0:
+                            if not continue_diff in continue_diff_count.keys():
+                                continue_diff_count[continue_diff] = 0
+                            continue_diff_count[continue_diff] += 1
+                            if continue_diff >= 7:
+                                print(bus_id)
+                        continue_diff = 0
+
             if not same:
                 diff_buses.append(bus_id)
 
+        total = sum(x[1] for x in continue_diff_count.items())
         print(MathHelper.percentToString(len(diff_buses),len(self.BusMap.keys())))
-        print(diff_buses)
+        print(continue_diff_count)
+        print(total)
+        #print(diff_buses)
         #print(self.getString(diff_buses))
 
     def getString(self, buses):
