@@ -83,18 +83,17 @@ class HistoryFlightsAnalysis:
                 diff_buses.append(bus_id)
 
         print('DiffCountPercent:', MathHelper.percentToString(len(diff_buses),len(self.BusMap.keys())))
+        #print(self.getString(diff_buses))
 
     def analysisContinueDiff(self):
-        diff_buses = []
         continue_diff_count = dict()
-        for bus_id in self.BusMap.keys():
-            same = True
+        #只遍历具有CommonLine的公交车辆
+        for bus_id in self.BusCommonLine.keys():
             continue_diff = 0
             sorted_items = sorted(self.BusMap[bus_id].keys(), key=lambda d:d, reverse = False)
             for date in sorted_items:
                 if self.BusMap[bus_id][date] != '':
                     if self.BusMap[bus_id][date] != self.BusCommonLine[bus_id]:
-                        same = False
                         continue_diff += 1
                     else:
                         if continue_diff > 0:
@@ -102,23 +101,18 @@ class HistoryFlightsAnalysis:
                                 continue_diff_count[continue_diff] = 0
                             continue_diff_count[continue_diff] += 1
                             if continue_diff >= 7:
-                                print(bus_id)
+                                print(bus_id, self.BusCommonLine[bus_id])
                         continue_diff = 0
 
-            if not same:
-                diff_buses.append(bus_id)
 
         total = sum(x[1] for x in continue_diff_count.items())
-        print(MathHelper.percentToString(len(diff_buses),len(self.BusMap.keys())))
         print(continue_diff_count)
         print(total)
-        #print(diff_buses)
-        #print(self.getString(diff_buses))
 
     def analysis(self):
         self.analysisDiffCount()
         self.analysisCommonLine()
-        #self.analysisContinueDiff()
+        self.analysisContinueDiff()
 
 
 
