@@ -53,6 +53,7 @@ def makeFileLogger(file_name):
     file_handler.setFormatter(formatter)
 
     # 将定义好的console日志handler添加到root logger
+    logger.handlers = []
     logger.addHandler(file_handler)
 
     return logger
@@ -60,7 +61,7 @@ def makeFileLogger(file_name):
 def printFile(file_name, mode, content):
     if (not os.path.exists(os.path.dirname(file_name))):
         os.makedirs(os.path.dirname(file_name))
-        
+
     dest_file = codecs.open(file_name, mode, encoding='utf-8', errors='ignore')
     dest_file.write(content)
     dest_file.close()
