@@ -52,20 +52,24 @@ class OriginalWrongAnalysisHelper:
         self.BusMap = dict()
         self.line_front_similar = getLineFrontSimilar(line_front_similar_file)
 
-    def analysisSameLineFrontCount(self, one_line_id, other_line_id):
+    def analysisSameLineFrontCount(self, one_line_id, other_line_id, print_detail):
         if one_line_id == other_line_id:
             return 0, 0
         else:
             if not one_line_id in self.line_front_similar.keys():
-                #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
+                if print_detail == True:
+                    print(one_line_id, other_line_id, 0 , 1)
                 return 0, 1
             if not other_line_id in self.line_front_similar.keys():
-                #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
+                if print_detail == True:
+                    print(one_line_id, other_line_id, 0 , 1)
                 return 0, 1
             if not other_line_id in self.line_front_similar[one_line_id]:
-                #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
+                if print_detail == True:
+                    print(one_line_id, other_line_id, 0 , 1)
                 return 0, 1
-            #print(today_line.real_line_id, today_line.original_line_id, 1, 0)
+            if print_detail == True:
+                print(one_line_id, other_line_id, 1, 0)
             return 1, 0
 
     def report(self):
@@ -78,8 +82,8 @@ class OriginalWrongAnalysisHelper:
         print('AnalysisHelper: same: %s, diff:%s, samePer:%s'\
             %(total_same, total_diff, MathHelper.percentToString(total_same, total_same + total_diff)))
 
-    def analysisSameLineFrontCountWithBusId(self, bus_id, one_line_id, other_line_id):
-        same_count, diff_count = self.analysisSameLineFrontCount(one_line_id, other_line_id)
+    def analysisSameLineFrontCountWithBusId(self, bus_id, one_line_id, other_line_id, print_detail = False):
+        same_count, diff_count = self.analysisSameLineFrontCount(one_line_id, other_line_id, print_detail)
 
         if not bus_id in self.BusMap.keys():
             self.BusMap[bus_id] = OriginalWrongCount()

@@ -18,8 +18,8 @@ def run(input_dirs = None):
     analysis = HistoryOriginalWrongAnalysis()
     analysis.readCity(input_dirs)
 
-    #analysis = HistoryFlightsAnalysis()
-    #analysis.readCity(input_dirs)
+    analysis = HistoryFlightsAnalysis()
+    analysis.readCity(input_dirs)
 
 @manager.command
 def test():
