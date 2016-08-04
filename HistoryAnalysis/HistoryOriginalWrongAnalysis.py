@@ -99,17 +99,17 @@ class HistoryOriginalWrongAnalysis:
 
         print('same: %s, diff:%s, samePer:%s'%(total_same, total_diff, MathHelper.percentToString(total_same, total_same + total_diff)))
 
-    def analysisSameLineFrontCount(self, today_line):
-        if today_line.real_line_id == today_line.original_line_id:
+    def analysisSameLineFrontCount(self, one_line_id, other_line_id):
+        if one_line_id == other_line_id:
             return 0, 0
         else:
-            if not today_line.real_line_id in self.line_front_similar.keys():
+            if not one_line_id in self.line_front_similar.keys():
                 #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
                 return 0, 1
-            if not today_line.original_line_id in self.line_front_similar.keys():
+            if not other_line_id in self.line_front_similar.keys():
                 #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
                 return 0, 1
-            if not today_line.original_line_id in self.line_front_similar[today_line.real_line_id]:
+            if not other_line_id in self.line_front_similar[one_line_id]:
                 #print(today_line.real_line_id, today_line.original_line_id, 0 , 1)
                 return 0, 1
             #print(today_line.real_line_id, today_line.original_line_id, 1, 0)
@@ -122,6 +122,6 @@ class HistoryOriginalWrongAnalysis:
             for key in bus_relations.keys():
                 if not key in self.BusMap.keys():
                     self.BusMap[key] = OriginalWrongCount()
-                same_count, diff_count = self.analysisSameLineFrontCount(bus_relations[key])
+                same_count, diff_count = self.analysisSameLineFrontCount(bus_relations[key].real_line_id, bus_relations[key].original_line_id)
                 self.BusMap[key].same_count += same_count
                 self.BusMap[key].diff_count += diff_count
