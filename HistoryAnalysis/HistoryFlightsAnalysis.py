@@ -128,7 +128,7 @@ class HistoryFlightsAnalysis:
                 else:
                     if yesterday != self.BusMap[bus_id][date]:
                         total_diff += 1
-                    analysis_helper.analysisSameLineFrontCountWithBusId(bus_id, yesterday, self.BusMap[bus_id][date], True)
+                    analysis_helper.analysisSameLineFrontCountWithBusId(bus_id, yesterday, self.BusMap[bus_id][date], False)
                     yesterday = self.BusMap[bus_id][date]
 
         print('total_diff', total_diff)
